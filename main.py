@@ -69,7 +69,7 @@ def get_clips():
     print('slice:', partition_size*level,':', partition_size*(level+1))
     partition = questions[partition_size*level:partition_size*(level+1)] 
     while len(selected_questions) < 3:
-        selected_question = select_clip(questions)
+        selected_question = select_clip(partition)
         if selected_question not in selected_questions:
             selected_questions.append(selected_question)
     return {"questions": selected_questions}
