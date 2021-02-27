@@ -10,14 +10,17 @@ to [Mozilla Common Voice](https://commonvoice.mozilla.org/) platform.
 
 # Deployment
 
-Right now it only works with Finnish. To bootstrap it, `git clone`
-the repository, then run the following commands:
+To bootstrap the project, `git clone` the repository, then run the following
+commands:
 
 ```
 cd templates && wget --no-check-certificate http://cl.indiana.edu/\~ftyers/cv/cv-corpus-6.1-2020-12-11.tar.gz -O- | tar zxf - && cd ..
 pip install -r requirements.txt
 ./main.py
 ```
+
+Right now it only works with Finnish language, but any one with
+space-delimited script should be OK.
 
 The project should be accessible through http://localhost:5001/
 
