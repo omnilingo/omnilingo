@@ -72,6 +72,11 @@ function checkInput(tid) {
 	} else {
              console.log('INCORRECT!');
              span.setAttribute("style", "color: red");
+             var shouldBe = document.createElement("span");
+	     shouldBe.setAttribute("style", "color:green");
+             var t = document.createTextNode(" [" + correct + "]");
+             shouldBe.appendChild(t);
+             span.appendChild(shouldBe);
 	}
 }
 
