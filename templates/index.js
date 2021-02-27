@@ -10,14 +10,31 @@ head.ready(onReady);
 
 function onReady() {
    console.log('onReady()');
-
+   var questions = {};
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4){
+        res = JSON.parse(xhr.responseText);
+        console.log(res);
+        console.log(res["questions"]);
+        console.log(res["questions"][0]);
+        current_question = res["questions"][0];
+        current_audio = current_question["path"];
+        current_text = current_question["sentence"];
 //   res = httpGet('/static/cv-corpus-6.1-2020-12-11/fi/clips/common_voice_fi_23997016.mp3');
    var player = document.getElementById('player');
    var source = document.getElementById('audioSource');
 
-   source.src = 'http://localhost:5001/static/cv-corpus-6.1-2020-12-11/fi/clips/common_voice_fi_23997016.mp3';
+   source.src = 'http://localhost:5001/static/cv-corpus-6.1-2020-12-11/fi/clips/' + current_audio;
    source.type = 'audio/mp3';
    player.load();
+   var tbox = document.getElementById('textbox');
+   tbox.innerHTML = current_question["sentence"];
+
+    }
+};
+xhr.open('GET', 'http://localhost:5001/get_clips');
+xhr.send();
 
 }
 
