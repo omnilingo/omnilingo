@@ -1,5 +1,7 @@
 # commonvoice-languagelearning
 
+![Project in action](doc/demo.gif) 
+
 The goal of the project is to help you practice listening comprehension.
 
 It works by giving you random sentences in the language you're learning and
