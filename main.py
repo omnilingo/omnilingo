@@ -6,11 +6,15 @@ import csv
 
 from flask import Flask, render_template, send_from_directory
 
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__, static_url_path="")
+
+
+def tokenize_sentence(question):
+    return question["sentence"].split()
 
 
 def process_question(question):
-    question["sentence"] = question["sentence"].split()
+    question["sentence"] = tokenize_sentence(question)
     return question
 
 
@@ -29,9 +33,18 @@ def load_questions():
 questions = load_questions()
 
 
+def select_clip(questions):
+    return random.choice(questions)
+
+
 @app.route("/get_clips")
 def get_clips():
-    return {"questions": [random.choice(questions) for x in range(3)]}
+    selected_questions = []
+    while len(selected_questions) < 3:
+        selected_question = select_clip(questions)
+        if selected_question not in selected_questions:
+            selected_questions.append(selected_question)
+    return {"questions": selected_questions}
 
 
 @app.route("/")
