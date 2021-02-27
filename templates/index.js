@@ -30,7 +30,7 @@ function onReady() {
 			var player = document.getElementById('player');
 			var source = document.getElementById('audioSource');
 
-			source.src = 'http://localhost:5001/static/cv-corpus-6.1-2020-12-11/fi/clips/' + current_audio;
+			source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
 			source.type = 'audio/mp3';
 			player.load();
 			var tbox = document.getElementById('textbox');
