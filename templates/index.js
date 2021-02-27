@@ -38,7 +38,10 @@ xhr.onreadystatechange = function() {
    gap = getRandomInt(0, current_question["sentence"].length - 1);
    for(var i = 0; i < current_question["sentence"].length; i++) {
      if(i == gap)  {
-     spans += ' <span data-word="' + current_question["sentence"][i] + '">' + '___' + '</span> '  
+
+//			$("#sent-" + row[0]).append('<span onBlur="checkInput(\''+tokenId+'\');" onKeyUp="userInput(\''+tokenId+'\');" id="token-' + tokenId + '" data-value="' + t + '" alt="' + t + '" contenteditable>' + t + '</span> ');
+
+     spans += ' <span data-value="' + current_question["sentence"][i] + '" contenteditable>' + '___' + '</span> '  
      } else {
      spans += ' <span>' + current_question["sentence"][i] + '</span> '  
      }
