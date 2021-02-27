@@ -3,22 +3,33 @@
 import os
 import random
 import csv
+import sys
+import re
 
+import tqdm
+import jieba
 from flask import Flask, render_template, send_from_directory
 from mutagen.mp3 import MP3
 
 app = Flask(__name__, static_url_path="")
 
-CLIPS_DIR = "templates/cv-corpus-6.1-2020-12-11/fi/clips/"
-VALIDATED_CSV_PATH = "templates/cv-corpus-6.1-2020-12-11/fi/validated.tsv"
+LANGUAGE = "fi"
+PREFIX = "templates/cv-corpus-6.1-2020-12-11/" + LANGUAGE + "/"
+CLIPS_DIR = PREFIX + "/clips/"
+VALIDATED_CSV_PATH = PREFIX + "/validated.tsv"
 
 
 def tokenize_sentence(question):
-    return question["sentence"].split()
+    if question["locale"].startswith("zh-"):
+        return jieba.lcut(question["sentence"])
+    else:
+        return [
+            x for x in re.split("(\\w+)", question["sentence"]) if x.strip()
+        ]
 
 
 def process_question(question):
-    question["sentence"] = tokenize_sentence(question)
+    question["tokenized"] = tokenize_sentence(question)
     return question
 
 
@@ -27,12 +38,14 @@ def load_questions():
     with open(VALIDATED_CSV_PATH) as f:
         r = csv.reader(f, delimiter="\t")
         h = next(r)
-        for row in r:
+        sys.stderr.write("Loading questions...\n")
+        for row in tqdm.tqdm(r):
             question = dict(zip(h, row))
             mp3 = MP3(CLIPS_DIR + question["path"])
-            question['audio_length'] = mp3.info.length
+            question["audio_length"] = mp3.info.length
             question = process_question(question)
             questions.append(question)
+        sys.stderr.write("Done loading.\n")
     return questions
 
 

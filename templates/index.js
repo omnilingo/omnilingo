@@ -25,7 +25,7 @@ function onReady() {
 			console.log(res["questions"][0]);
 			current_question = res["questions"][0];
 			current_audio = current_question["path"];
-			current_text = current_question["sentence"];
+			current_text = current_question["tokenized"];
 			//   res = httpGet('/static/cv-corpus-6.1-2020-12-11/fi/clips/common_voice_fi_23997016.mp3');
 			var player = document.getElementById('player');
 			var source = document.getElementById('audioSource');
@@ -35,15 +35,15 @@ function onReady() {
 			player.load();
 			var tbox = document.getElementById('textbox');
 			spans = ''
-				gap = getRandomInt(0, current_question["sentence"].length - 1);
-			for(var i = 0; i < current_question["sentence"].length; i++) {
+				gap = getRandomInt(0, current_text.length - 1);
+			for(var i = 0; i < current_text.length; i++) {
 				if(i == gap)  {
 
 					//			$("#sent-" + row[0]).append('<span onBlur="checkInput(\''+tokenId+'\');" onKeyUp="userInput(\''+tokenId+'\');" id="token-' + tokenId + '" data-value="' + t + '" alt="' + t + '" contenteditable>' + t + '</span> ');
 
-					spans += ' <span onBlur="checkInput(\'t'+i+'\');" id="t' + i + '" style="border-bottom: thin dotted #000000;" data-value="' + current_question["sentence"][i] + '" contenteditable>' + '&nbsp;&nbsp;&nbsp;'  + '</span> '  
+					spans += ' <span onBlur="checkInput(\'t'+i+'\');" id="t' + i + '" style="border-bottom: thin dotted #000000;" data-value="' + current_text[i] + '" contenteditable>' + '&nbsp;&nbsp;&nbsp;'  + '</span> '  
 				} else {
-					spans += ' <span>' + current_question["sentence"][i] + '</span> '  
+					spans += ' <span>' + current_text[i] + '</span> '  
 				}
 			}
 			tbox.innerHTML = spans;
