@@ -3,9 +3,9 @@
 import random
 import csv
 
-import flask
+from flask import Flask, render_template, send_from_directory
 
-app = flask.Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 
 def process_question(question):
@@ -31,6 +31,16 @@ questions = load_questions()
 @app.route("/get_clips")
 def get_clips():
     return {"questions": [random.choice(questions) for x in range(3)]}
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route('/static/<path:path>')
+def serve_static(path):
+    return send_from_directory('templates', path)
 
 
 if __name__ == "__main__":
