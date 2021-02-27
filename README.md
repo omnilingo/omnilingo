@@ -20,10 +20,3 @@ pip install -r requirements.txt
 The project should be accessible through http://localhost:5001/
 
 Happy hacking! :)
-
-# TO-DO
-
-- [ ] select sentences based on desired difficulty level
-- [ ] add tokenizers for languages with no word separator, e.g. Chinese
-- [ ] calculate score
-- [ ] add a way to set up reminders (e-mail, chat?)
