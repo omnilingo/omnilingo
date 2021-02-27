@@ -9,6 +9,7 @@ import re
 import tqdm
 import jieba
 from flask import Flask, render_template, send_from_directory
+from flask import request
 from mutagen.mp3 import MP3
 
 app = Flask(__name__, static_url_path="")
@@ -60,7 +61,13 @@ def select_clip(questions):
 
 @app.route("/get_clips")
 def get_clips():
+    nlevels = request.args.get('nlevels', default = 10, type = int)
+    level = request.args.get('level', default = 0, type = int)
     selected_questions = []
+    partition_size = len(questions) // nlevels
+    print('partition_size:', partition_size)
+    print('slice:', partition_size*level,':', partition_size*(level+1))
+    partition = questions[partition_size*level:partition_size*(level+1)] 
     while len(selected_questions) < 3:
         selected_question = select_clip(questions)
         if selected_question not in selected_questions:

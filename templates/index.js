@@ -50,7 +50,7 @@ function onReady() {
 
 		}
 	};
-	xhr.open('GET', 'http://localhost:5001/get_clips');
+	xhr.open('GET', 'http://localhost:5001/get_clips?nlevels=10&level=0');
 	xhr.send();
 
 }
