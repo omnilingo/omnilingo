@@ -38,7 +38,7 @@ function buildTbox(current_text) {
 
             spans += ' <span onKeyPress="userInput(event,\'t' + i + '\');"';
             spans += 'onBlur="checkInput(\'t' + i + '\');" id="t';
-            spans += i + '" style="border: thin dotted #000000;" data-value="';
+            spans += i + '" style="border: thin dotted #000000;" data-focus="true" data-value="';
             spans += current_text[i] + '" contenteditable>' + '&nbsp;&nbsp;&nbsp;' + '</span> ';
         } else {
             spans += '<span>' + current_text[i] + '</span> '
@@ -55,7 +55,14 @@ function globalKeyDown(e) {
       console.log('TAB');
       var player = document.getElementById('player');
       player.play();
+      span = document.querySelectorAll('[data-focus="true"]');
+      console.log(span[0]);
+      span[0].focus();
       return;
+    }
+    if(e.key == ' ') {
+      // Next clip
+      location.reload();
     }
 }
 
@@ -109,6 +116,11 @@ function checkInput(tid) {
     correct = span.getAttribute("data-value");
     guess = span.childNodes[0].textContent.replaceAll(/\s/g,'');
     guess = guess.trim();
+
+    if(guess == '') {
+        span.focus();
+        return;
+    }
 
     console.log('correct: ' + correct);
     console.log('guess: ' + guess);
