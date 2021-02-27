@@ -59,11 +59,20 @@ function checkInput(tid) {
 	console.log('checkInput() ' + tid);
 	span = document.getElementById(tid);
 
-	correct = span["data-value"];
-	guess = span.innerHTML;
+	correct = span.getAttribute("data-value");
+	guess = span.textContent;
+	guess = guess.trim();
 
 	console.log('correct: ' + correct);
 	console.log('guess: ' + guess);
+
+	if(guess == correct) {
+             console.log('CORRECT!');
+             span.setAttribute("style", "font-color: green");
+	} else {
+             console.log('INCORRECT!');
+             span.setAttribute("style", "font-color: red");
+	}
 }
 
 function parseText(text) {
