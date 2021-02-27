@@ -4,9 +4,11 @@ on: [push]
 
 jobs:
 
-    runs-on: ubuntu-latest
+    build:
 
-    steps:
-        - uses: actions/checkout@v1
-        - name: Build the docker-compose stack
-          run: docker-compose build
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v1
+            - name: Build the docker-compose stack
+              run: docker-compose build
