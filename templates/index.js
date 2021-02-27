@@ -93,12 +93,14 @@ function checkInput(tid) {
     if (guess == correct) {
         console.log('CORRECT!');
         span.setAttribute("style", "color: green");
-        if (span.childNodes.length != 1) {
-            span.childNodes[1].remove();
-        }
+        span.setAttribute("contenteditable", false);
+//        if (span.childNodes.length != 1) {
+//            span.childNodes[1].remove();
+//        }
     } else {
         console.log('INCORRECT!');
         span.setAttribute("style", "color: red");
+        span.setAttribute("contenteditable", false);
         var shouldBe = document.createElement("span");
         shouldBe.setAttribute("style", "color:green");
         var t = document.createTextNode(" [" + correct + "]");
