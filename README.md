@@ -12,7 +12,7 @@ Right now it only works with Finnish. To bootstrap it, `git clone`
 the repository, then run the following commands:
 
 ```
-cd templates && wget --no-check-certificate http://cl.indiana.edu/\~ftyers/cv/cv-corpus-6.1-2020-12-11.tar.gz -O- | tar zxf -
+cd templates && wget --no-check-certificate http://cl.indiana.edu/\~ftyers/cv/cv-corpus-6.1-2020-12-11.tar.gz -O- | tar zxf - && cd ..
 pip install -r requirements.txt
 ./main.py
 ```
