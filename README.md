@@ -4,7 +4,7 @@ The goal of the project is to help you practice listening comprehension.
 
 It works by giving you random sentences in the language you're learning and
 asking you to fill in the gaps. The sentences were submitted by contributors
-to [https://commonvoice.mozilla.org/](Mozilla Common Voice) platform.
+to [Mozilla Common Voice](https://commonvoice.mozilla.org/) platform.
 
 # Deployment
 
