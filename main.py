@@ -43,6 +43,7 @@ def load_questions():
             question = dict(zip(h, row))
             mp3 = MP3(CLIPS_DIR + question["path"])
             question["audio_length"] = mp3.info.length
+            question["chars_sec"] = len(question["sentence"]) / float(question["audio_length"])
             question = process_question(question)
             questions.append(question)
         sys.stderr.write("Done loading.\n")
@@ -51,6 +52,7 @@ def load_questions():
 
 questions = load_questions()
 
+questions.sort(key=lambda x: x["chars_sec"])
 
 def select_clip(questions):
     return random.choice(questions)
