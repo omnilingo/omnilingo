@@ -38,7 +38,7 @@ function buildTbox(current_text) {
 
             spans += ' <span onKeyPress="userInput(event,\'t' + i + '\');"';
             spans += 'onBlur="checkInput(\'t' + i + '\');" id="t';
-            spans += i + '" style="border-bottom: thin dotted #000000;" data-value="';
+            spans += i + '" style="border: thin dotted #000000;" data-value="';
             spans += current_text[i] + '" contenteditable>' + '&nbsp;&nbsp;&nbsp;' + '</span> ';
         } else {
             spans += '<span>' + current_text[i] + '</span> '
@@ -47,7 +47,21 @@ function buildTbox(current_text) {
     return spans;
 }
 
+function globalKeyDown(e) {
+    console.log('globalKeyDown() ' + e.key);
+
+    if(e.key == 'Tab') {
+      // Play and focus textbox
+      console.log('TAB');
+      var player = document.getElementById('player');
+      player.play();
+      return;
+    }
+}
+
 function onReady() {
+    window.onkeydown = globalKeyDown;
+
     var questions = {};
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -116,23 +130,6 @@ function checkInput(tid) {
         shouldBe.appendChild(t);
         span.appendChild(shouldBe);
     }
-}
-
-function httpGet(theUrl) {
-    console.log('httpGet()' + theUrl);
-    var xmlhttp;
-    if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
-        xmlhttp = new XMLHttpRequest();
-    } else { // code for IE6, IE5
-        alert('This browser is not supported or has insufficient permissions.');
-    }
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            return xmlhttp.responseText;
-        }
-    }
-    xmlhttp.open("GET", theUrl, false);
-    xmlhttp.send();
 }
 
 window.onload = main;
