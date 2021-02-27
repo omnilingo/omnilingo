@@ -16,7 +16,7 @@ def process_question(question):
 
 def load_questions():
     questions = []
-    with open("cv-corpus-6.1-2020-12-11/fi/validated.tsv") as f:
+    with open("templates/cv-corpus-6.1-2020-12-11/fi/validated.tsv") as f:
         r = csv.reader(f, delimiter="\t")
         h = next(r)
         for row in r:
