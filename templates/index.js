@@ -10,7 +10,7 @@ head.ready(onReady);
 
 function onReady() {
    console.log('onReady()');
-   res = httpGet('https://cl.indiana.edu/~ftyers/cv/cv-corpus-6.1-2020-12-11/fi/clips/common_voice_fi_23997016.mp3');
+   res = httpGet('/static/cv-corpus-6.1-2020-12-11/fi/clips/common_voice_fi_23997016.mp3');
 }
 
 

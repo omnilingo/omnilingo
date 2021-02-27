@@ -39,9 +39,9 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/static/<path:path>')
+@app.route("/static/<path:path>")
 def serve_static(path):
-    return send_from_directory('templates', path)
+    return send_from_directory("templates", path)
 
 
 if __name__ == "__main__":
