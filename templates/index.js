@@ -56,10 +56,12 @@ function onReady() {
     levels = document.getElementById('levels');
     for(var i = 0; i < 10; i++) {
         var level = document.createElement("option");
+        var levelText = document.createTextNode(i+1);
         level.setAttribute("value", i+1);
+        level.appendChild(levelText);
         levels.appendChild(level);
     } 
-    xhr.open('GET', 'http://localhost:5001/get_clips?nlevels=10&level=0');
+    xhr.open('GET', 'http://localhost:5001/get_clips?nlevels=10&level=1');
     xhr.send();
 
 }

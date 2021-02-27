@@ -65,13 +65,13 @@ def select_clip(questions):
 @app.route("/get_clips")
 def get_clips():
     nlevels = request.args.get("nlevels", default=10, type=int)
-    level = request.args.get("level", default=0, type=int)
+    level = request.args.get("level", default=1, type=int)
     selected_questions = []
     partition_size = len(questions) // nlevels
     print("partition_size:", partition_size)
-    print("slice:", partition_size * level, ":", partition_size * (level + 1))
+    print("slice:", partition_size * (level-1), ":", partition_size * level)
     partition = questions[
-        partition_size * level : partition_size * (level + 1)
+        partition_size * (level-1) : partition_size * level
     ]
     while len(selected_questions) < 3:
         selected_question = select_clip(partition)
