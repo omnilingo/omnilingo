@@ -8,6 +8,11 @@ head.ready(onReady);
 
 
 
+
+function getRandomInt(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function onReady() {
    console.log('onReady()');
    var questions = {};
@@ -29,7 +34,16 @@ xhr.onreadystatechange = function() {
    source.type = 'audio/mp3';
    player.load();
    var tbox = document.getElementById('textbox');
-   tbox.innerHTML = current_question["sentence"];
+   spans = ''
+   gap = getRandomInt(0, current_question["sentence"].length - 1);
+   for(var i = 0; i < current_question["sentence"].length; i++) {
+     if(i == gap)  {
+     spans += ' <span data-word="' + current_question["sentence"][i] + '">' + '___' + '</span> '  
+     } else {
+     spans += ' <span>' + current_question["sentence"][i] + '</span> '  
+     }
+   }
+   tbox.innerHTML = spans;
 
     }
 };
