@@ -22,13 +22,22 @@ function changeLevel(elem) {
    location.reload(); 
 }
 
+function userInput(e, tid) {
+    console.log('userInput:', e);
+
+    if(e.key == 'Enter') {
+      checkInput(tid);
+    }
+}
+
 function buildTbox(current_text) {
     spans = '';
     gap = electGap(current_text);
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
 
-            spans += ' <span onBlur="checkInput(\'t' + i + '\');" id="t';
+            spans += ' <span onKeyPress="userInput(event,\'t' + i + '\');"';
+            spans += 'onBlur="checkInput(\'t' + i + '\');" id="t';
             spans += i + '" style="border-bottom: thin dotted #000000;" data-value="';
             spans += current_text[i] + '" contenteditable>' + '&nbsp;&nbsp;&nbsp;' + '</span> ';
         } else {
