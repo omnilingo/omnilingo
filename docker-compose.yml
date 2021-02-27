@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+    server:
+        build: .
+        environment:
+            FLASK_PORT: 5001
+        ports:
+            - 5001:5001
