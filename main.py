@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import random
 import csv
 
@@ -44,4 +45,4 @@ def serve_static(path):
 
 
 if __name__ == "__main__":
-    app.run(port=5000, host="0.0.0.0")
+    app.run(port=int(os.environ.get("FLASK_PORT", "5001")), host="0.0.0.0")
