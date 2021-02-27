@@ -44,7 +44,9 @@ def load_questions():
             question = dict(zip(h, row))
             mp3 = MP3(CLIPS_DIR + question["path"])
             question["audio_length"] = mp3.info.length
-            question["chars_sec"] = len(question["sentence"]) / float(question["audio_length"])
+            question["chars_sec"] = len(question["sentence"]) / float(
+                question["audio_length"]
+            )
             question = process_question(question)
             questions.append(question)
         sys.stderr.write("Done loading.\n")
@@ -55,19 +57,22 @@ questions = load_questions()
 
 questions.sort(key=lambda x: x["chars_sec"])
 
+
 def select_clip(questions):
     return random.choice(questions)
 
 
 @app.route("/get_clips")
 def get_clips():
-    nlevels = request.args.get('nlevels', default = 10, type = int)
-    level = request.args.get('level', default = 0, type = int)
+    nlevels = request.args.get("nlevels", default=10, type=int)
+    level = request.args.get("level", default=0, type=int)
     selected_questions = []
     partition_size = len(questions) // nlevels
-    print('partition_size:', partition_size)
-    print('slice:', partition_size*level,':', partition_size*(level+1))
-    partition = questions[partition_size*level:partition_size*(level+1)] 
+    print("partition_size:", partition_size)
+    print("slice:", partition_size * level, ":", partition_size * (level + 1))
+    partition = questions[
+        partition_size * level : partition_size * (level + 1)
+    ]
     while len(selected_questions) < 3:
         selected_question = select_clip(partition)
         if selected_question not in selected_questions:
