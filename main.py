@@ -5,8 +5,12 @@ import random
 import csv
 
 from flask import Flask, render_template, send_from_directory
+from mutagen.mp3 import MP3
 
 app = Flask(__name__, static_url_path="")
+
+CLIPS_DIR = "templates/cv-corpus-6.1-2020-12-11/fi/clips/"
+VALIDATED_CSV_PATH = "templates/cv-corpus-6.1-2020-12-11/fi/validated.tsv"
 
 
 def tokenize_sentence(question):
@@ -20,11 +24,13 @@ def process_question(question):
 
 def load_questions():
     questions = []
-    with open("templates/cv-corpus-6.1-2020-12-11/fi/validated.tsv") as f:
+    with open(VALIDATED_CSV_PATH) as f:
         r = csv.reader(f, delimiter="\t")
         h = next(r)
         for row in r:
             question = dict(zip(h, row))
+            mp3 = MP3(CLIPS_DIR + question["path"])
+            question['audio_length'] = mp3.info.length
             question = process_question(question)
             questions.append(question)
     return questions
