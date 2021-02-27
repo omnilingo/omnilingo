@@ -14,10 +14,6 @@ from mutagen.mp3 import MP3
 
 app = Flask(__name__, static_url_path="")
 
-LANGUAGE = "fi"
-PREFIX = "templates/cv-corpus-6.1-2020-12-11/" + LANGUAGE + "/"
-CLIPS_DIR = PREFIX + "/clips/"
-VALIDATED_CSV_PATH = PREFIX + "/validated.tsv"
 
 
 def tokenize_sentence(question):
@@ -53,11 +49,6 @@ def load_questions():
     return questions
 
 
-questions = load_questions()
-
-questions.sort(key=lambda x: x["chars_sec"])
-
-
 def select_clip(questions):
     return random.choice(questions)
 
@@ -90,5 +81,21 @@ def serve_static(path):
     return send_from_directory("templates", path)
 
 
+LANGUAGE = "fi"
+PREFIX = "templates/cv-corpus-6.1-2020-12-11/" + LANGUAGE + "/"
+CLIPS_DIR = PREFIX + "/clips/"
+VALIDATED_CSV_PATH = PREFIX + "/validated.tsv"
+
 if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        LANGUAGE=sys.argv[1]
+        PREFIX = "templates/cv-corpus-6.1-2020-12-11/" + LANGUAGE + "/"
+        CLIPS_DIR = PREFIX + "/clips/"
+        VALIDATED_CSV_PATH = PREFIX + "/validated.tsv"
+
+
+    questions = load_questions()
+    questions.sort(key=lambda x: x["chars_sec"])
+
+
     app.run(port=int(os.environ.get("FLASK_PORT", "5001")), host="0.0.0.0")
