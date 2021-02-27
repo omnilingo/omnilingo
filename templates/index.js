@@ -12,7 +12,8 @@ function getRandomInt(min, max) {
 function electGap(current_text) {
     do {
         gapIndex = getRandomInt(0, current_text.length - 1);
-    } while (current_text[gapIndex] == ".");
+    } while (current_text[gapIndex] == "." || current_text[gapIndex] == ":" || current_text[gapIndex] == "?" || current_text[gapIndex] == ",");
+    // Do something better here for any punctuation
     return gapIndex;
 }
 
