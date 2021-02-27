@@ -16,6 +16,12 @@ function electGap(current_text) {
     return gapIndex;
 }
 
+function changeLevel(elem) {
+   console.log('changeLevel: ' + elem.value);
+   localStorage.setItem('currentLevel', elem.value);
+   location.reload(); 
+}
+
 function buildTbox(current_text) {
     spans = '';
     gap = electGap(current_text);
@@ -53,15 +59,22 @@ function onReady() {
         tbox.innerHTML = buildTbox(current_text);
 
     };
+    if(!localStorage.getItem('currentLevel')) {
+        localStorage.setItem('currentLevel', 1);
+    }
+    current_level = localStorage.getItem('currentLevel');
     levels = document.getElementById('levels');
     for(var i = 0; i < 10; i++) {
         var level = document.createElement("option");
         var levelText = document.createTextNode(i+1);
+        if(i+ 1 == current_level) {
+            level.setAttribute("selected","");
+        }
         level.setAttribute("value", i+1);
         level.appendChild(levelText);
         levels.appendChild(level);
     } 
-    xhr.open('GET', 'http://localhost:5001/get_clips?nlevels=10&level=1');
+    xhr.open('GET', 'http://localhost:5001/get_clips?nlevels=10&level=' + current_level);
     xhr.send();
 
 }
