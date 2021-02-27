@@ -41,7 +41,7 @@ xhr.onreadystatechange = function() {
 
 //			$("#sent-" + row[0]).append('<span onBlur="checkInput(\''+tokenId+'\');" onKeyUp="userInput(\''+tokenId+'\');" id="token-' + tokenId + '" data-value="' + t + '" alt="' + t + '" contenteditable>' + t + '</span> ');
 
-     spans += ' <span data-value="' + current_question["sentence"][i] + '" contenteditable>' + '___' + '</span> '  
+     spans += ' <span onBlur="checkInput()" style="border-bottom: thin dotted #000000;" data-value="' + current_question["sentence"][i] + '" contenteditable>' + '&nbsp;&nbsp;&nbsp;'  + '</span> '  
      } else {
      spans += ' <span>' + current_question["sentence"][i] + '</span> '  
      }
@@ -52,6 +52,11 @@ xhr.onreadystatechange = function() {
 };
 xhr.open('GET', 'http://localhost:5001/get_clips');
 xhr.send();
+
+}
+
+function checkInput() {
+   console.log('checkInput()');
 
 }
 
