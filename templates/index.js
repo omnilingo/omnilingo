@@ -68,10 +68,10 @@ function checkInput(tid) {
 
 	if(guess == correct) {
              console.log('CORRECT!');
-             span.setAttribute("style", "font-color: green");
+             span.setAttribute("style", "color: green");
 	} else {
              console.log('INCORRECT!');
-             span.setAttribute("style", "font-color: red");
+             span.setAttribute("style", "color: red");
 	}
 }
 
