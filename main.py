@@ -80,19 +80,15 @@ def index():
 def serve_static(path):
     return send_from_directory("templates", path)
 
-
-LANGUAGE = "fi"
-PREFIX = "templates/cv-corpus-6.1-2020-12-11/" + LANGUAGE + "/"
-CLIPS_DIR = PREFIX + "/clips/"
-VALIDATED_CSV_PATH = PREFIX + "/validated.tsv"
-
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        LANGUAGE=sys.argv[1]
-        PREFIX = "templates/cv-corpus-6.1-2020-12-11/" + LANGUAGE + "/"
-        CLIPS_DIR = PREFIX + "/clips/"
-        VALIDATED_CSV_PATH = PREFIX + "/validated.tsv"
+    if len(sys.argv) != 2:
+        print('./main.py [language code]', file=sys.stderr)
+        sys.exit(-1)
 
+    LANGUAGE=sys.argv[1]
+    PREFIX = "templates/cv-corpus-6.1-2020-12-11/" + LANGUAGE + "/"
+    CLIPS_DIR = PREFIX + "/clips/"
+    VALIDATED_CSV_PATH = PREFIX + "/validated.tsv"
 
     questions = load_questions()
     questions.sort(key=lambda x: x["chars_sec"])
