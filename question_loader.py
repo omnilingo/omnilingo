@@ -85,9 +85,9 @@ def regenerate_cache():
     languages, questions = load_all_languages()
     with gzip.open(
         "cache/languages.pickle.gz", "wb"
-    ) as questions_f, gzip.open(
+    ) as languages_f, gzip.open(
         "cache/questions.pickle.gz", "wb"
-    ) as languages_f:
+    ) as questions_f:
         sys.stderr.write('Saving the models...\n')
         pickle.dump(languages, languages_f)
         pickle.dump(questions, questions_f)
@@ -98,9 +98,9 @@ def load_all_languages_cached():
     try:
         with gzip.open(
             "cache/languages.pickle.gz", "rb"
-        ) as questions_f, gzip.open(
+        ) as languages_f, gzip.open(
             "cache/questions.pickle.gz", "rb"
-        ) as languages_f:
+        ) as questions_f:
             sys.stderr.write('Loading pre-cached question set...\n')
             languages = pickle.load(languages_f)
             questions = pickle.load(questions_f)
