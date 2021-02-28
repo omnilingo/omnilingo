@@ -22,14 +22,14 @@ from 1 to 10 where 1 is the easiest and 10 is the hardest.
 To bootstrap the project, `git clone` the repository, then run the following
 commands:
 
-```
+```bash
 cd templates && wget --no-check-certificate http://cl.indiana.edu/\~ftyers/cv/cv-corpus-6.1-2020-12-11.tar.gz -O- | tar zxf - && cd ..
 pip install -r requirements.txt
-./main.py
+./main.py fi
 ```
 
-Right now it only works with Finnish language, but any one with
-space-delimited script should be OK.
+With the above code it only works with Finnish language, but you can replace
+`fi` with any language code you download from [Common Voice](https://commonvoice.mozilla.org/datasets)
 
 The project should be accessible through http://localhost:5001/
 
