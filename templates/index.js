@@ -105,7 +105,7 @@ function onReady() {
         level.appendChild(levelText);
         levels.appendChild(level);
     } 
-    xhr.open('GET', 'http://localhost:5001/get_clips?nlevels=10&level=' + current_level);
+    xhr.open('GET', '/get_clips?nlevels=10&level=' + current_level);
     xhr.send();
 
 }
