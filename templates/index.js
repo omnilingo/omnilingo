@@ -126,7 +126,7 @@ function checkInput(tid) {
     console.log('correct: ' + correct);
     console.log('guess: ' + guess);
 
-    if (guess == correct) {
+    if (guess.toLowerCase() == correct.toLowerCase()) {
         console.log('CORRECT!');
         span.setAttribute("style", "color: green");
         span.setAttribute("contenteditable", false);
