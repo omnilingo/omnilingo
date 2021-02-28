@@ -36,7 +36,7 @@ def process_question(question, word_frequency):
 def load_questions():
     questions = []
     word_frequency = collections.Counter()
-    with open(VALIDATED_CSV_PATH) as f:
+    with open(VALIDATED_CSV_PATH, encoding="utf8") as f:
         r = csv.reader(f, delimiter="\t")
         h = next(r)
         sys.stderr.write("Loading questions...\n")

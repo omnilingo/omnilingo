@@ -38,7 +38,7 @@ function buildTbox(current_text) {
         if (i == gap) {
 
             spans += ' <span onKeyPress="userInput(event,\'t' + i + '\');"';
-            spans += 'onBlur="checkInput(\'t' + i + '\');" id="t';
+            //spans += 'onBlur="checkInput(\'t' + i + '\');" id="t';
             spans += i + '" style="border: thin dotted #000000;" data-focus="true" data-value="';
             spans += current_text[i] + '" contenteditable>' + '&nbsp;&nbsp;&nbsp;' + '</span> ';
         } else {
