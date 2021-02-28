@@ -7,6 +7,7 @@ import collections
 import pathlib
 import pickle
 import gzip
+import os
 
 import tqdm
 import jieba
@@ -80,19 +81,7 @@ def load_all_languages(languages=None):
     return languages, dict(questions)
 
 
-def load_all_languages_cached():
-    with gzip.open(
-        "cache/languages.pickle.gz", "rb"
-    ) as questions_f, gzip.open(
-        "cache/questions.pickle.gz", "rb"
-    ) as languages_f:
-        languages = pickle.load(languages_f)
-        questions = pickle.load(questions_f)
-
-    return languages, questions
-
-
-if __name__ == "__main__":
+def regenerate_cache():
     languages, questions = load_all_languages()
     with gzip.open(
         "cache/languages.pickle.gz", "wb"
@@ -102,3 +91,27 @@ if __name__ == "__main__":
         sys.stderr.write('Saving the models...\n')
         pickle.dump(languages, languages_f)
         pickle.dump(questions, questions_f)
+    return languages, questions
+
+
+def load_all_languages_cached():
+    try:
+        with gzip.open(
+            "cache/languages.pickle.gz", "rb"
+        ) as questions_f, gzip.open(
+            "cache/questions.pickle.gz", "rb"
+        ) as languages_f:
+            sys.stderr.write('Loading pre-cached question set...\n')
+            languages = pickle.load(languages_f)
+            questions = pickle.load(questions_f)
+    except FileNotFoundError:
+        try:
+            os.mkdir('cache')
+        except FileExistsError:
+            pass
+        languages, questions = regenerate_cache()
+    return languages, questions
+
+
+if __name__ == "__main__":
+    regenerate_cache()
