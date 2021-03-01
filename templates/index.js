@@ -92,6 +92,7 @@ function buildOptionTbox(current_text, gap) {
     line = '';
     console.log('buildOptionTbox()')
     var distractors = getDistractors(current_text[gap]);
+    ds = document.getElementById("invisibleDistractor").textContent;
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
             // Randomise the order here
@@ -104,7 +105,7 @@ function buildOptionTbox(current_text, gap) {
                             onKeyPress="userInputChoice(event, \'t${i}'\)"
                             id="t${i}"
                             style="border: thin dotted #000; width: ${current_text[i].length}ch"
-                            data-value="${current_text[i]}">${distractors[0]}</span>}`
+                            data-value="${current_text[i]}">${ds}</span>}`
         } else {
             line += current_text[i] + ' '
         }
@@ -190,14 +191,11 @@ function drawFeedback() {
 function getDistractors(word) {
     console.log('getDistractors() ' + word);
     var xhr = new XMLHttpRequest();
-    xhr.async = false;
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState !== 4) {
-            return;
-        }
+    xhr.onload = function() {
         var res = JSON.parse(xhr.responseText);
         console.log('D:' + res["distractors"]);
-        return res["distractors"];
+        ds = document.getElementById("invisibleDistractor");
+        ds.innerHTML = res["distractors"][0];
     }
     xhr.open('GET', '/get_distractors?count=10&language=fi&word=' + word);
     xhr.send();
@@ -248,11 +246,7 @@ function onReadyChoice() {
     var source = document.getElementById('audioSource');
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/get_clips?nlevels=10&level=' + current_level);
-    //xhr.onreadystatechange = function() {
     xhr.onload = function() {
- //       if (xhr.readyState !== 4) {
- //           return;
- //       }
         res = JSON.parse(xhr.responseText);
         current_question = res["questions"][0];
         current_audio = current_question["path"];
@@ -275,10 +269,7 @@ function onReadyBlank() {
 
     var questions = {};
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState !== 4) {
-            return;
-        }
+    xhr.onload = function() {
         res = JSON.parse(xhr.responseText);
         current_question = res["questions"][0];
         current_audio = current_question["path"];
