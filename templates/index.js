@@ -47,6 +47,12 @@ function buildTbox(current_text) {
     return spans;
 }
 
+function focusGap() {
+    span = document.querySelectorAll('[data-focus="true"]')[0]
+    console.log(span);
+    span.focus();
+}
+
 function globalKeyDown(e) {
     console.log('globalKeyDown() ' + e.key);
 
@@ -55,10 +61,6 @@ function globalKeyDown(e) {
       console.log('TAB');
       var player = document.getElementById('player');
       player.play();
-      span = document.querySelectorAll('[data-focus="true"]');
-      console.log(span[0]);
-      span[0].focus();
-      return;
     }
     if(e.key == ' ') {
       // Next clip
