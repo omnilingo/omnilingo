@@ -72,9 +72,12 @@ function changeLevel(elem) {
    location.reload(); 
 }
 
-function userInputChoice(e, tid) {
+function userInputChoice(e, correct, tid) {
     console.log('userInputChoice:', e);
     console.log(tid);
+    if(correct == 1) {
+        console.log('CORRECT!');
+    }
 
     // Check and colour here
 }
@@ -88,24 +91,40 @@ function userInput(e, tid) {
     }
 }
 
-function buildOptionTbox(current_text, gap) {
+function buildOptionTbox(current_text, gap, distractors) {
     line = '';
     console.log('buildOptionTbox()')
-    var distractors = getDistractors(current_text[gap]);
-    ds = document.getElementById("invisibleDistractor").textContent;
+    ds = distractors[current_text[gap]];
+    console.log(ds);
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
             // Randomise the order here
-            line += `{<span 
-                            onKeyPress="userInputChoice(event, \'t${i}'\)"
-                            id="t${i}"
-                            style="border: thin dotted #000; width: ${current_text[i].length}ch"
-                            data-value="${current_text[i]}">${current_text[i]}</span>, 
-                       <span 
-                            onKeyPress="userInputChoice(event, \'t${i}'\)"
-                            id="t${i}"
-                            style="border: thin dotted #000; width: ${current_text[i].length}ch"
-                            data-value="${current_text[i]}">${ds}</span>}`
+            if(getRandomInt(0, 1) == 1) {
+                line += `{<span 
+                                onClick="userInputChoice(event, 1, \'t${i}'\)"
+                                id="t${i}"
+                                style="border: thin dotted #000; width: ${current_text[i].length}ch"
+                                data-value="${current_text[i]}">${current_text[i]}</span>, 
+                           <span 
+                                onClick="userInputChoice(event, 0, \'t${i}'\)"
+                                id="t${i}"
+                                style="border: thin dotted #000; width: ${current_text[i].length}ch"
+                                data-value="${current_text[i]}">${ds[0]}</span>}`
+
+             } else {
+                line += `{<span 
+                                onClick="userInputChoice(event, 0, \'t${i}'\)"
+                                id="t${i}"
+                                style="border: thin dotted #000; width: ${current_text[i].length}ch"
+                                data-value="${current_text[i]}">${ds[0]}</span>, 
+                           <span 
+                                onClick="userInputChoice(event, 1, \'t${i}'\)"
+                                id="t${i}"
+                                style="border: thin dotted #000; width: ${current_text[i].length}ch"
+                                data-value="${current_text[i]}">${current_text[i]}</span>}`
+             }
+
+
         } else {
             line += current_text[i] + ' '
         }
@@ -188,19 +207,6 @@ function drawFeedback() {
     }
 }
 
-function getDistractors(word) {
-    console.log('getDistractors() ' + word);
-    var xhr = new XMLHttpRequest();
-    xhr.onload = function() {
-        var res = JSON.parse(xhr.responseText);
-        console.log('D:' + res["distractors"]);
-        ds = document.getElementById("invisibleDistractor");
-        ds.innerHTML = res["distractors"][0];
-    }
-    xhr.open('GET', '/get_distractors?count=10&language=fi&word=' + word);
-    xhr.send();
-}
-
 function chooseTask(enabledTasks) {
     console.log(enabledTasks);
     if(enabledTasks.length == 1) {
@@ -240,24 +246,23 @@ function onReady() {
 function onReadyChoice() {
     console.log('onReadyChoice()');
 
-
     var questions = {};
     var player = document.getElementById('player');
     var source = document.getElementById('audioSource');
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/get_clips?nlevels=10&level=' + current_level);
+    xhr.open('GET', '/get_clips?nlevels=10&type=choice&level=' + current_level);
     xhr.onload = function() {
         res = JSON.parse(xhr.responseText);
         current_question = res["questions"][0];
         current_audio = current_question["path"];
         current_text = current_question["tokenized"];
-
+        distractors = res["distractors"];
         source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
         source.type = 'audio/mp3';
         player.load();
         tbox = document.getElementById('textbox');
         gap = electGap(current_text);
-        tbox.innerHTML = buildOptionTbox(current_text, gap);
+        tbox.innerHTML = buildOptionTbox(current_text, gap, distractors);
     };
     xhr.send();
 
@@ -285,7 +290,7 @@ function onReadyBlank() {
         tbox.innerHTML = buildTbox(current_text, gap);
 
     };
-    xhr.open('GET', '/get_clips?nlevels=10&level=' + current_level);
+    xhr.open('GET', '/get_clips?nlevels=10&type=blank&level=' + current_level);
     xhr.send();
 
 }

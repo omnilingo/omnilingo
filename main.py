@@ -13,12 +13,26 @@ app = Flask(__name__, static_url_path="")
 def select_clip(questions):
     return random.choice(questions)
 
+def get_distractors(questions, word, count):
+    # Fill in here
+    ds = set()
+    for q in questions:
+        for t in q['tokenized']:
+                if len(t) == len(word):
+                    ds.add(t.lower())
+        if len(ds) >= count:
+            print('D:',word, list(ds)[:count])
+            return list(ds)[:count] 
+
+    print('D:', word, list(ds)[:count])
+    return list(ds)[:count]
 
 @app.route("/get_clips")
 def get_clips():
     nlevels = request.args.get("nlevels", default=10, type=int)
     level = request.args.get("level", default=1, type=int)
     language = request.args.get("language", default="fi", type=str)
+    tipus = request.args.get("type", default="blank", type=str)
     selected_questions = []
     partition_size = len(questions[language]) // nlevels
     print("partition_size:", partition_size)
@@ -26,26 +40,19 @@ def get_clips():
     partition = questions[language][
         partition_size * (level - 1) : partition_size * level
     ]
+    ds = {}
     while len(selected_questions) < 3:
         selected_question = select_clip(partition)
         if selected_question not in selected_questions:
             selected_questions.append(selected_question)
-    return {"questions": selected_questions}
-
-@app.route("/get_distractors")
-def get_distractors():
-    word = request.args.get("word", type=str)
-    count = request.args.get("count", type=int)
-    language = request.args.get("language", default="fi", type=str)
-    # Fill in here
-    ds = []
-    for q in questions[language]:
-        for t in q['tokenized']:
-            if len(t) == len(word):
-                ds.append(t.lower())
-    ds = list(set(ds))
-    print('D:', ds[0:10])
-    return {"distractors": ds[0:10]}
+        if tipus == "choice":
+            for tok in selected_question["tokenized"]:
+                ds[tok] = get_distractors(questions[language], tok, 10)
+        
+    if tipus == "choice":
+        return {"questions": selected_questions, "distractors": ds}
+    else: 
+        return {"questions": selected_questions}
 
 @app.route("/")
 def index():
