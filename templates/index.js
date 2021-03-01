@@ -18,6 +18,32 @@ function main() {
     // This allows us to capture Enter, Tab, Space etc.
     window.onkeydown = globalKeyDown;
 
+    if(!localStorage.getItem('currentLevel')) {
+        localStorage.setItem('currentLevel', 1);
+    }
+    if(!localStorage.getItem('responses')) {
+        localStorage.setItem('responses', Array());
+    }
+    responses = localStorage.getItem('responses');
+    console.log('RESPONSES: ' + responses);
+    current_level = localStorage.getItem('currentLevel');
+    levels = document.getElementById('levels');
+    for(var i = 0; i < 10; i++) {
+        var level = document.createElement("option");
+        var levelText = document.createTextNode(i+1);
+        if(i+ 1 == current_level) {
+            level.setAttribute("selected","");
+        }
+        level.setAttribute("value", i+1);
+        level.appendChild(levelText);
+        levels.appendChild(level);
+    } 
+    drawFeedback();
+    if(responses.length == 10) {
+        localStorage.setItem('responses', Array());
+    }
+
+
     head.ready(onReady);
 }
 
@@ -46,6 +72,13 @@ function changeLevel(elem) {
    location.reload(); 
 }
 
+function userInputChoice(e, tid) {
+    console.log('userInputChoice:', e);
+    console.log(tid);
+
+    // Check and colour here
+}
+
 function userInput(e, tid) {
     console.log('userInput:', e);
     console.log(tid);
@@ -54,6 +87,30 @@ function userInput(e, tid) {
       checkInput(tid);
     }
 }
+
+function buildOptionTbox(current_text, gap) {
+    line = '';
+    for (var i = 0; i < current_text.length; i++) {
+        if (i == gap) {
+            // Randomise the order here
+            line += `{<span 
+                            onKeyPress="userInputChoice(event, \'t${i}'\)"
+                            id="t${i}"
+                            style="border: thin dotted #000; width: ${current_text[i].length}ch"
+                            data-value="${current_text[i]}">${current_text[i]}</span>, 
+                       <span 
+                            onKeyPress="userInputChoice(event, \'t${i}'\)"
+                            id="t${i}"
+                            style="border: thin dotted #000; width: ${current_text[i].length}ch"
+                            data-value="${current_text[i]}">foo</span>}`
+        } else {
+            line += current_text[i] + ' '
+        }
+    }
+    line = '<p>' + line + ' </p>';
+    return line;
+}
+
 
 function buildTbox(current_text, gap) {
     line = '';
@@ -171,23 +228,46 @@ function onReady() {
     taskType = chooseTask(enabledTasks);
     console.log('TT: ' + taskType);
     if(taskType == "choice") {
-        var distractors = getDistractors(current_text[gap]);
-        console.log('D2:' + distractors);
-        onReadyChoices();
+        onReadyChoice();
     } else if(taskType == "blank") {
-        onReadyBlanks();
+        onReadyBlank();
     } else {
         console.log("TASK: not implemented");
-        onReadyBlanks();
     }
 }
 
-function onReadyChoices() {
-    console.log('onReadyChoices()');
+function onReadyChoice() {
+    console.log('onReadyChoice()');
+
+    distractors = getDistractors('foo');
+
+    var questions = {};
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) {
+            return;
+        }
+        res = JSON.parse(xhr.responseText);
+        current_question = res["questions"][0];
+        current_audio = current_question["path"];
+        current_text = current_question["tokenized"];
+        var player = document.getElementById('player');
+        var source = document.getElementById('audioSource');
+
+        source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
+        source.type = 'audio/mp3';
+        player.load();
+        var tbox = document.getElementById('textbox');
+        var gap = electGap(current_text);
+        tbox.innerHTML = buildOptionTbox(current_text, gap);
+    };
+    xhr.open('GET', '/get_clips?nlevels=10&level=' + current_level);
+    xhr.send();
+
 
 }
 
-function onReadyBlanks() {
+function onReadyBlank() {
     console.log('onReadyBlanks()');
 
     var questions = {};
@@ -211,30 +291,6 @@ function onReadyBlanks() {
         tbox.innerHTML = buildTbox(current_text, gap);
 
     };
-    if(!localStorage.getItem('currentLevel')) {
-        localStorage.setItem('currentLevel', 1);
-    }
-    if(!localStorage.getItem('responses')) {
-        localStorage.setItem('responses', Array());
-    }
-    responses = localStorage.getItem('responses');
-    console.log('RESPONSES: ' + responses);
-    current_level = localStorage.getItem('currentLevel');
-    levels = document.getElementById('levels');
-    for(var i = 0; i < 10; i++) {
-        var level = document.createElement("option");
-        var levelText = document.createTextNode(i+1);
-        if(i+ 1 == current_level) {
-            level.setAttribute("selected","");
-        }
-        level.setAttribute("value", i+1);
-        level.appendChild(levelText);
-        levels.appendChild(level);
-    } 
-    drawFeedback();
-    if(responses.length == 10) {
-        localStorage.setItem('responses', Array());
-    }
     xhr.open('GET', '/get_clips?nlevels=10&level=' + current_level);
     xhr.send();
 
