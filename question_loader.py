@@ -4,6 +4,7 @@ import csv
 import sys
 import re
 import collections
+import multiprocessing
 import pathlib
 import pickle
 import gzip
@@ -50,7 +51,7 @@ def load_questions(language_name):
             question = process_question(question, word_frequency)
             questions.append(question)
         sys.stderr.write("Done loading.\n")
-    return questions, word_frequency
+    return language_name, questions, word_frequency
 
 
 def difficulty_function(question, word_frequency, most_common_word):
@@ -59,7 +60,13 @@ def difficulty_function(question, word_frequency, most_common_word):
         word_frequency[word] / most_common_word[1]
         for word in question["tokenized"]
     ]
-    return chars_sec * -min(word_frequencies)
+    if word_frequencies:
+        return chars_sec * -min(word_frequencies)
+    else:
+        sys.stderr.write(
+            "WTF: cannot calculate frequencies for question=%r\n" % question
+        )
+        return chars_sec
 
 
 def load_all_languages(languages=None):
@@ -70,43 +77,49 @@ def load_all_languages(languages=None):
         languages = [
             language.name for language in pathlib.Path(PREFIX).glob("*")
         ]
-    for lng in languages:
-        questions[lng], word_frequency[lng] = load_questions(lng)
-        most_common_word[lng] = word_frequency[lng].most_common(1)[0]
-        questions[lng].sort(
-            key=lambda question: difficulty_function(
-                question, word_frequency[lng], most_common_word[lng]
+    with multiprocessing.Pool(4) as p:
+        for lng, lng_questions, lng_word_frequency in p.map(
+            load_questions, languages
+        ):
+            questions[lng] = lng_questions
+            word_frequency[lng] = lng_word_frequency
+            most_common_word[lng] = word_frequency[lng].most_common(1)[0]
+            questions[lng].sort(
+                key=lambda question: difficulty_function(
+                    question, word_frequency[lng], most_common_word[lng]
+                )
             )
-        )
     return languages, dict(questions)
 
 
 def regenerate_cache():
     languages, questions = load_all_languages()
-    with gzip.open(
-        "cache/languages.pickle.gz", "wb"
-    ) as languages_f, gzip.open(
-        "cache/questions.pickle.gz", "wb"
-    ) as questions_f:
-        sys.stderr.write('Saving the models...\n')
+    with gzip.open("cache/languages.pickle.gz", "wb") as languages_f:
+
         pickle.dump(languages, languages_f)
-        pickle.dump(questions, questions_f)
+    for language in questions:
+        with gzip.open(
+            f"cache/questions__{language}.pickle.gz", "wb"
+        ) as questions_f:
+            sys.stderr.write("Saving the models...\n")
+            pickle.dump(questions[language], questions_f)
     return languages, questions
 
 
 def load_all_languages_cached():
     try:
-        with gzip.open(
-            "cache/languages.pickle.gz", "rb"
-        ) as languages_f, gzip.open(
-            "cache/questions.pickle.gz", "rb"
-        ) as questions_f:
-            sys.stderr.write('Loading pre-cached question set...\n')
+        sys.stderr.write("Loading pre-cached question set...\n")
+        with gzip.open("cache/languages.pickle.gz", "rb") as languages_f:
             languages = pickle.load(languages_f)
-            questions = pickle.load(questions_f)
+        questions = {}
+        for path in pathlib.Path("cache").glob("questions__*"):
+            with gzip.open(path, "rb") as questions_f:
+                # extract whatever's between the __ and the extension
+                language = path.name.split("__")[1].split(".")[0]
+                questions[language] = pickle.load(questions_f)
     except FileNotFoundError:
         try:
-            os.mkdir('cache')
+            os.mkdir("cache")
         except FileExistsError:
             pass
         languages, questions = regenerate_cache()
