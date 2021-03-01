@@ -92,6 +92,11 @@ function onReady() {
     if(!localStorage.getItem('currentLevel')) {
         localStorage.setItem('currentLevel', 1);
     }
+    if(!localStorage.getItem('responses')) {
+        localStorage.setItem('responses', Array());
+    }
+    responses = localStorage.getItem('responses');
+    console.log('RESPONSES: ' + responses);
     current_level = localStorage.getItem('currentLevel');
     levels = document.getElementById('levels');
     for(var i = 0; i < 10; i++) {
@@ -104,6 +109,20 @@ function onReady() {
         level.appendChild(levelText);
         levels.appendChild(level);
     } 
+    feedback = document.getElementById('feedback');
+    for(var i = 0; i < responses.length; i++) {
+        t = document.createTextNode(' ');
+        feedback.appendChild(t);
+        if(responses[i] == '-') {
+            t = document.createTextNode('✘');
+        } else {
+            t = document.createTextNode('✔');
+        }
+        feedback.appendChild(t);
+    }
+    if(responses.length == 10) {
+        localStorage.setItem('responses', Array());
+    }
     xhr.open('GET', '/get_clips?nlevels=10&level=' + current_level);
     xhr.send();
 
@@ -125,10 +144,14 @@ function checkInput(tid) {
     console.log('correct: ' + correct);
     console.log('guess: ' + guess);
 
+    responses = localStorage.getItem('responses');
+
+    console.log(responses);
     if (guess.toLowerCase() == correct.toLowerCase()) {
         console.log('CORRECT!');
         span.setAttribute("style", "color: green");
         span.setAttribute("contenteditable", false);
+        responses += "+";
 //        if (span.childNodes.length != 1) {
 //            span.childNodes[1].remove();
 //        }
@@ -141,7 +164,10 @@ function checkInput(tid) {
         var t = document.createTextNode(" [" + correct + "]");
         shouldBe.appendChild(t);
         span.appendChild(shouldBe);
+        responses += "-";
     }
+    console.log(responses);
+    localStorage.setItem('responses', responses);
 }
 
 window.onload = main;
