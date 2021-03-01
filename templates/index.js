@@ -60,7 +60,6 @@ function globalKeyDown(e) {
       console.log('TAB');
       var player = document.getElementById('player');
       player.play();
-      return;
     }
     if(e.key == ' ') {
       // Next clip
