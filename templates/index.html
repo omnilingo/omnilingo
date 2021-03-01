@@ -9,6 +9,11 @@
 
 <body>
 <div class="content" id="content">
+  <div style="float:right">
+    <input type="checkbox" id="enableBlanks" name="enableBlanks" checked><label for="enableBlanks">Blanks</label>
+    <input type="checkbox" id="enableChoice" name="enableChoice" checked><label for="enableChoice">Choices</label>
+  </div>
+  <br/>
   <select name="levels" id="levels" onChange="changeLevel(this)"/>
   <input type="button" value="Another" onClick="javascript:location.reload (true)"/>
   <p>
