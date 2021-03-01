@@ -2,14 +2,37 @@ function main() {
     /* Loads all the js libraries and project modules, then calls onReady. */
     console.log('main()');
     head.js();
+
+    // For the first page load we set both tasks to enabled
+    if(!localStorage.getItem('enableBlanks')) {
+        localStorage.setItem('enableBlanks', true);
+        eb = document.getElementById('enableBlanks');
+        eb.setAttribute('checked', true);
+    }
+    if(!localStorage.getItem('enableChoice')) {
+        localStorage.setItem('enableChoice', true);
+        eb = document.getElementById('enableChoice');
+        eb.setAttribute('checked', true);
+    }
+
+    // This allows us to capture Enter, Tab, Space etc.
+    window.onkeydown = globalKeyDown;
+
     head.ready(onReady);
 }
 
+function updateTask(task) {
+    // Update the state of the two check boxes
+    localStorage.setItem(task.id, task.checked);
+}
+
 function getRandomInt(min, max) {
+    // Generate a pseudo-random integer between min and max
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function electGap(current_text) {
+    // Choose which index to gap out
     do {
         gapIndex = getRandomInt(0, current_text.length - 1);
     } while (current_text[gapIndex] == "." || current_text[gapIndex] == ":" || current_text[gapIndex] == "?" || current_text[gapIndex] == "," || current_text[gapIndex] == "!");
@@ -51,13 +74,8 @@ function buildTbox(current_text, gap) {
 }
 
 function focusGap() {
+    // Focus the input box that is a gap
     document.querySelectorAll('[data-focus="true"]')[0].focus();
-}
-
-function focusGap() {
-    span = document.querySelectorAll('[data-focus="true"]')[0]
-    console.log(span);
-    span.focus();
 }
 
 function globalKeyDown(e) {
@@ -110,7 +128,6 @@ function drawFeedback() {
     }
 }
 
-
 function getDistractors(word) {
     console.log('getDistractors() ' + word);
     var xhr = new XMLHttpRequest();
@@ -126,8 +143,52 @@ function getDistractors(word) {
     xhr.send();
 }
 
+function chooseTask(enabledTasks) {
+    console.log(enabledTasks);
+    if(enabledTasks.length == 1) {
+        return enabledTasks[0];
+    }
+    task = getRandomInt(0, enabledTasks.length);
+    return enabledTasks[task];
+}
+
 function onReady() {
-    window.onkeydown = globalKeyDown;
+    // Here we choose a global task 
+     
+    var enabledTasks = Array();
+    var et = localStorage.getItem('enableChoice')
+    // FIXME: This is horrible, why doesn't javascript allow if(et) or a tonne of better things?
+    if(et == "true") {
+        console.log('1T? ' + localStorage.getItem('enableChoice'))
+        enabledTasks.push("choice");
+    }
+    var et = localStorage.getItem('enableBlanks')
+    if(et == "true") {
+        console.log('2T? ' + localStorage.getItem('enableBlanks'))
+        enabledTasks.push("blank");
+    }
+
+    taskType = chooseTask(enabledTasks);
+    console.log('TT: ' + taskType);
+    if(taskType == "choice") {
+        var distractors = getDistractors(current_text[gap]);
+        console.log('D2:' + distractors);
+        onReadyChoices();
+    } else if(taskType == "blank") {
+        onReadyBlanks();
+    } else {
+        console.log("TASK: not implemented");
+        onReadyBlanks();
+    }
+}
+
+function onReadyChoices() {
+    console.log('onReadyChoices()');
+
+}
+
+function onReadyBlanks() {
+    console.log('onReadyBlanks()');
 
     var questions = {};
     var xhr = new XMLHttpRequest();
@@ -147,8 +208,6 @@ function onReady() {
         player.load();
         var tbox = document.getElementById('textbox');
         var gap = electGap(current_text);
-        var distractors = getDistractors(current_text[gap]);
-        console.log('D2:' + distractors);
         tbox.innerHTML = buildTbox(current_text, gap);
 
     };
