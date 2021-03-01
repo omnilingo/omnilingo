@@ -38,8 +38,8 @@ function buildTbox(current_text) {
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
             line += ' <input onKeyPress="userInput(event,\'t' + i + '\')"; id="t';
-            line += i + '" data-focus="true" data-value="" style="border: thin dotted #000000;"';
-            line += ' /> '
+            line += i + '" data-focus="true" style="border: thin dotted #000000;" data-value="';
+            line += current_text[i] + '" /> '
         } else {
             line += current_text[i] + ' '
         }
@@ -135,9 +135,9 @@ function checkInput(tid) {
     input = document.getElementById(tid);
     console.log("input: ", input)
     correct = input.getAttribute("data-value");
-    console.log(correct);
-    guess = span.childNodes[0].textContent.replaceAll(/\s/g,'');
-    guess = guess.trim();
+    console.log(input);
+    console.log(input.value);
+    guess = input.value;
 
     if(guess == '') {
         span.focus();
@@ -151,22 +151,32 @@ function checkInput(tid) {
 
     console.log(responses);
     if (guess.toLowerCase() == correct.toLowerCase()) {
-        console.log('CORRECT!');
-        span.setAttribute("style", "color: green");
-        span.setAttribute("contenteditable", false);
+        var answer = document.createElement("span");
+        answer.setAttribute("style", "color: green");
+        var answerTextNode = document.createTextNode(correct);
+        answer.appendChild(answerTextNode);
+        input.parentNode.insertBefore(answer, input.nextSibling);
+        input.remove();
         responses += "+";
 //        if (span.childNodes.length != 1) {
 //            span.childNodes[1].remove();
 //        }
     } else {
-        console.log('INCORRECT!');
-        span.setAttribute("style", "color: red");
-        span.setAttribute("contenteditable", false);
         var shouldBe = document.createElement("span");
-        shouldBe.setAttribute("style", "color:green");
-        var t = document.createTextNode(" [" + correct + "]");
-        shouldBe.appendChild(t);
-        span.appendChild(shouldBe);
+        shouldBe.setAttribute("style", "color: green");
+        var correctTextNode = document.createTextNode(" [" + correct + "]");
+        shouldBe.appendChild(correctTextNode);
+        input.parentNode.insertBefore(shouldBe, input.nextSibling);
+
+        console.log('INCORRECT!');
+        var incorrectAnswer = document.createElement("span");
+        incorrectAnswer.setAttribute("style", "color: red");
+        var incorrectTextNode = document.createTextNode(guess);
+        incorrectAnswer.appendChild(incorrectTextNode);
+        input.parentNode.insertBefore(incorrectAnswer, input.nextSibling);
+
+        input.remove();
+
         responses += "-";
     }
     console.log(responses);
