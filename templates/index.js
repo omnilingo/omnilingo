@@ -37,9 +37,12 @@ function buildTbox(current_text) {
     gap = electGap(current_text);
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
-            line += ' <input onKeyPress="userInput(event,\'t' + i + '\')"; id="t';
-            line += i + '" data-focus="true" style="border: thin dotted #000000;" data-value="';
-            line += current_text[i] + '" /> '
+            line += `<input type="text"
+                            onKeyPress="userInput(event, \'t${i}'\)"
+                            id="t${i}"
+                            data-focus="true"
+                            style="border: thin dotted #000; width: ${current_text[i].length}ch"
+                            data-value="${current_text[i]}"/> `
         } else {
             line += current_text[i] + ' '
         }
@@ -184,7 +187,7 @@ function checkInput(tid) {
     if (guess.toLowerCase() == correct.toLowerCase()) {
         var answer = document.createElement("span");
         answer.setAttribute("style", "color: green");
-        var answerTextNode = document.createTextNode(correct);
+        var answerTextNode = document.createTextNode(correct + " ");
         answer.appendChild(answerTextNode);
         input.parentNode.insertBefore(answer, input.nextSibling);
         input.remove();
@@ -195,7 +198,7 @@ function checkInput(tid) {
     } else {
         var shouldBe = document.createElement("span");
         shouldBe.setAttribute("style", "color: green");
-        var correctTextNode = document.createTextNode(" [" + correct + "]");
+        var correctTextNode = document.createTextNode(" [" + correct + "] ");
         shouldBe.appendChild(correctTextNode);
         input.parentNode.insertBefore(shouldBe, input.nextSibling);
 
