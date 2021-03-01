@@ -80,18 +80,26 @@ function drawFeedback() {
     feedback = document.getElementById('feedback');
     responses = localStorage.getItem('responses');
     console.log('drawFeedback() ' + responses);
-    for(var i = 0; i < responses.length; i++) {
+    for(var i = 0; i < 10; i++) {
         span = document.createElement('span');
         if(responses[i] == '-') {
-            t = document.createTextNode('✘');
-            span.setAttribute("style", "color:red");
+            t = document.createTextNode(' ✘ ');
+            span.setAttribute("style", "padding:2px;align:center;color:red; border: 1px solid black");
+            span.appendChild(t);
+        } else if(responses[i] == '+') {
+            t = document.createTextNode(' ✔ ');
+            span.setAttribute("style", "padding:2px;align:center;color:green; border: 1px solid black");
             span.appendChild(t);
         } else {
-            t = document.createTextNode('✔');
-            span.setAttribute("style", "color:green");
+            t = document.createTextNode(' ? ');
+            span.setAttribute("style", "padding:2px;align:center;color:white; border: 1px solid black");
             span.appendChild(t);
         }
         feedback.appendChild(span);
+        padding = document.createElement('span');
+        t = document.createTextNode(' ');
+        padding.appendChild(t);
+        feedback.appendChild(padding);
     }
 }
 
