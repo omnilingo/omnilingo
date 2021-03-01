@@ -75,10 +75,18 @@ function changeLevel(elem) {
 function userInputChoice(e, correct, tid) {
     console.log('userInputChoice:', e);
     console.log(tid);
+    responses = localStorage.getItem('responses');
+        answer = document.getElementById(tid);
     if(correct == 1) {
         console.log('CORRECT!');
+        answer.setAttribute("style", "background-color: green");
+        responses += "+";
+    } else {
+        console.log('INCORRECT!');
+        answer.setAttribute("style", "background-color: red");
+        responses += "-";
     }
-
+    localStorage.setItem('responses', responses);
     // Check and colour here
 }
 
@@ -106,15 +114,15 @@ function buildOptionTbox(current_text, gap, distractors) {
                                 style="border: thin dotted #000; width: ${current_text[i].length}ch"
                                 data-value="${current_text[i]}">${current_text[i]}</span>, 
                            <span 
-                                onClick="userInputChoice(event, 0, \'t${i}'\)"
-                                id="t${i}"
+                                onClick="userInputChoice(event, 0, \'dt${i}'\)"
+                                id="dt${i}"
                                 style="border: thin dotted #000; width: ${current_text[i].length}ch"
                                 data-value="${current_text[i]}">${ds[0]}</span>}`
 
              } else {
                 line += `{<span 
-                                onClick="userInputChoice(event, 0, \'t${i}'\)"
-                                id="t${i}"
+                                onClick="userInputChoice(event, 0, \'dt${i}'\)"
+                                id="dt${i}"
                                 style="border: thin dotted #000; width: ${current_text[i].length}ch"
                                 data-value="${current_text[i]}">${ds[0]}</span>, 
                            <span 
