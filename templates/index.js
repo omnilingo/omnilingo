@@ -32,19 +32,23 @@ function userInput(e, tid) {
 }
 
 function buildTbox(current_text) {
-    spans = '';
+    line = '';
     gap = electGap(current_text);
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
-
-            spans += ' <span onKeyPress="userInput(event,\'t' + i + '\');" id="t';
-            spans += i + '" style="border: thin dotted #000000;" data-focus="true" data-value="';
-            spans += current_text[i] + '" contenteditable>' + '&nbsp;&nbsp;&nbsp;' + '</span> ';
+            line += ' <input onkeypress="userInput(event,\'t' + i + '\'); id="t';
+            line += i + '" data-focus="true" data-value="" style="border: thin dotted #000000;"';
+            line += ' /> '
         } else {
-            spans += '<span>' + current_text[i] + '</span> '
+            line += current_text[i] + ' '
         }
     }
-    return spans;
+    line = '<p>' + line + ' </p>';
+    return line;
+}
+
+function focusGap() {
+    document.querySelectorAll('[data-focus="true"]')[0].focus();
 }
 
 function globalKeyDown(e) {
@@ -55,9 +59,6 @@ function globalKeyDown(e) {
       console.log('TAB');
       var player = document.getElementById('player');
       player.play();
-      span = document.querySelectorAll('[data-focus="true"]');
-      console.log(span[0]);
-      span[0].focus();
       return;
     }
     if(e.key == ' ') {
