@@ -66,6 +66,34 @@ function globalKeyDown(e) {
     }
 }
 
+function clearFeedback() {
+    console.log('clearFeedback()');
+    var myNode = document.getElementById("feedback");
+    while (myNode.firstChild) {
+        myNode.removeChild(myNode.firstChild);
+    }
+}
+
+function drawFeedback() {
+    feedback = document.getElementById('feedback');
+    responses = localStorage.getItem('responses');
+    console.log('drawFeedback() ' + responses);
+    for(var i = 0; i < responses.length; i++) {
+        span = document.createElement('span');
+        if(responses[i] == '-') {
+            t = document.createTextNode('✘');
+            span.setAttribute("style", "color:red");
+            span.appendChild(t);
+        } else {
+            t = document.createTextNode('✔');
+            span.setAttribute("style", "color:green");
+            span.appendChild(t);
+        }
+        feedback.appendChild(span);
+    }
+}
+
+
 function onReady() {
     window.onkeydown = globalKeyDown;
 
@@ -109,17 +137,7 @@ function onReady() {
         level.appendChild(levelText);
         levels.appendChild(level);
     } 
-    feedback = document.getElementById('feedback');
-    for(var i = 0; i < responses.length; i++) {
-        t = document.createTextNode(' ');
-        feedback.appendChild(t);
-        if(responses[i] == '-') {
-            t = document.createTextNode('✘');
-        } else {
-            t = document.createTextNode('✔');
-        }
-        feedback.appendChild(t);
-    }
+    drawFeedback();
     if(responses.length == 10) {
         localStorage.setItem('responses', Array());
     }
@@ -168,6 +186,8 @@ function checkInput(tid) {
     }
     console.log(responses);
     localStorage.setItem('responses', responses);
+    clearFeedback();
+    drawFeedback();
 }
 
 window.onload = main;
