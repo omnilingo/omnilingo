@@ -32,9 +32,8 @@ function userInput(e, tid) {
     }
 }
 
-function buildTbox(current_text) {
+function buildTbox(current_text, gap) {
     line = '';
-    gap = electGap(current_text);
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
             line += `<input type="text"
@@ -112,6 +111,21 @@ function drawFeedback() {
 }
 
 
+function getDistractors(word) {
+    console.log('getDistractors() ' + word);
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) {
+            return;
+        }
+        var res = JSON.parse(xhr.responseText);
+        console.log('D:' + res["distractors"]);
+        return res["distractors"];
+    }
+    xhr.open('GET', '/get_distractors?count=10&language=fi&word=' + word);
+    xhr.send();
+}
+
 function onReady() {
     window.onkeydown = globalKeyDown;
 
@@ -132,7 +146,10 @@ function onReady() {
         source.type = 'audio/mp3';
         player.load();
         var tbox = document.getElementById('textbox');
-        tbox.innerHTML = buildTbox(current_text);
+        var gap = electGap(current_text);
+        var distractors = getDistractors(current_text[gap]);
+        console.log('D2:' + distractors);
+        tbox.innerHTML = buildTbox(current_text, gap);
 
     };
     if(!localStorage.getItem('currentLevel')) {

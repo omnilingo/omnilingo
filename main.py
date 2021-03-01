@@ -32,6 +32,20 @@ def get_clips():
             selected_questions.append(selected_question)
     return {"questions": selected_questions}
 
+@app.route("/get_distractors")
+def get_distractors():
+    word = request.args.get("word", type=str)
+    count = request.args.get("count", type=int)
+    language = request.args.get("language", default="fi", type=str)
+    # Fill in here
+    ds = []
+    for q in questions[language]:
+        for t in q['tokenized']:
+            if len(t) == len(word):
+                ds.append(t.lower())
+    ds = list(set(ds))
+    print('D:', ds[0:10])
+    return {"distractors": ds[0:10]}
 
 @app.route("/")
 def index():
