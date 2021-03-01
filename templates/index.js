@@ -25,6 +25,7 @@ function changeLevel(elem) {
 
 function userInput(e, tid) {
     console.log('userInput:', e);
+    console.log(tid);
 
     if(e.key == 'Enter') {
       checkInput(tid);
@@ -36,7 +37,7 @@ function buildTbox(current_text) {
     gap = electGap(current_text);
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
-            line += ' <input onkeypress="userInput(event,\'t' + i + '\'); id="t';
+            line += ' <input onKeyPress="userInput(event,\'t' + i + '\')"; id="t';
             line += i + '" data-focus="true" data-value="" style="border: thin dotted #000000;"';
             line += ' /> '
         } else {
@@ -131,9 +132,10 @@ function onReady() {
 
 function checkInput(tid) {
     console.log('checkInput() ' + tid);
-    span = document.getElementById(tid);
-
-    correct = span.getAttribute("data-value");
+    input = document.getElementById(tid);
+    console.log("input: ", input)
+    correct = input.getAttribute("data-value");
+    console.log(correct);
     guess = span.childNodes[0].textContent.replaceAll(/\s/g,'');
     guess = guess.trim();
 
