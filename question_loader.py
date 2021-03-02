@@ -79,6 +79,7 @@ def difficulty_function(question, word_frequency, most_common_word):
         word_frequency[word] / most_common_word[1]
         for word in question["tokenized"]
     ]
+    # if they speak fast, but use easy words
     if word_frequencies:
         return chars_sec * -min(word_frequencies)
     else:
