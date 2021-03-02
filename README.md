@@ -26,6 +26,16 @@ from 1 to 10 where 1 is the easiest and 10 is the hardest.
 
 The data comes from the Common Voice [dataset releases](http://commonvoice.mozilla.org/datasets).
 
+# Target audience
+
+This system is designed with two main user groups in mind:
+
+* People who want to learn a new language
+* People who want to learn how to write their native language
+
+The system endeavours to be audio first, with knowledge of writing built 
+up by hearing.
+
 # Deployment
 
 To bootstrap the project, `git clone` the repository, then run the following
