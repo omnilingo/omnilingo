@@ -345,7 +345,7 @@ function onReadyScramble() {
             if(chars[i] == " ") {
               tb += '<span style="color: white"> _ </span>';
             } else {
-              tb += '<span style="border: 1px solid black"> ? </span>';
+              tb += '<span style="border: 1px solid black" onDrop="onScramDrop(event)" onDragOver="onScramOver(event)"> ? </span>';
             } 
 
         } 
@@ -354,7 +354,7 @@ function onReadyScramble() {
         var arr1 = Array.from(set1);
         cb = "";
         for(var i = 0; i < arr1.length; i++) {
-            cb += '<span style="border: 1px solid black; background-color: grey" draggable="true">' + arr1[i] + '</span>';
+            cb += '<span class="clue" draggable="true">' + arr1[i] + '</span>';
             cb += '<span style="color: white"> _ </span>';
         }
         console.log(set1);
@@ -362,6 +362,18 @@ function onReadyScramble() {
         tbox.innerHTML = tb;
     };
     xhr.send();
+}
+
+function onScramOver(e) {
+//    console.log('onScramOver()');
+//    console.log(e);
+    event.preventDefault();
+}
+
+function onScramDrop(e) {
+    console.log('onScramDrop()');
+    let id = event.dataTransfer.getData('text');
+    console.log(e);
 }
 
 function onReadyChoice() {

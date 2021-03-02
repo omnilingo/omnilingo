@@ -20,8 +20,11 @@ position:relative;
     min-height: 100%; 
 }
 
-.clues {
+.clue {
 	font-size: 150%;
+	border: 1px solid black;
+	background-color: #fafafa;
+	padding: 5px;
 }
 
 .teksti {
