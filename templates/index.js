@@ -76,7 +76,10 @@ function userInputChoice(e, correct, tid) {
     console.log('userInputChoice:', e);
     console.log(tid);
     responses = localStorage.getItem('responses');
-        answer = document.getElementById(tid);
+    answer = document.getElementById(tid);
+    other = document.getElementById("d" + tid);
+    answer.removeAttribute("onClick");
+    other.removeAttribute("onClick");
     if(correct == 1) {
         console.log('CORRECT!');
         answer.setAttribute("style", "background-color: green");
@@ -84,6 +87,7 @@ function userInputChoice(e, correct, tid) {
     } else {
         console.log('INCORRECT!');
         answer.setAttribute("style", "background-color: red");
+        answer.removeAttribute("onClick");
         responses += "-";
     }
     localStorage.setItem('responses', responses);
