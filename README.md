@@ -11,6 +11,11 @@ to [Mozilla Common Voice](https://commonvoice.mozilla.org/) platform.
 The sentences are ranked according to difficulty, and you can choose a level
 from 1 to 10 where 1 is the easiest and 10 is the hardest.
 
+# Tasks
+
+* Fill in the blanks: A cloze-style task
+* Pick the right one: Get two options and choose the right one
+
 # Keys
 
 * `Tab`: Play the recording
