@@ -1,0 +1,35 @@
+.tokenHidden {
+
+	border-bottom: thin dotted #000000;
+}
+
+body {
+	width: 400px;
+	font-family: sans-serif;
+	background-color: grey;
+	margin: auto;
+}
+
+.content {
+	text-align: center;
+	background-color: white;
+	padding: 20px;
+	margin: 20px ;
+}
+
+.teksti {
+	font-size: 150%;
+}
+
+.feedback {
+	font-size: 125%;
+}
+
+
+.correct {
+	color: green;
+}
+
+.incorrect {
+	color: red;
+}
