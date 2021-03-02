@@ -102,6 +102,7 @@ function electGap(current_text) {
 function changeLanguage(elem) {
    console.log('changeLanguage: ' + elem.value);
    localStorage.setItem('currentLanguage', elem.value);
+   localStorage.setItem('responses', Array());
    location.reload(); 
 }
 
@@ -147,11 +148,11 @@ function userInput(e, tid) {
 function buildOptionTbox(current_text, gap, distractors) {
     line = '';
     console.log('buildOptionTbox()')
+    // FIXME: Caps at beginning of sentence
     ds = distractors[current_text[gap]];
     console.log(ds);
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
-            // Randomise the order here
             if(getRandomInt(0, 1) == 1) {
                 line += `{<span 
                                 onClick="userInputChoice(event, 1, \'t${i}'\)"

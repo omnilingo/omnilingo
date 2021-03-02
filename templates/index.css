@@ -8,6 +8,7 @@ body {
 	font-family: sans-serif;
 	background-color: grey;
 	margin: auto;
+position:relative;
 }
 
 .content {
@@ -15,6 +16,8 @@ body {
 	background-color: white;
 	padding: 20px;
 	margin: 20px ;
+    height: 100%; 
+    min-height: 100%; 
 }
 
 .teksti {
