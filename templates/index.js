@@ -21,23 +21,32 @@ function main() {
     if(!localStorage.getItem('currentLevel')) {
         localStorage.setItem('currentLevel', 1);
     }
+
+    if(!localStorage.getItem('currentLanguage')) {
+        localStorage.setItem('currentLanguage', 'fi');
+    }
+
     if(!localStorage.getItem('responses')) {
         localStorage.setItem('responses', Array());
     }
     responses = localStorage.getItem('responses');
     console.log('RESPONSES: ' + responses);
     current_level = localStorage.getItem('currentLevel');
+
     levels = document.getElementById('levels');
     for(var i = 0; i < 10; i++) {
         var level = document.createElement("option");
         var levelText = document.createTextNode(i+1);
-        if(i+ 1 == current_level) {
+        if(i+1 == current_level) {
             level.setAttribute("selected","");
         }
         level.setAttribute("value", i+1);
         level.appendChild(levelText);
         levels.appendChild(level);
     } 
+
+    getLanguages(); 
+
     drawFeedback();
     if(responses.length == 10) {
         localStorage.setItem('responses', Array());
@@ -46,6 +55,30 @@ function main() {
 
     head.ready(onReady);
 }
+
+function getLanguages() {
+    console.log('onReadyChoice()');
+    languageSelector = document.getElementById('languages');
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/get_languages');
+    xhr.onload = function() {
+        res = JSON.parse(xhr.responseText);
+        languages = res["languages"];
+        for(var i = 0; i < languages.length; i++) {
+            var language = document.createElement("option");
+            var languageText = document.createTextNode(languages[i]);
+            if(localStorage.getItem('currentLanguage') == languages[i]) {
+                language.setAttribute("selected","");
+            }
+            language.setAttribute("value", languages[i]);
+            language.appendChild(languageText);
+            languageSelector.appendChild(language);
+        } 
+    };
+    xhr.send();
+}
+
+
 
 function updateTask(task) {
     // Update the state of the two check boxes
@@ -65,6 +98,13 @@ function electGap(current_text) {
     // Do something better here for any punctuation
     return gapIndex;
 }
+
+function changeLanguage(elem) {
+   console.log('changeLanguage: ' + elem.value);
+   localStorage.setItem('currentLanguage', elem.value);
+   location.reload(); 
+}
+
 
 function changeLevel(elem) {
    console.log('changeLevel: ' + elem.value);
@@ -264,7 +304,8 @@ function onReadyChoice() {
     var player = document.getElementById('player');
     var source = document.getElementById('audioSource');
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/get_clips?nlevels=10&type=choice&level=' + current_level);
+    var current_language = localStorage.getItem('currentLanguage')
+    xhr.open('GET', '/get_clips?nlevels=10&type=choice&level=' + current_level + '&language=' + current_language);
     xhr.onload = function() {
         res = JSON.parse(xhr.responseText);
         current_question = res["questions"][0];
@@ -279,8 +320,6 @@ function onReadyChoice() {
         tbox.innerHTML = buildOptionTbox(current_text, gap, distractors);
     };
     xhr.send();
-
-
 }
 
 function onReadyBlank() {
@@ -304,7 +343,8 @@ function onReadyBlank() {
         tbox.innerHTML = buildTbox(current_text, gap);
 
     };
-    xhr.open('GET', '/get_clips?nlevels=10&type=blank&level=' + current_level);
+    current_language = localStorage.getItem('currentLanguage')
+    xhr.open('GET', '/get_clips?nlevels=10&type=blank&level=' + current_level + '&language=' + current_language);
     xhr.send();
 
 }

@@ -34,6 +34,7 @@ def get_clips():
     language = request.args.get("language", default="fi", type=str)
     tipus = request.args.get("type", default="blank", type=str)
     selected_questions = []
+    print(questions.keys())
     partition_size = len(questions[language]) // nlevels
     print("partition_size:", partition_size)
     print("slice:", partition_size * (level - 1), ":", partition_size * level)
@@ -61,7 +62,7 @@ def index():
 
 @app.route("/get_languages")
 def get_languages():
-    return list(languages)
+    return {"languages": list(languages)}
 
 
 @app.route("/static/<path:path>")
