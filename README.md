@@ -22,6 +22,10 @@ from 1 to 10 where 1 is the easiest and 10 is the hardest.
 * `Enter`: Submit and check if you got it right
 * `Space`: Next sentence
 
+# Data
+
+The data comes from the Common Voice [dataset releases](http://commonvoice.mozilla.org/datasets).
+
 # Deployment
 
 To bootstrap the project, `git clone` the repository, then run the following
