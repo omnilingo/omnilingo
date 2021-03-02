@@ -112,7 +112,9 @@ def load_all_languages_cached():
         with gzip.open("cache/languages.pickle.gz", "rb") as languages_f:
             languages = pickle.load(languages_f)
         questions = {}
-        for path in pathlib.Path("cache").glob("questions__*"):
+        question_files = list(pathlib.Path("cache").glob("questions__*"))
+        question_files = tqdm.tqdm(question_files)
+        for path in question_files:
             with gzip.open(path, "rb") as questions_f:
                 # extract whatever's between the __ and the extension
                 language = path.name.split("__")[1].split(".")[0]
