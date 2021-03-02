@@ -19,8 +19,11 @@ def get_clips():
     level = request.args.get("level", default=1, type=int)
     language = request.args.get("language", default="fi", type=str)
     tipus = request.args.get("type", default="blank", type=str)
+    sorting = request.args.get("sorting", default="difficulty", type=str)
     selected_questions = []
     print(questions.keys())
+    if sorting == "length":
+        questions[language].sort(key=lambda x: len(x["tokenized"]))
     partition_size = len(questions[language]) // nlevels
     print("partition_size:", partition_size)
     print("slice:", partition_size * (level - 1), ":", partition_size * level)

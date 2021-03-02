@@ -20,6 +20,10 @@ position:relative;
     min-height: 100%; 
 }
 
+.clues {
+	font-size: 150%;
+}
+
 .teksti {
 	font-size: 150%;
 }

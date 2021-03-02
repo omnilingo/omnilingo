@@ -10,6 +10,7 @@
 <body>
 <div class="content" id="content">
   <div style="float:right">
+    <input onClick="updateTask(this)" type="checkbox" id="enableScrams" name="enableScrams"><label for="enableScrams">Scramble</label>
     <input onClick="updateTask(this)" type="checkbox" id="enableBlanks" name="enableBlanks"><label for="enableBlanks">Blanks</label>
     <input onClick="updateTask(this)" type="checkbox" id="enableChoice" name="enableChoice"><label for="enableChoice">Choices</label>
   </div>
@@ -29,6 +30,8 @@
     <source id="audioSource" />
   </audio>
 <p/>
+  <div class="clues" id="clues">
+  </div>
   <div class="teksti" id="textbox">
   </div>
 <!--  <div id="slidecontainer">

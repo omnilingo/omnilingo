@@ -14,6 +14,12 @@ function main() {
         eb = document.getElementById('enableChoice');
         eb.setAttribute('checked', true);
     }
+    if(!localStorage.getItem('enableScrams')) {
+        localStorage.setItem('enableScrams', true);
+        eb = document.getElementById('enableScrams');
+        eb.setAttribute('checked', true);
+    }
+
 
     // This allows us to capture Enter, Tab, Space etc.
     window.onkeydown = globalKeyDown;
@@ -264,10 +270,11 @@ function drawFeedback() {
 
 function chooseTask(enabledTasks) {
     console.log(enabledTasks);
+    console.log(enabledTasks.length);
     if(enabledTasks.length == 1) {
         return enabledTasks[0];
     }
-    task = getRandomInt(0, enabledTasks.length);
+    task = getRandomInt(0, enabledTasks.length-1);
     return enabledTasks[task];
 }
 
@@ -286,6 +293,12 @@ function onReady() {
         console.log('2T? ' + localStorage.getItem('enableBlanks'))
         enabledTasks.push("blank");
     }
+    var et = localStorage.getItem('enableScrams')
+    if(et == "true") {
+        console.log('3T? ' + localStorage.getItem('enableScrams'))
+        enabledTasks.push("scramble");
+    }
+
 
     taskType = chooseTask(enabledTasks);
     console.log('TT: ' + taskType);
@@ -293,10 +306,62 @@ function onReady() {
         onReadyChoice();
     } else if(taskType == "blank") {
         onReadyBlank();
+    } else if(taskType == "scramble") {
+        onReadyScramble();
     } else {
         console.log("TASK: not implemented, assigning blank");
         onReadyBlank();
     }
+}
+
+function onReadyScramble() {
+    console.log('onReadyScramble()');
+
+    var questions = {};
+    var player = document.getElementById('player');
+    var source = document.getElementById('audioSource');
+    var xhr = new XMLHttpRequest();
+    var current_language = localStorage.getItem('currentLanguage')
+    xhr.open('GET', '/get_clips?nlevels=10&type=scramble&sorting=length&level=' + current_level + '&language=' + current_language);
+    xhr.onload = function() {
+        res = JSON.parse(xhr.responseText);
+        current_question = res["questions"][0];
+        current_audio = current_question["path"];
+        current_text = current_question["tokenized"];
+
+        source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
+        source.type = 'audio/mp3';
+        player.load();
+        tbox = document.getElementById('textbox');
+        chars = Array();
+        for(var i = 0; i < current_text.length; i++) {
+            for(var j = 0; j < current_text[i].length; j++) {
+              chars.push(current_text[i][j]);
+            }
+            chars.push(" ");
+        }
+        tb = "";
+        for(var i = 0; i < chars.length; i++) {
+            if(chars[i] == " ") {
+              tb += '<span style="color: white"> _ </span>';
+            } else {
+              tb += '<span style="border: 1px solid black"> ? </span>';
+            } 
+
+        } 
+        cbox = document.getElementById('clues');
+        var set1 = new Set(chars);
+        var arr1 = Array.from(set1);
+        cb = "";
+        for(var i = 0; i < arr1.length; i++) {
+            cb += '<span style="border: 1px solid black; background-color: grey" draggable="true">' + arr1[i] + '</span>';
+            cb += '<span style="color: white"> _ </span>';
+        }
+        console.log(set1);
+        cbox.innerHTML = cb;
+        tbox.innerHTML = tb;
+    };
+    xhr.send();
 }
 
 function onReadyChoice() {
