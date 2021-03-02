@@ -91,7 +91,8 @@ function userInputChoice(e, correct, tid) {
         responses += "-";
     }
     localStorage.setItem('responses', responses);
-    // Check and colour here
+    clearFeedback();
+    drawFeedback();
 }
 
 function userInput(e, tid) {
@@ -251,7 +252,8 @@ function onReady() {
     } else if(taskType == "blank") {
         onReadyBlank();
     } else {
-        console.log("TASK: not implemented");
+        console.log("TASK: not implemented, assigning blank");
+        onReadyBlank();
     }
 }
 
