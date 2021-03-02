@@ -352,8 +352,12 @@ function onReadyScramble() {
         cbox = document.getElementById('clues');
         var set1 = new Set(chars);
         var arr1 = Array.from(set1);
+        arr1 = shuffleArray(arr1);
         cb = "";
         for(var i = 0; i < arr1.length; i++) {
+            if(arr1[i] == " ") {
+                continue;
+            }
             cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i] + '</span>';
             cb += '<span style="color: white"> _ </span>';
         }
@@ -362,6 +366,21 @@ function onReadyScramble() {
         tbox.innerHTML = tb;
     };
     xhr.send();
+}
+
+function shuffleArray(array) {
+   let curId = array.length;
+   // There remain elements to shuffle
+   while (0 !== curId) {
+      // Pick a remaining element
+      let randId = Math.floor(Math.random() * curId);
+      curId -= 1;
+      // Swap it with the current element.
+      let tmp = array[curId];
+      array[curId] = array[randId];
+      array[randId] = tmp;
+   }
+   return array;
 }
 
 function onScramOver(e) {
