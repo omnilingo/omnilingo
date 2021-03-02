@@ -354,7 +354,7 @@ function onReadyScramble() {
         var arr1 = Array.from(set1);
         cb = "";
         for(var i = 0; i < arr1.length; i++) {
-            cb += '<span class="clue" draggable="true">' + arr1[i] + '</span>';
+            cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i] + '</span>';
             cb += '<span style="color: white"> _ </span>';
         }
         console.log(set1);
@@ -367,13 +367,24 @@ function onReadyScramble() {
 function onScramOver(e) {
 //    console.log('onScramOver()');
 //    console.log(e);
-    event.preventDefault();
+    e.preventDefault();
+}
+
+function onScramStart(e) {
+    console.log('onScramStart()');
+    e.dataTransfer.setData('value', e.currentTarget.dataset.value);
+   e.currentTarget.style.backgroundColor = 'yellow';
+    console.log(e);
+}
+
+function onScramEnd(e) {
+  e.currentTarget.style.backgroundColor = 'teal';
 }
 
 function onScramDrop(e) {
     console.log('onScramDrop()');
-    let id = event.dataTransfer.getData('text');
-    console.log(e);
+    let val = e.dataTransfer.getData('value');
+    console.log(val);
 }
 
 function onReadyChoice() {
