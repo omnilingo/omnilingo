@@ -118,18 +118,18 @@ function userInputChoice(e, correct, tid) {
     responses = localStorage.getItem('responses');
     answer = document.getElementById(tid);
     other = document.getElementById("d" + tid);
-    answer.removeAttribute("onClick");
-    other.removeAttribute("onClick");
     if(correct == 1) {
         console.log('CORRECT!');
-        answer.setAttribute("style", "background-color: green");
+        answer.setAttribute("class", "correct");
         responses += "+";
     } else {
         console.log('INCORRECT!');
-        answer.setAttribute("style", "background-color: red");
-        answer.removeAttribute("onClick");
+        answer.setAttribute("class", "incorrect");
+        other.setAttribute("class", "correct");
         responses += "-";
     }
+    answer.removeAttribute("onClick");
+    other.removeAttribute("onClick");
     localStorage.setItem('responses', responses);
     clearFeedback();
     drawFeedback();
@@ -371,7 +371,7 @@ function checkInput(tid) {
     console.log(responses);
     if (guess.toLowerCase() == correct.toLowerCase()) {
         var answer = document.createElement("span");
-        answer.setAttribute("style", "color: green");
+        answer.setAttribute("class", "correct");
         var answerTextNode = document.createTextNode(correct + " ");
         answer.appendChild(answerTextNode);
         input.parentNode.insertBefore(answer, input.nextSibling);
