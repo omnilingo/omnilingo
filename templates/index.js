@@ -345,7 +345,7 @@ function onReadyScramble() {
             if(chars[i] == " ") {
               tb += '<span style="color: white"> _ </span>';
             } else {
-              tb += '<span id="dz'+i+'" style="border: 1px solid black" onDrop="onScramDrop(event,\'dz'+i+'\')" onDragOver="onScramOver(event)" data-target="'+chars[i]+'"> ? </span>';
+              tb += '<span id="dz'+i+'" style="padding: 2px; text-align:center; border: 2px solid black" onDrop="onScramDrop(event,\'dz'+i+'\')" onDragOver="onScramOver(event)" data-target="'+chars[i]+'"> ? </span>';
             } 
 
         } 

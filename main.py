@@ -23,7 +23,8 @@ def get_clips():
     selected_questions = []
     print(questions.keys())
     if sorting == "length":
-        questions[language].sort(key=lambda x: len(x["tokenized"]))
+        questions[language].sort(key=lambda x: len(x["sentence"]))
+    print(questions[language][0:5])
     partition_size = len(questions[language]) // nlevels
     print("partition_size:", partition_size)
     print("slice:", partition_size * (level - 1), ":", partition_size * level)

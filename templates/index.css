@@ -4,7 +4,7 @@
 }
 
 body {
-	width: 400px;
+	width: 500px;
 	font-family: sans-serif;
 	background-color: grey;
 	margin: auto;
@@ -21,10 +21,13 @@ position:relative;
 }
 
 .clue {
-	font-size: 150%;
+	font-size: 175%;
 	border: 1px solid black;
 	background-color: #bababa;
 	padding: 5px;
+  border-radius: 5px;
+  font-family: monospace;
+box-shadow: 10px 5px 5px #dcdcdc;
 }
 
 .teksti {
