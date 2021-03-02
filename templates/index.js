@@ -345,7 +345,7 @@ function onReadyScramble() {
             if(chars[i] == " ") {
               tb += '<span style="color: white"> _ </span>';
             } else {
-              tb += '<span style="border: 1px solid black" onDrop="onScramDrop(event)" onDragOver="onScramOver(event)"> ? </span>';
+              tb += '<span id="dz'+i+'" style="border: 1px solid black" onDrop="onScramDrop(event,\'dz'+i+'\')" onDragOver="onScramOver(event)" data-target="'+chars[i]+'"> ? </span>';
             } 
 
         } 
@@ -378,13 +378,26 @@ function onScramStart(e) {
 }
 
 function onScramEnd(e) {
-  e.currentTarget.style.backgroundColor = 'teal';
+  e.currentTarget.style.backgroundColor = '#bababa';
 }
 
-function onScramDrop(e) {
+function onScramDrop(e, tid) {
     console.log('onScramDrop()');
+    console.log('tid:' + tid);
     let val = e.dataTransfer.getData('value');
-    console.log(val);
+    dz = document.getElementById(tid);
+    let trg = dz.getAttribute('data-target');
+    console.log('dz:' + dz);
+    console.log('value:' + val);
+    console.log('target:' + trg);
+
+    if(val == trg) {
+        console.log('CORRECT!');
+        dz.innerHTML = val;
+        dz.setAttribute('class', 'correct');
+    } else {
+        console.log('INCORRECT!');
+    }
 }
 
 function onReadyChoice() {
