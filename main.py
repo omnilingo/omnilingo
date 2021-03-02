@@ -13,20 +13,6 @@ app = Flask(__name__, static_url_path="")
 def select_clip(questions):
     return random.choice(questions)
 
-def get_distractors(questions, word, count):
-    # Fill in here
-    ds = set()
-    for q in questions:
-        for t in q['tokenized']:
-                if len(t) == len(word):
-                    ds.add(t.lower())
-        if len(ds) >= count:
-            print('D:',word, list(ds)[:count])
-            return list(ds)[:count] 
-
-    print('D:', word, list(ds)[:count])
-    return list(ds)[:count]
-
 @app.route("/get_clips")
 def get_clips():
     nlevels = request.args.get("nlevels", default=10, type=int)
@@ -48,7 +34,7 @@ def get_clips():
             selected_questions.append(selected_question)
         if tipus == "choice":
             for tok in selected_question["tokenized"]:
-                ds[tok] = get_distractors(questions[language], tok, 10)
+                ds[tok] = [i[1] for i in selected_question["distractors"][tok]][1:]
         
     if tipus == "choice":
         return {"questions": selected_questions, "distractors": ds}

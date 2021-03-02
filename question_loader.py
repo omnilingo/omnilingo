@@ -13,6 +13,7 @@ import os
 import tqdm
 import jieba
 from mutagen.mp3 import MP3
+from distractors import get_distractors
 
 PREFIX = "templates/cv-corpus-6.1-2020-12-11/"
 
@@ -40,6 +41,7 @@ def process_question(question, word_frequency):
 def load_questions(language_name):
     questions = []
     word_frequency = collections.Counter()
+    distractors = {}
     with open(PREFIX + language_name + "/validated.tsv") as f:
         r = csv.reader(f, delimiter="\t")
         h = next(r)
@@ -53,7 +55,21 @@ def load_questions(language_name):
             )
             question = process_question(question, word_frequency)
             questions.append(question)
+        
         sys.stderr.write("Done loading.\n")
+
+    # FIXME: This is really slow...
+    sys.stderr.write("Generating distractors.\n")
+    distractors = get_distractors(word_frequency)
+    
+    sys.stderr.write("Assigning distractors.\n")
+    for question in questions:
+        question["distractors"] = {}
+        for token in question["tokenized"]:
+            question["distractors"][token] = distractors[token]
+
+    sys.stderr.write("Done.\n")
+
     return language_name, questions, word_frequency
 
 

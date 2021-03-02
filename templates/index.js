@@ -254,13 +254,11 @@ function drawFeedback() {
         }
         feedback.appendChild(span);
         padding = document.createElement('span');
+        padding.setAttribute('style', 'width: 20px');
         t = document.createTextNode(' ');
         padding.appendChild(t);
         feedback.appendChild(padding);
     }
-        t = document.createTextNode(' ');
-        padding.appendChild(t);
-        feedback.appendChild(padding);
 }
 
 function chooseTask(enabledTasks) {
