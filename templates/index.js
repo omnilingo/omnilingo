@@ -258,6 +258,9 @@ function drawFeedback() {
         padding.appendChild(t);
         feedback.appendChild(padding);
     }
+        t = document.createTextNode(' ');
+        padding.appendChild(t);
+        feedback.appendChild(padding);
 }
 
 function chooseTask(enabledTasks) {

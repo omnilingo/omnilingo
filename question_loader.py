@@ -20,6 +20,9 @@ PREFIX = "templates/cv-corpus-6.1-2020-12-11/"
 def tokenize_sentence(question):
     if question["locale"].startswith("zh-"):
         return jieba.lcut(question["sentence"])
+    elif question["locale"].startswith("tr"):
+        res = [ x.replace("ʼ", "'") for x in re.split("(\\w+)", question["sentence"].replace("'", "ʼ")) if x.strip() ]
+        return res 
     else:
         return [
             x for x in re.split("(\\w+)", question["sentence"]) if x.strip()
