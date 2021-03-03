@@ -421,11 +421,11 @@ function onScramDrop(e, tid) {
         target_tokens = Array();
         target_ids = Array();
 
-        current_token = "";
-        target_token = "";
-        target_id = Array();
+        current_token = ""; // The token as it currently is
+        target_token = ""; // The correct token
+        target_id = Array(); // A list of span IDs that correspond to tokens, e.g. [[0,1], [2,3,4,5], [6,7]]
         for(var i = 0; i < tbox.children.length; i++) {
-
+            // If we hit a word boundary
             if(tbox.children[i].getAttribute('data-target') == null) { 
                 target_tokens.push(target_token);
                 current_tokens.push(current_token);
@@ -435,6 +435,7 @@ function onScramDrop(e, tid) {
                 target_id = Array();
                 continue;
             }       
+            // Build up the tokens
             target_token += tbox.children[i].getAttribute('data-target');
             target_id.push(tbox.children[i].getAttribute('id'));
             current_token += tbox.children[i].textContent;
@@ -443,20 +444,25 @@ function onScramDrop(e, tid) {
         console.log(target_tokens);
         console.log(target_ids);
         console.log(current_tokens);
-        var ncorrect = 0;
+        var ncorrect = 0; // Number of tokens found as being correct
         for(var i = 0; i < target_tokens.length; i++) {
+            // If the token matches
             if(target_tokens[i] == current_tokens[i]) {
                 ncorrect += 1;
                 for(var j = 1; j < target_ids[i].length; j++) {
                     toDelete = document.getElementById(target_ids[i][j]);
                     tbox.removeChild(toDelete);
+                    //toDelete.setAttribute('style', 'display:none');
                 }
+                // Put a fancy green box around it
                 wbox = document.getElementById(target_ids[i][0]);
                 wbox.setAttribute("style", "border-radius: 5px; border: 2px solid green; padding: 5px;");
                 wbox.setAttribute("class", "correct");
                 wbox.innerHTML = target_tokens[i];
             }
         }
+        // FIXME: Currently because we delete the nodes, the target tokens are never rebuilt
+        // after they are correct, so we can't calculate ncorrect properly.
         console.log('XX: ' + ncorrect + ' || ' + target_tokens.length);
         if(ncorrect == target_tokens.length) {
             responses = localStorage.getItem('responses');
