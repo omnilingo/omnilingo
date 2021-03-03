@@ -15,6 +15,7 @@ from 1 to 10 where 1 is the easiest and 10 is the hardest.
 
 * Fill in the blanks: A cloze-style task
 * Pick the right one: Get two options and choose the right one
+* Drag and drop: Get a set of tiles and drag them to build a sentence
 
 # Keys
 

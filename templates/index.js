@@ -386,6 +386,7 @@ function shuffleArray(array) {
 function onScramOver(e) {
 //    console.log('onScramOver()');
 //    console.log(e);
+//   e.currentTarget.style.backgroundColor = 'red';
     e.preventDefault();
 }
 
@@ -398,6 +399,7 @@ function onScramStart(e) {
 
 function onScramEnd(e) {
   e.currentTarget.style.backgroundColor = '#bababa';
+//   e.currentTarget.style.backgroundColor = 'white';
 }
 
 function onScramDrop(e, tid) {
