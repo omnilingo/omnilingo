@@ -414,6 +414,57 @@ function onScramDrop(e, tid) {
         console.log('CORRECT!');
         dz.innerHTML = val;
         dz.setAttribute('class', 'correct');
+        // Check if the word is complete here 
+        tbox = document.getElementById('textbox');
+
+        current_tokens = Array();
+        target_tokens = Array();
+        target_ids = Array();
+
+        current_token = "";
+        target_token = "";
+        target_id = Array();
+        for(var i = 0; i < tbox.children.length; i++) {
+
+            if(tbox.children[i].getAttribute('data-target') == null) { 
+                target_tokens.push(target_token);
+                current_tokens.push(current_token);
+                target_ids.push(target_id);
+                target_token = "";
+                current_token = "";
+                target_id = Array();
+                continue;
+            }       
+            target_token += tbox.children[i].getAttribute('data-target');
+            target_id.push(tbox.children[i].getAttribute('id'));
+            current_token += tbox.children[i].textContent;
+            console.log('#' + i + ': ' + tbox.children[i].textContent + ' // ' + tbox.children[i].getAttribute('data-target'));
+        }
+        console.log(target_tokens);
+        console.log(target_ids);
+        console.log(current_tokens);
+        var ncorrect = 0;
+        for(var i = 0; i < target_tokens.length; i++) {
+            if(target_tokens[i] == current_tokens[i]) {
+                ncorrect += 1;
+                for(var j = 1; j < target_ids[i].length; j++) {
+                    toDelete = document.getElementById(target_ids[i][j]);
+                    tbox.removeChild(toDelete);
+                }
+                wbox = document.getElementById(target_ids[i][0]);
+                wbox.setAttribute("style", "border-radius: 5px; border: 2px solid green; padding: 5px;");
+                wbox.setAttribute("class", "correct");
+                wbox.innerHTML = target_tokens[i];
+            }
+        }
+        console.log('XX: ' + ncorrect + ' || ' + target_tokens.length);
+        if(ncorrect == target_tokens.length) {
+            responses = localStorage.getItem('responses');
+            responses += "+"; 
+            localStorage.setItem('responses', responses);
+            clearFeedback();
+            drawFeedback();
+        }
     } else {
         console.log('INCORRECT!');
     }
