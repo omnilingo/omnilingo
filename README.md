@@ -1,6 +1,8 @@
-# commonvoice-languagelearning
+# OmniLingo
 
 ![Project in action](doc/demo.gif) 
+
+# What is this?
 
 The goal of the project is to help you practice listening comprehension.
 
