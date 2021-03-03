@@ -202,7 +202,7 @@ function buildTbox(current_text, gap) {
                             onKeyPress="userInput(event, \'t${i}'\)"
                             id="t${i}"
                             data-focus="true"
-                            style="border: thin dotted #000; width: ${current_text[i].length}ch"
+                            style="font-size: 110%; border: thin dotted #000; width: ${current_text[i].length}ch"
                             data-value="${current_text[i]}"/> `
         } else {
             line += current_text[i] + ' '
