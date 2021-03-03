@@ -1,4 +1,4 @@
-# commonvoice-languagelearning
+# OmniLingo
 
 ![Project in action](doc/demo.gif) 
 
@@ -10,6 +10,9 @@ to [Mozilla Common Voice](https://commonvoice.mozilla.org/) platform.
 
 The sentences are ranked according to difficulty, and you can choose a level
 from 1 to 10 where 1 is the easiest and 10 is the hardest.
+
+The project aims to not require any knowledge of a meta language in order to start
+learning. 
 
 # Tasks
 
@@ -39,17 +42,17 @@ up by hearing.
 
 # Deployment
 
-To bootstrap the project, `git clone` the repository, then run the following
+To bootstrap the project for Finnish, `git clone` the repository, then run the following
 commands:
 
 ```bash
 cd templates && wget --no-check-certificate http://cl.indiana.edu/\~ftyers/cv/cv-corpus-6.1-2020-12-11.tar.gz -O- | tar zxf - && cd ..
 pip install -r requirements.txt
-./main.py fi
+./main.py
 ```
 
-With the above code it only works with Finnish language, but you can replace
-`fi` with any language code you download from [Common Voice](https://commonvoice.mozilla.org/datasets)
+To add more languages, download a dataset from [Common Voice](https://commonvoice.mozilla.org/datasets) and 
+put it in `templates/cv-corpus-6.1-2020-12-11`.
 
 The project should be accessible through http://localhost:5001/
 
