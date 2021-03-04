@@ -28,7 +28,7 @@ def tokenize_sentence(question):
         return [
             x for x in re.split(" ", question["sentence"]) if x.strip()
         ]
-    elif question["locale"].startswith("tr") or question["locale"].startswith("cy"):
+    elif question["locale"] in ["tr", "br", "cy"]:  # Languages where there are apostrophes as part of words
         res = [ x.replace("ʼ", "'") for x in re.split("(\\w+)", question["sentence"].replace("'", "ʼ")) if x.strip() ]
         return res 
     else:
