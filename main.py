@@ -19,17 +19,26 @@ def get_clips():
     level = request.args.get("level", default=1, type=int)
     language = request.args.get("language", default="fi", type=str)
     tipus = request.args.get("type", default="blank", type=str)
+    sorting = request.args.get("sorting", default="difficulty", type=str)
     selected_questions = []
     print(questions.keys())
-    partition_size = len(questions[language]) // nlevels
-    print("partition_size:", partition_size)
-    print("slice:", partition_size * (level - 1), ":", partition_size * level)
-    partition = questions[language][
+    sorting_scheme = []
+    if sorting == "length":
+        sorting_scheme = sorting_schemes[language]['length']
+    else:
+        sorting_scheme = sorting_schemes[language]['default']
+    print("[first_n]", sorting_scheme[0:9])
+    partition_size = len(sorting_scheme) // nlevels
+    print("[partition_size]", partition_size)
+    print("[slice]", partition_size * (level - 1), ":", partition_size * level)
+    partition = sorting_scheme[
         partition_size * (level - 1) : partition_size * level
     ]
     ds = {}
     while len(selected_questions) < 3:
-        selected_question = select_clip(partition)
+        clip = select_clip(partition)
+        selected_question = questions[language][clip[0]]
+        print('[selected_question]', clip, '||',  selected_question)
         if selected_question not in selected_questions:
             selected_questions.append(selected_question)
         if tipus == "choice":
@@ -58,5 +67,5 @@ def serve_static(path):
 
 if __name__ == "__main__":
 
-    languages, questions = question_loader.load_all_languages_cached()
+    languages, questions, sorting_schemes = question_loader.load_all_languages_cached()
     app.run(port=int(os.environ.get("FLASK_PORT", "5001")), host="0.0.0.0")
