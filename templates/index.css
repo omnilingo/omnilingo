@@ -46,3 +46,21 @@ box-shadow: 10px 5px 5px #dcdcdc;
 .incorrect {
 	color: red;
 }
+
+.cb{
+	border: 1.5px solid black;
+	padding: 5px;
+  border-radius: 5px;
+  font-family: monospace;
+/*box-shadow: 10px 5px 5px #dcdcdc;*/
+}
+
+.thumb{
+	border: 1.5px solid black;
+	padding: 5px;
+  border-radius: 5px;
+  font-family: monospace;
+/*box-shadow: 10px 5px 5px #dcdcdc;*/
+}
+
+
