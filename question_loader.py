@@ -31,6 +31,9 @@ def tokenize_sentence(question):
     elif question["locale"] in ["tr", "br", "cy"]:  # Languages where there are apostrophes as part of words
         res = [ x.replace("ʼ", "'") for x in re.split("(\\w+)", question["sentence"].replace("'", "ʼ")) if x.strip() ]
         return res 
+    elif question["locale"] in ["kab"]:  # Languages where there are hyphens as part of words
+        res = [ x.replace("ʼ", "-") for x in re.split("(\\w+)", question["sentence"].replace("-", "ʼ")) if x.strip() ]
+        return res 
     else:
         return [
             x for x in re.split("(\\w+)", question["sentence"]) if x.strip()
