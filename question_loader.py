@@ -12,6 +12,7 @@ import os
 
 import tqdm
 import jieba
+import thai_segmenter
 from mutagen.mp3 import MP3
 from distractors import get_distractors
 
@@ -21,6 +22,8 @@ PREFIX = "templates/cv-corpus-6.1-2020-12-11/"
 def tokenize_sentence(question):
     if question["locale"].startswith("zh-"):
         return jieba.lcut(question["sentence"])
+    elif question["locale"].startswith("th"):
+        return thai_segmenter.tokenize(question["sentence"])
     elif question["locale"].startswith("tr"):
         res = [ x.replace("ʼ", "'") for x in re.split("(\\w+)", question["sentence"].replace("'", "ʼ")) if x.strip() ]
         return res 

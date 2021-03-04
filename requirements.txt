@@ -3,3 +3,4 @@ tqdm
 jieba
 mutagen
 levenshtein
+thai-segmenter
