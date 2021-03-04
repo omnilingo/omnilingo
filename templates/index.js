@@ -14,6 +14,12 @@ function main() {
         eb = document.getElementById('enableChoice');
         eb.setAttribute('checked', true);
     }
+    if(!localStorage.getItem('enableScrams')) {
+        localStorage.setItem('enableScrams', true);
+        eb = document.getElementById('enableScrams');
+        eb.setAttribute('checked', true);
+    }
+
 
     // This allows us to capture Enter, Tab, Space etc.
     window.onkeydown = globalKeyDown;
@@ -196,7 +202,7 @@ function buildTbox(current_text, gap) {
                             onKeyPress="userInput(event, \'t${i}'\)"
                             id="t${i}"
                             data-focus="true"
-                            style="border: thin dotted #000; width: ${current_text[i].length}ch"
+                            style="font-size: 110%; border: thin dotted #000; width: ${current_text[i].length}ch"
                             data-value="${current_text[i]}"/> `
         } else {
             line += current_text[i] + ' '
@@ -264,10 +270,11 @@ function drawFeedback() {
 
 function chooseTask(enabledTasks) {
     console.log(enabledTasks);
+    console.log(enabledTasks.length);
     if(enabledTasks.length == 1) {
         return enabledTasks[0];
     }
-    task = getRandomInt(0, enabledTasks.length);
+    task = getRandomInt(0, enabledTasks.length-1);
     return enabledTasks[task];
 }
 
@@ -286,6 +293,12 @@ function onReady() {
         console.log('2T? ' + localStorage.getItem('enableBlanks'))
         enabledTasks.push("blank");
     }
+    var et = localStorage.getItem('enableScrams')
+    if(et == "true") {
+        console.log('3T? ' + localStorage.getItem('enableScrams'))
+        enabledTasks.push("scramble");
+    }
+
 
     taskType = chooseTask(enabledTasks);
     console.log('TT: ' + taskType);
@@ -293,9 +306,175 @@ function onReady() {
         onReadyChoice();
     } else if(taskType == "blank") {
         onReadyBlank();
+    } else if(taskType == "scramble") {
+        onReadyScramble();
     } else {
         console.log("TASK: not implemented, assigning blank");
         onReadyBlank();
+    }
+}
+
+function onReadyScramble() {
+    console.log('onReadyScramble()');
+
+    var questions = {};
+    var player = document.getElementById('player');
+    var source = document.getElementById('audioSource');
+    var xhr = new XMLHttpRequest();
+    var current_language = localStorage.getItem('currentLanguage')
+    xhr.open('GET', '/get_clips?nlevels=10&type=scramble&sorting=length&level=' + current_level + '&language=' + current_language);
+    xhr.onload = function() {
+        res = JSON.parse(xhr.responseText);
+        current_question = res["questions"][0];
+        current_audio = current_question["path"];
+        current_text = current_question["tokenized"];
+
+        source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
+        source.type = 'audio/mp3';
+        player.load();
+        tbox = document.getElementById('textbox');
+        chars = Array();
+        for(var i = 0; i < current_text.length; i++) {
+            for(var j = 0; j < current_text[i].length; j++) {
+              chars.push(current_text[i][j]);
+            }
+            chars.push(" ");
+        }
+        tb = "";
+        for(var i = 0; i < chars.length; i++) {
+            if(chars[i] == " ") {
+              tb += '<span style="color: white"> _ </span>';
+            } else {
+              tb += '<span id="dz'+i+'" style="padding: 2px; text-align:center; border: 2px solid black" onDrop="onScramDrop(event,\'dz'+i+'\')" onDragOver="onScramOver(event)" data-target="'+chars[i]+'"> ? </span>';
+            } 
+
+        } 
+        cbox = document.getElementById('clues');
+        var set1 = new Set(chars);
+        var arr1 = Array.from(set1);
+        arr1 = shuffleArray(arr1);
+        cb = "";
+        for(var i = 0; i < arr1.length; i++) {
+            if(arr1[i] == " ") {
+                continue;
+            }
+            cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i] + '</span>';
+            cb += '<span style="color: white"> _ </span>';
+        }
+        console.log(set1);
+        cbox.innerHTML = cb;
+        tbox.innerHTML = tb;
+    };
+    xhr.send();
+}
+
+function shuffleArray(array) {
+   let curId = array.length;
+   // There remain elements to shuffle
+   while (0 !== curId) {
+      // Pick a remaining element
+      let randId = Math.floor(Math.random() * curId);
+      curId -= 1;
+      // Swap it with the current element.
+      let tmp = array[curId];
+      array[curId] = array[randId];
+      array[randId] = tmp;
+   }
+   return array;
+}
+
+function onScramOver(e) {
+//    console.log('onScramOver()');
+//    console.log(e);
+//   e.currentTarget.style.backgroundColor = 'red';
+    e.preventDefault();
+}
+
+function onScramStart(e) {
+    console.log('onScramStart()');
+    e.dataTransfer.setData('value', e.currentTarget.dataset.value);
+   e.currentTarget.style.backgroundColor = 'yellow';
+    console.log(e);
+}
+
+function onScramEnd(e) {
+  e.currentTarget.style.backgroundColor = '#bababa';
+//   e.currentTarget.style.backgroundColor = 'white';
+}
+
+function onScramDrop(e, tid) {
+    console.log('onScramDrop()');
+    console.log('tid:' + tid);
+    let val = e.dataTransfer.getData('value');
+    dz = document.getElementById(tid);
+    let trg = dz.getAttribute('data-target');
+    console.log('dz:' + dz);
+    console.log('value:' + val);
+    console.log('target:' + trg);
+
+    if(val == trg) {
+        console.log('CORRECT!');
+        dz.innerHTML = val;
+        dz.setAttribute('class', 'correct');
+        // Check if the word is complete here 
+        tbox = document.getElementById('textbox');
+
+        current_tokens = Array();
+        target_tokens = Array();
+        target_ids = Array();
+
+        current_token = ""; // The token as it currently is
+        target_token = ""; // The correct token
+        target_id = Array(); // A list of span IDs that correspond to tokens, e.g. [[0,1], [2,3,4,5], [6,7]]
+        for(var i = 0; i < tbox.children.length; i++) {
+            // If we hit a word boundary
+            if(tbox.children[i].getAttribute('data-target') == null) { 
+                target_tokens.push(target_token);
+                current_tokens.push(current_token);
+                target_ids.push(target_id);
+                target_token = "";
+                current_token = "";
+                target_id = Array();
+                continue;
+            }       
+            // Build up the tokens
+            target_token += tbox.children[i].getAttribute('data-target');
+            target_id.push(tbox.children[i].getAttribute('id'));
+            current_token += tbox.children[i].textContent;
+            console.log('#' + i + ': ' + tbox.children[i].textContent + ' // ' + tbox.children[i].getAttribute('data-target'));
+        }
+        console.log(target_tokens);
+        console.log(target_ids);
+        console.log(current_tokens);
+        var ncorrect = 0; // Number of tokens found as being correct
+        for(var i = 0; i < target_tokens.length; i++) {
+            // If the token matches
+            if(target_tokens[i] == current_tokens[i]) {
+                ncorrect += 1;
+                for(var j = 1; j < target_ids[i].length; j++) {
+                    toDelete = document.getElementById(target_ids[i][j]);
+                    tbox.removeChild(toDelete);
+                    //toDelete.setAttribute('style', 'display:none');
+                }
+                // Put a fancy green box around it
+                wbox = document.getElementById(target_ids[i][0]);
+                wbox.setAttribute("style", "border-radius: 5px; border: 2px solid green; padding: 5px;");
+                wbox.setAttribute("class", "correct");
+                wbox.innerHTML = target_tokens[i];
+            }
+        }
+        // FIXME: Currently because we delete the nodes, the target tokens are never rebuilt
+        // after they are correct, so we can't calculate ncorrect properly.
+        console.log('XX: ' + ncorrect + ' || ' + target_tokens.length);
+        if(ncorrect == target_tokens.length) {
+            responses = localStorage.getItem('responses');
+            responses += "+"; 
+            localStorage.setItem('responses', responses);
+            clearFeedback();
+            drawFeedback();
+        }
+    } else {
+        console.log('INCORRECT!');
     }
 }
 

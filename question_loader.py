@@ -21,6 +21,10 @@ PREFIX = "templates/cv-corpus-6.1-2020-12-11/"
 def tokenize_sentence(question):
     if question["locale"].startswith("zh-"):
         return jieba.lcut(question["sentence"])
+    elif question["locale"].startswith("hi"):
+        return [
+            x for x in re.split(" ", question["sentence"]) if x.strip()
+        ]
     elif question["locale"].startswith("tr"):
         res = [ x.replace("ʼ", "'") for x in re.split("(\\w+)", question["sentence"].replace("'", "ʼ")) if x.strip() ]
         return res 
@@ -58,6 +62,16 @@ def load_questions(language_name):
         
         sys.stderr.write("Done loading.\n")
 
+    # These are the various sorting schemes that could be used
+    sorting_schemes = {}
+    sorting_schemes['default'] = [(i, i) for i in range(0, len(questions))]
+    sorting_schemes['length'] = [(i, len(j["sentence"])) for (i, j) in enumerate(questions)]
+    sorting_schemes['length'].sort(key=lambda x: x[1])
+
+    print('[sorting_schemes]')
+    print('default:', sorting_schemes['default'][0:10])
+    print('length', sorting_schemes['length'][0:10])
+
     # FIXME: This is really slow...
     sys.stderr.write("Generating distractors.\n")
     distractors = get_distractors(word_frequency)
@@ -70,7 +84,7 @@ def load_questions(language_name):
 
     sys.stderr.write("Done.\n")
 
-    return language_name, questions, word_frequency
+    return language_name, questions, word_frequency, sorting_schemes
 
 
 def difficulty_function(question, word_frequency, most_common_word):
@@ -93,27 +107,29 @@ def load_all_languages(languages=None):
     word_frequency = collections.defaultdict(lambda: dict)
     most_common_word = collections.defaultdict(lambda: dict)
     questions = collections.defaultdict(lambda: dict)
+    sorting_schemes = collections.defaultdict(lambda: dict)
     if languages is None:
         languages = [
             language.name for language in pathlib.Path(PREFIX).glob("*")
         ]
     with multiprocessing.Pool(4) as p:
-        for lng, lng_questions, lng_word_frequency in p.map(
+        for lng, lng_questions, lng_word_frequency, lng_sorting in p.map(
             load_questions, languages
         ):
             questions[lng] = lng_questions
+            sorting_schemes[lng] = lng_sorting
             word_frequency[lng] = lng_word_frequency
             most_common_word[lng] = word_frequency[lng].most_common(1)[0]
-            questions[lng].sort(
-                key=lambda question: difficulty_function(
-                    question, word_frequency[lng], most_common_word[lng]
-                )
-            )
-    return languages, dict(questions)
+#            questions[lng].sort(
+#                key=lambda question: difficulty_function(
+#                    question, word_frequency[lng], most_common_word[lng]
+#                )
+#            )
+    return languages, dict(questions), sorting_schemes
 
 
 def regenerate_cache():
-    languages, questions = load_all_languages()
+    languages, questions, sorting_schemes = load_all_languages()
     with gzip.open("cache/languages.pickle.gz", "wb") as languages_f:
 
         pickle.dump(languages, languages_f)
@@ -122,8 +138,9 @@ def regenerate_cache():
             f"cache/questions__{language}.pickle.gz", "wb"
         ) as questions_f:
             sys.stderr.write("Saving the models...\n")
-            pickle.dump(questions[language], questions_f)
-    return languages, questions
+            pickle.dump((questions[language], sorting_schemes[language]), questions_f)
+
+    return languages, questions, sorting_schemes
 
 
 def load_all_languages_cached():
@@ -132,20 +149,21 @@ def load_all_languages_cached():
         with gzip.open("cache/languages.pickle.gz", "rb") as languages_f:
             languages = pickle.load(languages_f)
         questions = {}
+        sorting_schemes = {}
         question_files = list(pathlib.Path("cache").glob("questions__*"))
         question_files = tqdm.tqdm(question_files)
         for path in question_files:
             with gzip.open(path, "rb") as questions_f:
                 # extract whatever's between the __ and the extension
                 language = path.name.split("__")[1].split(".")[0]
-                questions[language] = pickle.load(questions_f)
+                (questions[language], sorting_schemes[language]) = pickle.load(questions_f)
     except FileNotFoundError:
         try:
             os.mkdir("cache")
         except FileExistsError:
             pass
-        languages, questions = regenerate_cache()
-    return languages, questions
+        languages, questions, sorting_schemes = regenerate_cache()
+    return languages, questions, sorting_schemes
 
 
 if __name__ == "__main__":
