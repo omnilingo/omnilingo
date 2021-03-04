@@ -48,6 +48,10 @@ up by hearing.
 * Matrix: `#OmniLingo:matrix.org`  (access via [Element](https://app.element.io/#/room/#OmniLingo:matrix.org))
 * Telegram: [OmniLingo](https://t.me/omnilingo)
 
+# Available languages
+
+All of the languages available in Common Voice 6.1 dataset.
+
 # Deployment
 
 To bootstrap the project for Finnish, `git clone` the repository, then run the following
