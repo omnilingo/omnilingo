@@ -42,6 +42,12 @@ This system is designed with two main user groups in mind:
 The system endeavours to be audio first, with knowledge of writing built 
 up by hearing.
 
+# Talk to us!
+
+* IRC: `irc.freenode.net` `#OmniLingo`
+* Matrix: `#OmniLingo:matrix.org`  (access via [Element](https://app.element.io/#/room/#OmniLingo:matrix.org))
+* Telegram: [OmniLingo](https://t.me/omnilingo)
+
 # Deployment
 
 To bootstrap the project for Finnish, `git clone` the repository, then run the following
