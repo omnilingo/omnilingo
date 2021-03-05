@@ -288,7 +288,7 @@ def ori(sentence):
 def roh(sentence):
     """
         >>> tokenise("L'unic chi güda forsa, es ün chic sco effet da placebo.", lang="roh")
-        ["L'", 'unic', 'chi', 'güda', 'forsa,', 'es', 'ün', 'chic', 'sco', 'effet', 'da', 'placebo.']
+        ["L'", 'unic', 'chi', 'güda', 'forsa', ',', 'es', 'ün', 'chic', 'sco', 'effet', 'da', 'placebo', '.']
     """
     o = sentence
     o = re.sub(r"([!,-.:;?«»–‘“„…‹›]+)", " \g<1> ", o)
