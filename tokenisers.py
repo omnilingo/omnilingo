@@ -171,6 +171,22 @@ def gle(sentence):
 	o = re.sub(r"  *", " ", o)
 	return [ x.strip() for x in re.split(" ", o) if not x.strip() == "" ]
 
+def pes(sentence):
+	"""
+		tokenisers.tokenise("اوه خدا، چه بهم ریختگی!", lang="pes")
+		['اوه', 'خدا', '،', 'چه', 'بهم', 'ریختگی', '!']
+	"""
+	o = sentence
+	o = re.sub(r"([!#%&,./:;«»،؛؟٪٫٬–…]+)", " \g<1> ", o)
+	o = o.replace('"', ' " ')
+	o = o.replace('(', ' ( ')
+	o = o.replace(')', ' ) ')
+	o = o.replace(']', ' ] ')
+	o = o.replace('[', ' [ ')
+	o = o.replace('-', ' - ')
+	o = re.sub(r"  *", " ", o)
+	return [ x.strip() for x in re.split(" ", o) if not x.strip() == "" ]
+
 def default(sentence):
         return [ x for x in re.split("(\\w+)", sentence) if x.strip() ]
 
@@ -183,6 +199,8 @@ def tokenise(sentence, lang):
 		return div(sentence)
 	if lang in ["en", "eng"]:
 		return eng(sentence)
+	if lang in ["fa", "pes"]:
+		return pes(sentence)
 	if lang in ["ga", "gle"] or lang.startswith("ga-"):
 		return gle(sentence)
 	if lang in ["ja", "jpn"]:
