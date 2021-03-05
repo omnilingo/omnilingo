@@ -12,7 +12,6 @@ import os
 import sqlite3
 
 import tqdm
-from mutagen.mp3 import MP3
 from distractors import get_distractors
 from tokenisers import tokenise
 
@@ -34,17 +33,9 @@ def process_question(question, word_frequency):
     for word in words:
         word_frequency[word] += 1
     question["tokenized"] = words
+    question["sentence_len"] = len(question["sentence"])
+    del question["sentence"]
     return question
-
-
-def get_mp3_length(mp3_path):
-    if lengths_db is not None:
-        sql = "SELECT length FROM mp3_lengths WHERE path=?"
-        lengths_db.execute(sql, ["cv-corpus-6.1-2020-12-11/" + mp3_path])
-        ret = float(lengths_db.fetchall()[0][0])
-        return ret
-    mp3 = MP3(PREFIX + mp3_path)
-    return mp3.info.length
 
 
 def load_questions(language_name):
@@ -60,27 +51,20 @@ def load_questions(language_name):
             random.shuffle(rows)
             rows = rows[: int(os.environ["QUESTION_COUNT_LIMIT"])]
         for row in tqdm.tqdm(rows):
-            question = dict(zip(h, row))
-            mp3_path = language_name + "/clips/" + question["path"]
-            question["audio_length"] = get_mp3_length(mp3_path)
-            question["chars_sec"] = len(question["sentence"]) / float(
-                question["audio_length"]
-            )
+            question = {
+                k: v
+                for k, v in zip(h, row)
+                if k in ["path", "locale", "sentence"]
+            }
             question = process_question(question, word_frequency)
             questions.append(question)
         sys.stderr.write("Done loading.\n")
 
     # These are the various sorting schemes that could be used
     sorting_schemes = {}
-    sorting_schemes["default"] = [(i, i) for i in range(0, len(questions))]
-    sorting_schemes["length"] = [
-        (i, len(j["sentence"])) for (i, j) in enumerate(questions)
-    ]
-    sorting_schemes["length"].sort(key=lambda x: x[1])
-
-    print("[sorting_schemes]")
-    print("default:", sorting_schemes["default"][0:10])
-    print("length", sorting_schemes["length"][0:10])
+    sorting_schemes["default"] = [(i) for i in range(len(questions))]
+    sorting_schemes["length"] = [(i) for i in range(len(questions))]
+    sorting_schemes["length"].sort(key=lambda x: questions[x]["sentence_len"])
 
     words = collections.Counter(
         {x: word_frequency[x] for x in word_frequency if word_frequency[x] > 5}
@@ -108,12 +92,12 @@ def load_questions(language_name):
             len(words),
             (assigned / len(words) * 100) if len(words) else 0,
         )
-        return chars_sec
+    )
+
+    return language_name, questions, sorting_schemes
 
 
 def load_all_languages(languages=None):
-    word_frequency = collections.defaultdict(lambda: dict)
-    most_common_word = collections.defaultdict(lambda: dict)
     questions = collections.defaultdict(lambda: dict)
     sorting_schemes = collections.defaultdict(lambda: dict)
     if languages is None:
@@ -121,20 +105,18 @@ def load_all_languages(languages=None):
             language.name for language in pathlib.Path(PREFIX).glob("*")
         ]
     with multiprocessing.Pool(4) as p:
-        for lng, lng_questions, lng_word_frequency, lng_sorting in p.map(
+        for lng, lng_questions, lng_sorting in p.map(
             load_questions, languages
         ):
             questions[lng] = lng_questions
             sorting_schemes[lng] = lng_sorting
-            word_frequency[lng] = lng_word_frequency
-            most_common_word[lng] = word_frequency[lng].most_common(1)[0]
     return dict(questions), sorting_schemes
 
 
 def regenerate_cache():
     questions, sorting_schemes = load_all_languages()
     try:
-        pathlib.Path('cache').mkdir()
+        pathlib.Path("cache").mkdir()
     except FileExistsError:
         pass
     for language in questions:
@@ -165,7 +147,7 @@ def load_all_languages_cached():
                 )
     except FileNotFoundError:
         try:
-            os.mkdir("cache")
+            pathlib.Path("cache").mkdir()
         except FileExistsError:
             pass
         questions, sorting_schemes = regenerate_cache()
