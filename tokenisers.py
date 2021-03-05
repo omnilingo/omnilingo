@@ -71,7 +71,7 @@ def asm(sentence):
 		['“', 'অ’', 'গৰখীয়া,', 'অ’', 'গৰখীয়া', 'গৰু', 'নাৰাখ', 'কিয়', '?', '”']
 	"""
 	o = sentence
-	o = re.sub(r"([!',-.:;°।৷৹‘’“]+)", "\g<1> ", o)
+	o = re.sub(r"([!',-.:;°।৷৹‘’“]+)", " \g<1> ", o)
 	o = re.sub(r'"', ' " ', o)
 	o = o.replace('?', ' ? ')
 	o = re.sub(r"  *", " ", o)
@@ -85,6 +85,29 @@ def jpn(sentence):
 	"""
 	return nagisa.tagging(sentence).words
 
+def kab(sentence):
+	"""
+		tokenisers.tokenise("Leqbayel ttemḥaddin lawan-nni m'ara mmlaqan deg leswaq n Waεraben, leǧwayeh n Sṭif.", lang="kab")
+		['Leqbayel', 'ttemḥaddin', 'lawan-nni', "m'ara", 'mmlaqan', 'deg', 'leswaq', 'n', 'Waεraben', ',', 'leǧwayeh', 'n', 'Sṭif', '.']
+	"""
+
+	o = sentence
+	o = re.sub(r"([!&(),./:;?«»–‘’“”‟…↓̣$€]+)", " \g<1> ", o)
+	o = re.sub(r"  *", " ", o)
+
+	return [ x for x in re.split(" ", o) if not x.strip() == "" ]
+
+def kat(sentence):
+	"""
+		tokenisers.tokenise("გიორგიმ შენზე თქვა, წერა-კითხვა არ იცისო, მართალია?", lang="kat")
+		['გიორგიმ', 'შენზე', 'თქვა', ',', 'წერა-კითხვა', 'არ', 'იცისო', ',', 'მართალია', '?']
+	"""
+	o = sentence
+	o = re.sub(r"([!,.:;?–—“„]+)", " \g<1> ", o)
+	o = re.sub(r"  *", " ", o)
+
+	return [ x for x in re.split(" ", o) if not x.strip() == "" ]
+
 def default(sentence):
         return [ x for x in re.split("(\\w+)", sentence) if x.strip() ]
 
@@ -95,17 +118,21 @@ def tokenise(sentence, lang):
 		return bre(sentence)
 	if lang in ["en", "eng"]:
 		return eng(sentence)
-	if lang in ["tr", "tur"]:
-		return tur(sentence)
+	if lang in ["ja", "jpn"]:
+		return jpn(sentence)
+	if lang in ["kab"]:
+		return kab(sentence)
+	if lang in ["ka", "kat"]:
+		return kat(sentence)
 	if lang in ["hi", "hin"]:
 		return hin(sentence)
+	if lang in ["th", "tha"]:
+	        return thai_segmenter.tokenize(sentence)
+	if lang in ["tr", "tur"]:
+		return tur(sentence)
 	if lang in ["uk", "ukr"]:
 		return ukr(sentence)
 	if lang in ["zh", "zho"] or lang.startswith("zh-"):
 	        return jieba.lcut(sentence)
-	if lang in ["th", "tha"]:
-	        return thai_segmenter.tokenize(sentence)
-	if lang in ["ja", "jpn"]:
-		return jpn(sentence)
 
 	return default(sentence)
