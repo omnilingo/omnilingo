@@ -138,10 +138,21 @@ def roh(sentence):
 		["L'", 'unic', 'chi', 'güda', 'forsa,', 'es', 'ün', 'chic', 'sco', 'effet', 'da', 'placebo.']
 	"""
 	o = sentence
-	o = re.sub("r([!,-.:;?«»–‘“„…‹›]+)", " \g<1> ", o)
+	o = re.sub(r"([!,-.:;?«»–‘“„…‹›]+)", " \g<1> ", o)
 	for tok in ["l'", "d'", "s'", "ch'", "süll'", "l’", "d’", "s’", "ch’", "süll’"]:
 		o = o.replace(' ' + tok, ' ' + tok + ' ')
 	o = re.sub("([LSD][’']|Ün[’'])", " \g<1> ", o)
+	o = re.sub(r"  *", " ", o)
+	return [ x.strip() for x in re.split(" ", o) if not x.strip() == "" ]
+
+def div(sentence):
+	"""
+		tokenisers.tokenise("ތީ ޝަބާބޭ! ތިހެންވީއިރު ޓްވިންސެއް ހުރޭތަ؟ ރީޙާން ޙައިރާންވި", lang="div")
+		['ތީ', 'ޝަބާބޭ', '!', 'ތިހެންވީއިރު', 'ޓްވިންސެއް', 'ހުރޭތަ', '؟', 'ރީޙާން', 'ޙައިރާންވި']
+	"""
+	o = sentence
+	o = re.sub(r"([!.:;،؟–‘’]+)", " \g<1> ", o)
+	o = o.replace('-', ' - ')
 	o = re.sub(r"  *", " ", o)
 	return [ x.strip() for x in re.split(" ", o) if not x.strip() == "" ]
 
@@ -153,6 +164,8 @@ def tokenise(sentence, lang):
 		return asm(sentence)
 	if lang in ["br", "bre"]:
 		return bre(sentence)
+	if lang in ["dv", "div"]:
+		return div(sentence)
 	if lang in ["en", "eng"]:
 		return eng(sentence)
 	if lang in ["ja", "jpn"]:
