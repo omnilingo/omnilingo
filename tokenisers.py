@@ -156,6 +156,21 @@ def div(sentence):
 	o = re.sub(r"  *", " ", o)
 	return [ x.strip() for x in re.split(" ", o) if not x.strip() == "" ]
 
+def gle(sentence):
+	"""
+		tokenisers.tokenise("A sheansailéir, a leas-sheansailéir, a mhic léinn, a dhaoine uaisle", lang="gle")
+		['A', 'sheansailéir', ',', 'a', 'leas-sheansailéir', ',', 'a', 'mhic', 'léinn', ',', 'a', 'dhaoine', 'uaisle']
+	"""
+	o = sentence
+	o = re.sub(r"([!(),.:;?–‘’]+)"," \g<1> ", o)
+	o = o.replace('"', ' " ')
+	for tok in ["an-", "n-", "t-"]:
+		o = o.replace(' ' + tok, ' ' + tok + ' ')
+	o = re.sub(r"([DB]['’])", "\g<1> ", o)
+	o = re.sub(r"( [db]['’])", " \g<1> ", o)
+	o = re.sub(r"  *", " ", o)
+	return [ x.strip() for x in re.split(" ", o) if not x.strip() == "" ]
+
 def default(sentence):
         return [ x for x in re.split("(\\w+)", sentence) if x.strip() ]
 
@@ -168,6 +183,8 @@ def tokenise(sentence, lang):
 		return div(sentence)
 	if lang in ["en", "eng"]:
 		return eng(sentence)
+	if lang in ["ga", "gle"] or lang.startswith("ga-"):
+		return gle(sentence)
 	if lang in ["ja", "jpn"]:
 		return jpn(sentence)
 	if lang in ["kab"]:
