@@ -130,14 +130,15 @@ def load_all_languages(languages=None):
             sorting_schemes[lng] = lng_sorting
             word_frequency[lng] = lng_word_frequency
             most_common_word[lng] = word_frequency[lng].most_common(1)[0]
-    return languages, dict(questions), sorting_schemes
+    return dict(questions), sorting_schemes
 
 
 def regenerate_cache():
-    languages, questions, sorting_schemes = load_all_languages()
-    with gzip.open("cache/languages.pickle.gz", "wb") as languages_f:
-
-        pickle.dump(languages, languages_f)
+    questions, sorting_schemes = load_all_languages()
+    try:
+        pathlib.Path('cache').mkdir()
+    except FileExistsError:
+        pass
     for language in questions:
         with gzip.open(
             f"cache/questions__{language}.pickle.gz", "wb"
@@ -147,14 +148,12 @@ def regenerate_cache():
                 (questions[language], sorting_schemes[language]), questions_f
             )
 
-    return languages, questions, sorting_schemes
+    return questions, sorting_schemes
 
 
 def load_all_languages_cached():
     try:
         sys.stderr.write("Loading pre-cached question set...\n")
-        with gzip.open("cache/languages.pickle.gz", "rb") as languages_f:
-            languages = pickle.load(languages_f)
         questions = {}
         sorting_schemes = {}
         question_files = list(pathlib.Path("cache").glob("questions__*"))
@@ -171,8 +170,8 @@ def load_all_languages_cached():
             os.mkdir("cache")
         except FileExistsError:
             pass
-        languages, questions, sorting_schemes = regenerate_cache()
-    return languages, questions, sorting_schemes
+        questions, sorting_schemes = regenerate_cache()
+    return list(questions.keys()), questions, sorting_schemes
 
 
 if __name__ == "__main__":
