@@ -4,3 +4,4 @@ jieba
 mutagen
 levenshtein
 thai-segmenter
+nagisa

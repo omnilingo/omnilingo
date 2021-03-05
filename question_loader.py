@@ -15,30 +15,13 @@ import jieba
 import thai_segmenter
 from mutagen.mp3 import MP3
 from distractors import get_distractors
+from tokenisers import tokenise
 
 PREFIX = "templates/cv-corpus-6.1-2020-12-11/"
 
 
 def tokenize_sentence(question):
-    if question["locale"].startswith("zh-"):
-        return jieba.lcut(question["sentence"])
-    elif question["locale"].startswith("th"):
-        return thai_segmenter.tokenize(question["sentence"])
-    elif question["locale"].startswith("hi"):
-        return [
-            x for x in re.split(" ", question["sentence"]) if x.strip()
-        ]
-    elif question["locale"] in ["tr", "br", "cy"]:  # Languages where there are apostrophes as part of words
-        res = [ x.replace("ʼ", "'") for x in re.split("(\\w+)", question["sentence"].replace("'", "ʼ")) if x.strip() ]
-        return res 
-    elif question["locale"] in ["kab"]:  # Languages where there are hyphens as part of words
-        res = [ x.replace("ʼ", "-") for x in re.split("(\\w+)", question["sentence"].replace("-", "ʼ")) if x.strip() ]
-        return res 
-    else:
-        return [
-            x for x in re.split("(\\w+)", question["sentence"]) if x.strip()
-        ]
-
+    return tokenise(question, lang=question["locale"]) 
 
 def process_question(question, word_frequency):
     words = tokenize_sentence(question)
