@@ -31,6 +31,15 @@ function main() {
     if(!localStorage.getItem('currentLanguage')) {
         localStorage.setItem('currentLanguage', 'fi');
     }
+    var lang = localStorage.getItem('currentLanguage');
+    var h = document.documentElement;
+    if(lang == "ar" || lang == "fa" || lang == "dv") { // FIXME: be cleverer here
+        // <html dir="rtl" lang="ar">
+        h.setAttribute('dir', 'rtl');
+    } else {
+        h.setAttribute('dir', 'ltr');
+    }
+    h.setAttribute('lang', lang);
 
     if(!localStorage.getItem('responses')) {
         localStorage.setItem('responses', Array());

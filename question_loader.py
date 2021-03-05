@@ -21,7 +21,7 @@ PREFIX = "templates/cv-corpus-6.1-2020-12-11/"
 
 
 def tokenize_sentence(question):
-    return tokenise(question, lang=question["locale"]) 
+    return tokenise(question["sentence"], lang=question["locale"]) 
 
 def process_question(question, word_frequency):
     words = tokenize_sentence(question)

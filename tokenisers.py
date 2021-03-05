@@ -9,12 +9,12 @@ def bre(sentence):
 		['Tennañ', 'a', 'rit', 'da', "'m", "c'hoar", '.']
 	"""
 	o = sentence
-	o = o.replace("c'h", "cʼh")
-	o = o.replace("C'h", "Cʼh")
-	o = o.replace("C'H", "CʼH")
-	o = re.sub("([!%()*+,\./:;=>?«»–‘’“”…€½]+)", " \g<1> ", o)
-	o = re.sub("'", " '", o)
-	o = re.sub("  *", " ", o)
+	o = o.replace(r"c'h", "cʼh")
+	o = o.replace(r"C'h", "Cʼh")
+	o = o.replace(r"C'H", "CʼH")
+	o = re.sub(r"([!%()*+,\./:;=>?«»–‘’“”…€½]+)", " \g<1> ", o)
+	o = re.sub(r"'", " '", o)
+	o = re.sub(r"  *", " ", o)
 
 	return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == "" ]
 
@@ -36,12 +36,19 @@ def hin(sentence):
 		FIXME: Improve this, 
 	"""
 	o = sentence
-	o = re.sub("([!&,-.:?|।‘]+)", " \g<1> ", o)
-	o = re.sub('"', ' " ', o)
-	o = re.sub("'", " ' ", o)
-	o = re.sub("  *", " ", o)
+	o = re.sub(r"([!&,-.:?|।‘]+)", " \g<1> ", o)
+	o = re.sub(r'"', ' " ', o)
+	o = re.sub(r"'", " ' ", o)
+	o = re.sub(r"  *", " ", o)
 
 	return [ x for x in re.split(" ", o) if not x.strip() == "" ]
+
+def jpn(sentence):
+	"""
+		tokenisers.tokenise("自然消滅することは目に見えてるじゃん。", lang="jpn")
+		['自然', '消滅', 'する', 'こと', 'は', '目', 'に', '見え', 'てる', 'じゃん', '。']
+	"""
+	return nagisa.tagging(sentence).words
 
 def default(sentence):
         return [ x for x in re.split("(\\w+)", sentence) if x.strip() ]
@@ -58,10 +65,6 @@ def tokenise(sentence, lang):
 	if lang in ["th", "tha"]:
 	        return thai_segmenter.tokenize(sentence)
 	if lang in ["ja", "jpn"]:
-		"""
-			tokenisers.tokenise("自然消滅することは目に見えてるじゃん。", lang="jpn")
-			['自然', '消滅', 'する', 'こと', 'は', '目', 'に', '見え', 'てる', 'じゃん', '。']
-		"""
-		return nagisa.tagging(sentence).words
+		return jpn(sentence)
 	else:
 		return default(sentence)
