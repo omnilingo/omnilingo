@@ -3,6 +3,19 @@ import jieba
 import thai_segmenter
 import nagisa
 
+def eng(sentence):
+	"""
+		tokenisers.tokenise("O'Brien's protege and eventual successor in Hollywood was Ray Harryhausen.", lang="eng")
+		["O'Brien", "'s", 'protege', 'and', 'eventual', 'successor', 'in', 'Hollywood', 'was', 'Ray', 'Harryhausen', '.']
+	"""
+	o = sentence
+	o = re.sub(r'(["&()+,-./:;<>?–—‘’“”]+)', ' \g<1> ', o)
+	o = o.replace("'ve ", " 've ")
+	o = o.replace("'s ", " 's ")
+	o = o.replace("I'm ", "I 'm ")
+	o = re.sub(r"  *", " ", o)
+	return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == "" ]
+
 def bre(sentence):
 	"""
 		tokenise.tokenise("Tennañ a rit da'm c'hoar.", lang="bre")
@@ -54,6 +67,8 @@ def default(sentence):
         return [ x for x in re.split("(\\w+)", sentence) if x.strip() ]
 
 def tokenise(sentence, lang):
+	if lang in ["en", "eng"]:
+		return eng(sentence)
 	if lang in ["br", "bre"]:
 		return bre(sentence)
 	if lang in ["tr", "tur"]:
