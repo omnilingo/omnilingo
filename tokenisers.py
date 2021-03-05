@@ -125,6 +125,13 @@ def mlt(sentence):
 		
 	return [ x for x in re.split(" ", o) if not x.strip() == "" ]
 
+def ori(sentence):
+	o = sentence 	
+	o = re.sub(r"([!',-.:;?|°।–—‘’“]+)", " \g<1>", o)
+	o = o.replace('"', ' " ')
+	o = re.sub(r"  *", " ", o)
+	return [ x for x in re.split(" ", o) if not x.strip() == "" ]
+
 def default(sentence):
         return [ x for x in re.split("(\\w+)", sentence) if x.strip() ]
 
@@ -145,6 +152,8 @@ def tokenise(sentence, lang):
 		return hin(sentence)
 	if lang in ["mt", "mlt"]:
 		return mlt(sentence)
+	if lang in ["or", "ori"]:
+		return ori(sentence)
 	if lang in ["th", "tha"]:
 	        return thai_segmenter.tokenize(sentence)
 	if lang in ["tr", "tur"]:
