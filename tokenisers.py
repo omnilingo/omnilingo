@@ -17,7 +17,7 @@ def cat(sentence):
 
 def eng(sentence):
     """
-        tokenisers.tokenise("O'Brien's protege and eventual successor in Hollywood was Ray Harryhausen.", lang="eng")
+        >>> tokenise("O'Brien's protege and eventual successor in Hollywood was Ray Harryhausen.", lang="eng")
         ["O'Brien", "'s", 'protege', 'and', 'eventual', 'successor', 'in', 'Hollywood', 'was', 'Ray', 'Harryhausen', '.']
     """
     o = sentence
@@ -31,7 +31,7 @@ def eng(sentence):
 
 def bre(sentence):
     """
-        tokenise.tokenise("Tennañ a rit da'm c'hoar.", lang="bre")
+        >>> tokenise("Tennañ a rit da'm c'hoar.", lang="bre")
         ['Tennañ', 'a', 'rit', 'da', "'m", "c'hoar", '.']
     """
     o = sentence
@@ -47,7 +47,7 @@ def bre(sentence):
 
 def ukr(sentence):
     """
-        tokenisers.tokenise("— А далій не вб'єш, — проказав коваль.", lang="ukr")
+        >>> tokenise("— А далій не вб'єш, — проказав коваль.", lang="ukr")
         ['— ', 'А', 'далій', 'не', "вб'єш", ', — ', 'проказав', 'коваль', '.']
     """
     o = re.sub("'", "ʼ", sentence)
@@ -75,7 +75,7 @@ def tur(sentence):
 
 def hin(sentence):
     """
-        tokenisers.tokenise("हिट एंड रन केस: भाग्यश्री के खिलाफ भी सलमान खान जैसी शिकायत!", lang="hin")
+        >>> tokenise("हिट एंड रन केस: भाग्यश्री के खिलाफ भी सलमान खान जैसी शिकायत!", lang="hin")
         ['हिट', 'एंड', 'रन', 'केस', ':', 'भाग्यश्री', 'के', 'खिलाफ', 'भी', 'सलमान', 'खान', 'जैसी', 'शिकायत', '!']
         NOTE: not using \w as it won't match certain Devanagari chars.
         FIXME: Improve this, 
@@ -91,7 +91,7 @@ def hin(sentence):
 
 def asm(sentence):
     """
-        tokenisers.tokenise("“অ’ গৰখীয়া, অ’ গৰখীয়া গৰু নাৰাখ কিয়?”", lang="asm")
+        >>> tokenise("“অ’ গৰখীয়া, অ’ গৰখীয়া গৰু নাৰাখ কিয়?”", lang="asm")
         ['“', 'অ’', 'গৰখীয়া,', 'অ’', 'গৰখীয়া', 'গৰু', 'নাৰাখ', 'কিয়', '?', '”']
     """
     o = sentence
@@ -113,7 +113,7 @@ def jpn(sentence):
 
 def kab(sentence):
     """
-        tokenisers.tokenise("Leqbayel ttemḥaddin lawan-nni m'ara mmlaqan deg leswaq n Waεraben, leǧwayeh n Sṭif.", lang="kab")
+        >>> tokenise("Leqbayel ttemḥaddin lawan-nni m'ara mmlaqan deg leswaq n Waεraben, leǧwayeh n Sṭif.", lang="kab")
         ['Leqbayel', 'ttemḥaddin', 'lawan-nni', "m'ara", 'mmlaqan', 'deg', 'leswaq', 'n', 'Waεraben', ',', 'leǧwayeh', 'n', 'Sṭif', '.']
     """
 
@@ -126,7 +126,7 @@ def kab(sentence):
 
 def kat(sentence):
     """
-        tokenisers.tokenise("გიორგიმ შენზე თქვა, წერა-კითხვა არ იცისო, მართალია?", lang="kat")
+        >>> tokenise("გიორგიმ შენზე თქვა, წერა-კითხვა არ იცისო, მართალია?", lang="kat")
         ['გიორგიმ', 'შენზე', 'თქვა', ',', 'წერა-კითხვა', 'არ', 'იცისო', ',', 'მართალია', '?']
     """
     o = sentence
@@ -138,7 +138,7 @@ def kat(sentence):
 
 def mlt(sentence):
     """
-        tokenisers.tokenise("Ħadd ma weġġa' f'dan l-inċident.", lang="mlt")
+        >>> tokenise("Ħadd ma weġġa' f'dan l-inċident.", lang="mlt")
         ['Ħadd', 'ma', "weġġa'", "f'", 'dan', 'l-', 'inċident', '.']
     """
     o = sentence
@@ -268,7 +268,7 @@ def ori(sentence):
 
 def roh(sentence):
     """
-        tokenisers.tokenise("L'unic chi güda forsa, es ün chic sco effet da placebo.", lang="roh")
+        >>> tokenise("L'unic chi güda forsa, es ün chic sco effet da placebo.", lang="roh")
         ["L'", 'unic', 'chi', 'güda', 'forsa,', 'es', 'ün', 'chic', 'sco', 'effet', 'da', 'placebo.']
     """
     o = sentence
@@ -293,7 +293,7 @@ def roh(sentence):
 
 def div(sentence):
     """
-        tokenisers.tokenise("ތީ ޝަބާބޭ! ތިހެންވީއިރު ޓްވިންސެއް ހުރޭތަ؟ ރީޙާން ޙައިރާންވި", lang="div")
+        >>> tokenise("ތީ ޝަބާބޭ! ތިހެންވީއިރު ޓްވިންސެއް ހުރޭތަ؟ ރީޙާން ޙައިރާންވި", lang="div")
         ['ތީ', 'ޝަބާބޭ', '!', 'ތިހެންވީއިރު', 'ޓްވިންސެއް', 'ހުރޭތަ', '؟', 'ރީޙާން', 'ޙައިރާންވި']
     """
     o = sentence
@@ -305,7 +305,7 @@ def div(sentence):
 
 def gle(sentence):
     """
-        tokenisers.tokenise("A sheansailéir, a leas-sheansailéir, a mhic léinn, a dhaoine uaisle", lang="gle")
+        >>> tokenise("A sheansailéir, a leas-sheansailéir, a mhic léinn, a dhaoine uaisle", lang="gle")
         ['A', 'sheansailéir', ',', 'a', 'leas-sheansailéir', ',', 'a', 'mhic', 'léinn', ',', 'a', 'dhaoine', 'uaisle']
     """
     o = sentence
@@ -321,7 +321,7 @@ def gle(sentence):
 
 def pes(sentence):
     """
-        tokenisers.tokenise("اوه خدا، چه بهم ریختگی!", lang="pes")
+        >>> tokenise("اوه خدا، چه بهم ریختگی!", lang="pes")
         ['اوه', 'خدا', '،', 'چه', 'بهم', 'ریختگی', '!']
     """
     o = sentence
@@ -379,3 +379,8 @@ def tokenise(sentence, lang):
         return jieba.lcut(sentence)
 
     return default(sentence)
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
