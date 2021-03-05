@@ -133,7 +133,7 @@ function userInputChoice(e, correct, tid) {
     console.log(tid);
     responses = localStorage.getItem('responses');
     answer = document.getElementById(tid);
-    other = document.getElementById('d' + tid);
+    other = document.getElementById("d" + tid);
     if(correct == 1) {
         console.log('CORRECT!');
         answer.setAttribute("class", "correct");
