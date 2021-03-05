@@ -56,6 +56,19 @@ def hin(sentence):
 
 	return [ x for x in re.split(" ", o) if not x.strip() == "" ]
 
+def asm(sentence):
+	"""
+		tokenisers.tokenise("“অ’ গৰখীয়া, অ’ গৰখীয়া গৰু নাৰাখ কিয়?”", lang="asm")
+		['“', 'অ’', 'গৰখীয়া,', 'অ’', 'গৰখীয়া', 'গৰু', 'নাৰাখ', 'কিয়', '?', '”']
+	"""
+	o = sentence
+	o = re.sub(r"([!',-.:;°।৷৹‘’“]+)", "\g<1> ", o)
+	o = re.sub(r'"', ' " ', o)
+	o = o.replace('?', ' ? ')
+	o = re.sub(r"  *", " ", o)
+
+	return [ x for x in re.split(" ", o) if not x.strip() == "" ]
+
 def jpn(sentence):
 	"""
 		tokenisers.tokenise("自然消滅することは目に見えてるじゃん。", lang="jpn")
@@ -67,10 +80,12 @@ def default(sentence):
         return [ x for x in re.split("(\\w+)", sentence) if x.strip() ]
 
 def tokenise(sentence, lang):
-	if lang in ["en", "eng"]:
-		return eng(sentence)
+	if lang in ["as", "asm"]:
+		return asm(sentence)
 	if lang in ["br", "bre"]:
 		return bre(sentence)
+	if lang in ["en", "eng"]:
+		return eng(sentence)
 	if lang in ["tr", "tur"]:
 		return tur(sentence)
 	if lang in ["hi", "hin"]:
