@@ -127,10 +127,23 @@ def mlt(sentence):
 
 def ori(sentence):
 	o = sentence 	
-	o = re.sub(r"([!',-.:;?|°।–—‘’“]+)", " \g<1>", o)
+	o = re.sub(r"([!',-.:;?|°।–—‘’“]+)", " \g<1> ", o)
 	o = o.replace('"', ' " ')
 	o = re.sub(r"  *", " ", o)
 	return [ x for x in re.split(" ", o) if not x.strip() == "" ]
+
+def roh(sentence):
+	"""
+		tokenisers.tokenise("L'unic chi güda forsa, es ün chic sco effet da placebo.", lang="roh")
+		["L'", 'unic', 'chi', 'güda', 'forsa,', 'es', 'ün', 'chic', 'sco', 'effet', 'da', 'placebo.']
+	"""
+	o = sentence
+	o = re.sub("r([!,-.:;?«»–‘“„…‹›]+)", " \g<1> ", o)
+	for tok in ["l'", "d'", "s'", "ch'", "süll'", "l’", "d’", "s’", "ch’", "süll’"]:
+		o = o.replace(' ' + tok, ' ' + tok + ' ')
+	o = re.sub("([LSD][’']|Ün[’'])", " \g<1> ", o)
+	o = re.sub(r"  *", " ", o)
+	return [ x.strip() for x in re.split(" ", o) if not x.strip() == "" ]
 
 def default(sentence):
         return [ x for x in re.split("(\\w+)", sentence) if x.strip() ]
@@ -154,6 +167,8 @@ def tokenise(sentence, lang):
 		return mlt(sentence)
 	if lang in ["or", "ori"]:
 		return ori(sentence)
+	if lang in ["rm", "roh"] or lang.startswith("rm-"):
+		return roh(sentence)
 	if lang in ["th", "tha"]:
 	        return thai_segmenter.tokenize(sentence)
 	if lang in ["tr", "tur"]:
