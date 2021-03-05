@@ -15,6 +15,17 @@ def cat(sentence):
     o = re.sub(r"  *", " ", o)
     return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == ""]
 
+def fra(sentence):
+    """
+    """
+    o = sentence
+    o = re.sub(r"([!*+,./:;?@|~¡«°·»¿–—―’“”…]+)", " \g<1> ", o)
+    o = re.sub(r"([JDLSM]['’])", "\g<1> ", o)
+    o = re.sub(r"( [jdlsm]['’])", " \g<1> ", o)
+    o = re.sub(r"  *", " ", o)
+    return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == ""]
+
+
 def eng(sentence):
     """
         tokenisers.tokenise("O'Brien's protege and eventual successor in Hollywood was Ray Harryhausen.", lang="eng")
@@ -353,6 +364,8 @@ def tokenise(sentence, lang):
         return eng(sentence)
     if lang in ["fa", "pes"]:
         return pes(sentence)
+    if lang in ["fr", "fra"]:
+        return fra(sentence)
     if lang in ["ga", "gle"] or lang.startswith("ga-"):
         return gle(sentence)
     #     if lang in ["ja", "jpn"]:
