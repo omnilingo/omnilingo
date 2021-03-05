@@ -50,7 +50,9 @@ up by hearing.
 
 # Available languages
 
-All of the languages available in Common Voice 6.1 dataset.
+All of the languages available in [Common Voice 6.1](https://commonvoice.mozilla.org/datasets) dataset.
+
+Abkhaz · Arabic · Assamese · Breton · Catalan · Hakha Chin · Czech · Chuvash · Welsh · German · Dhivehi · Greek · English · Esperanto · Spanish · Estonian · Basque · Persian · Finnish · French · Frisian · Irish · Hindi · Sorbian, Upper · Hungarian · Interlingua · Indonesian · Italian · Japanese · Georgian · Kabyle · Kyrgyz · Luganda · Lithuanian · Latvian · Mongolian · Maltese · Dutch · Odia · Punjabi · Polish · Portuguese · Romansh Sursilvan · Romansh Vallader · Romanian · Russian · Kinyarwanda · Sakha · Slovenian · Swedish · Tamil · Thai · Turkish · Tatar · Ukrainian · Vietnamese · Votic · Chinese (China) · Chinese (Hong Kong) · Chinese (Taiwan)
 
 # Deployment
 
