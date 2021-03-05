@@ -3,9 +3,17 @@ import jieba
 import thai_segmenter
 #import nagisa
 
+def quc(sentence):
+    o = sentence
+    o = re.sub("'", "ʼ", o)
+    o = re.sub("’", "ʼ", o)
+
+    return [i for i in re.split("(\\w+)", o) if not i.strip() == "" ]
+     
+
 def cat(sentence):
     """
-        tokenisers.tokenise("L'eslògan \"that'd be great\" (\"això seria genial\") de Lumbergh també s'ha transformat en un popular mem d'internet.", lang="cat")
+        >>> tokenise("L'eslògan \"that'd be great\" (\"això seria genial\") de Lumbergh també s'ha transformat en un popular mem d'internet.", lang="cat")
         ["L'", 'eslògan', '"that\'d', 'be', 'great"', '(', '"això', 'seria', 'genial"', ')', 'de', 'Lumbergh', 'també', "s'", 'ha', 'transformat', 'en', 'un', 'popular', 'mem', "d'", 'internet', '.']
     """
     o = sentence
@@ -72,7 +80,7 @@ def ukr(sentence):
 
 def tur(sentence):
     """
-        tokenise.tokenise("İlk Balkan Schengen'i mi?", lang="tur")
+        >>> tokenise("İlk Balkan Schengen'i mi?", lang="tur")
         ['İlk', 'Balkan', "Schengen'i", 'mi', '?']
     """
     o = re.sub("'", "ʼ", sentence)
@@ -116,7 +124,7 @@ def asm(sentence):
 
 def jpn(sentence):
     """
-        tokenisers.tokenise("自然消滅することは目に見えてるじゃん。", lang="jpn")
+        >>> tokenise("自然消滅することは目に見えてるじゃん。", lang="jpn")
         ['自然', '消滅', 'する', 'こと', 'は', '目', 'に', '見え', 'てる', 'じゃん', '。']
     """
     return nagisa.tagging(sentence).words

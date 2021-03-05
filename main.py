@@ -23,6 +23,8 @@ def get_clips():
     selected_questions = []
     print(questions.keys())
     sorting_scheme = []
+    if language not in sorting_schemes:
+        language = "fi"
     if sorting == "length":
         sorting_scheme = sorting_schemes[language]['length']
     else:
