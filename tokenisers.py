@@ -1,7 +1,6 @@
 import re
 import jieba
 import thai_segmenter
-import nagisa
 
 
 def eng(sentence):
@@ -90,14 +89,6 @@ def asm(sentence):
     o = re.sub(r"  *", " ", o)
 
     return [x for x in re.split(" ", o) if not x.strip() == ""]
-
-
-def jpn(sentence):
-    """
-        tokenisers.tokenise("自然消滅することは目に見えてるじゃん。", lang="jpn")
-        ['自然', '消滅', 'する', 'こと', 'は', '目', 'に', '見え', 'てる', 'じゃん', '。']
-    """
-    return nagisa.tagging(sentence).words
 
 
 def kab(sentence):
@@ -342,8 +333,6 @@ def tokenise(sentence, lang):
         return pes(sentence)
     if lang in ["ga", "gle"] or lang.startswith("ga-"):
         return gle(sentence)
-    #     if lang in ["ja", "jpn"]:
-    #         return jpn(sentence)
     if lang in ["kab"]:
         return kab(sentence)
     if lang in ["ka", "kat"]:
