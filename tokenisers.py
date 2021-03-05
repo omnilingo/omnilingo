@@ -107,5 +107,5 @@ def tokenise(sentence, lang):
 	        return thai_segmenter.tokenize(sentence)
 	if lang in ["ja", "jpn"]:
 		return jpn(sentence)
-	else:
-		return default(sentence)
+
+	return default(sentence)
