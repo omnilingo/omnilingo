@@ -82,33 +82,31 @@ def load_questions(language_name):
     print("default:", sorting_schemes["default"][0:10])
     print("length", sorting_schemes["length"][0:10])
 
+    words = collections.Counter(
+        {x: word_frequency[x] for x in word_frequency if word_frequency[x] > 5}
+    )
     # FIXME: This is really slow...
-    sys.stderr.write("Generating distractors.\n")
-    distractors = get_distractors(word_frequency)
+    sys.stderr.write(
+        "%sGenerating distractors for %d input words.\n"
+        % (language_name, len(word_frequency))
+    )
+    distractors = get_distractors(words)
 
-    sys.stderr.write("Assigning distractors.\n")
+    sys.stderr.write("%s: Assigning distractors.\n" % language_name)
     for question in questions:
         question["distractors"] = {}
         for token in question["tokenized"]:
-            question["distractors"][token] = distractors[token]
+            if len(distractors[token]) > 0:
+                question["distractors"][token] = distractors[token]
 
-    sys.stderr.write("Done.\n")
-
-    return language_name, questions, word_frequency, sorting_schemes
-
-
-def difficulty_function(question, word_frequency, most_common_word):
-    chars_sec = question["chars_sec"]
-    word_frequencies = [
-        word_frequency[word] / most_common_word[1]
-        for word in question["tokenized"]
-    ]
-    # if they speak fast, but use easy words
-    if word_frequencies:
-        return chars_sec * -min(word_frequencies)
-    else:
-        sys.stderr.write(
-            "WTF: cannot calculate frequencies for question=%r\n" % question
+    assigned = sum(1 for x in distractors if distractors[x])
+    sys.stderr.write(
+        "%s: Done. Assigned distractors for %d out of %d words (%0.2f%%).\n"
+        % (
+            language_name,
+            assigned,
+            len(words),
+            (assigned / len(words) * 100) if len(words) else 0,
         )
         return chars_sec
 
