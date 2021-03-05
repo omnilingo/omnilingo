@@ -133,7 +133,7 @@ function userInputChoice(e, correct, tid) {
     console.log(tid);
     responses = localStorage.getItem('responses');
     answer = document.getElementById(tid);
-    other = document.getElementById("d" + tid);
+    other = tid.charAt(0) === 'd' ? document.getElementById(tid.substr(1)) : document.getElementById('d' + tid);
     if(correct == 1) {
         console.log('CORRECT!');
         answer.setAttribute("class", "correct");
@@ -190,7 +190,7 @@ function buildOptionTbox(current_text, gap, distractors) {
                                 onClick="userInputChoice(event, 1, \'t${i}'\)"
                                 id="t${i}"
                                 style="border: thin dotted #000; width: ${current_text[i].length}ch"
-                                data-value="${current_text[i]}">${current_text[i]}</span>}`
+                                data-value="${current_text[i]}">${current_text[i]}</span>} `
              }
 
 
