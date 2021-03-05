@@ -1,8 +1,19 @@
 import re
 import jieba
 import thai_segmenter
-import nagisa
+#import nagisa
 
+def cat(sentence):
+    """
+        tokenisers.tokenise("L'eslògan \"that'd be great\" (\"això seria genial\") de Lumbergh també s'ha transformat en un popular mem d'internet.", lang="cat")
+        ["L'", 'eslògan', '"that\'d', 'be', 'great"', '(', '"això', 'seria', 'genial"', ')', 'de', 'Lumbergh', 'també', "s'", 'ha', 'transformat', 'en', 'un', 'popular', 'mem', "d'", 'internet', '.']
+    """
+    o = sentence
+    o = re.sub(r"([!()*+,./:;?@|~¡«°·»¿–—―’“”…]+)", " \g<1> ", o)
+    o = re.sub(r"([DLSM]['’])", "\g<1> ", o)
+    o = re.sub(r"( [dlsm]['’])", " \g<1> ", o)
+    o = re.sub(r"  *", " ", o)
+    return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == ""]
 
 def eng(sentence):
     """
@@ -334,6 +345,8 @@ def tokenise(sentence, lang):
         return asm(sentence)
     if lang in ["br", "bre"]:
         return bre(sentence)
+    if lang in ["ca", "cat"]:
+        return cat(sentence)
     if lang in ["dv", "div"]:
         return div(sentence)
     if lang in ["en", "eng"]:
