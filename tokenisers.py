@@ -108,6 +108,23 @@ def kat(sentence):
 
 	return [ x for x in re.split(" ", o) if not x.strip() == "" ]
 
+def mlt(sentence):
+	"""
+		tokenisers.tokenise("Ħadd ma weġġa' f'dan l-inċident.", lang="mlt")
+		['Ħadd', 'ma', "weġġa'", "f'", 'dan', 'l-', 'inċident', '.']
+	"""
+	o = sentence
+	for tok in ["ad-","al-","an-","as-","bħall-","bħar-","bħas-","bħat-","biċ-","bid-","bil-","bin-","bir-","bis-","bit-","bix-","bl-","ċ-","d-","dal-","dar-","das-","emm-","erbatax-","feed-","fiċ-","fid-","fil-","fin-","fir-","fis-","fit-","fix-","fl-","għaċ-","għad-","għal-","għall-","għan-","għar-","għas-","għat-","għax-","ġod-","ġol-","ħal-","ħall-","ħdax-","iċ-","id-","il-","ill-","in-","ir-","is-","it-","ix-","kemm-","l-","lid-","lill-","lin-","lir-","lis-","lit-","maċ-","mad-","mal-","man-","mar-","mas-","mat-","max-","maz-","mid-","mil-","mill-","min-","mir-","mis-","mit-","mix-","n-","r-","s-","sal-","sas-","sat-","sbatax-","sittax-","t-","taċ-","tad-","tal-","tan-","tar-","tas-","tat-","tax-","tmintax-","tnax-","x-","z-"]:
+		o = o.replace(" " + tok, " " + tok + " ")
+	for tok in ["b'","f'","m'","s'","t'","x'"]:
+		o = o.replace(" " + tok, " " + tok + " ")
+	o = re.sub(r"([!,.:;`’]+)", " \g<1> ", o)
+	o = o.replace('"', ' " ')
+	o = o.replace('?', ' ? ')
+	o = re.sub(r"  *", " ", o)
+		
+	return [ x for x in re.split(" ", o) if not x.strip() == "" ]
+
 def default(sentence):
         return [ x for x in re.split("(\\w+)", sentence) if x.strip() ]
 
@@ -126,6 +143,8 @@ def tokenise(sentence, lang):
 		return kat(sentence)
 	if lang in ["hi", "hin"]:
 		return hin(sentence)
+	if lang in ["mt", "mlt"]:
+		return mlt(sentence)
 	if lang in ["th", "tha"]:
 	        return thai_segmenter.tokenize(sentence)
 	if lang in ["tr", "tur"]:
