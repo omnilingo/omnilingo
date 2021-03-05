@@ -31,6 +31,15 @@ def bre(sentence):
 
 	return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == "" ]
 
+def ukr(sentence):
+	"""
+		tokenisers.tokenise("— А далій не вб'єш, — проказав коваль.", lang="ukr")
+		['— ', 'А', 'далій', 'не', "вб'єш", ', — ', 'проказав', 'коваль', '.']
+	"""
+	o = re.sub("'", "ʼ", sentence)
+
+	return [i.replace("ʼ", "'") for i in re.split("(\\w+)", o) if not i.strip() == "" ]
+
 def tur(sentence):
 	"""
 		tokenise.tokenise("İlk Balkan Schengen'i mi?", lang="tur")
@@ -90,6 +99,8 @@ def tokenise(sentence, lang):
 		return tur(sentence)
 	if lang in ["hi", "hin"]:
 		return hin(sentence)
+	if lang in ["uk", "ukr"]:
+		return ukr(sentence)
 	if lang in ["zh", "zho"] or lang.startswith("zh-"):
 	        return jieba.lcut(sentence)
 	if lang in ["th", "tha"]:
