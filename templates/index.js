@@ -350,7 +350,7 @@ function onReadyScramble(current_text) {
     tb = "";
     for(var i = 0; i < chars.length; i++) {
         // FIXME: do this properly
-        if(chars[i] == '.' || chars[i] == '?' || chars[i] == ','  || chars[i] == ':'  || chars[i] == ';'  || chars[i] == '!') {
+        if(chars[i] == '.' || chars[i] == '?' || chars[i] == ','  || chars[i] == ':'  || chars[i] == ';'  || chars[i] == '!' || chars[i] == '“' || chars[i] == '"') {
           tb += '<span>' + chars[i] + '</span>';
           continue;
         }
@@ -376,7 +376,7 @@ function onReadyScramble(current_text) {
             continue;
         }
         // FIXME: do this properly
-        if(arr1[i] == '.' || chars[i] == '?' || chars[i] == ','  || chars[i] == ':'  || chars[i] == ';'  || chars[i] == '!') {
+        if(arr1[i] == '.' || arr1[i] == '?' || arr1[i] == ','  || arr1[i] == ':'  || arr1[i] == ';'  || arr1[i] == '!' || arr1[i] == '“' || arr1[i] == '"') {
             continue;
         } else {    
             cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i].toLowerCase() + '</span>';
