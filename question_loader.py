@@ -62,10 +62,10 @@ def load_questions(language_name):
         for row in tqdm.tqdm(rows):
             question = dict(zip(h, row))
             mp3_path = language_name + "/clips/" + question["path"]
-            question["audio_length"] = get_mp3_length(mp3_path)
-            question["chars_sec"] = len(question["sentence"]) / float(
-                question["audio_length"]
-            )
+            #question["audio_length"] = get_mp3_length(mp3_path)
+            #question["chars_sec"] = len(question["sentence"]) / float(
+            #    question["audio_length"]
+            #)
             question = process_question(question, word_frequency)
             questions.append(question)
         sys.stderr.write("Done loading.\n")
