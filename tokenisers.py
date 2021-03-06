@@ -12,7 +12,7 @@ def quc(sentence):
 
 def tam(sentence):
     """
-	>>> tokenise("கோலத்தினைக் கொய்வ துண்டோ? - \"பெண்கள்", lang="tam")
+	>>> tokenise("கோலத்தினைக் கொய்வ துண்டோ? - \\"பெண்கள்", lang="tam")
 	['கோலத்தினைக்', 'கொய்வ', 'துண்டோ', '?', '-', '"', 'பெண்கள்']
     """
     o = sentence
@@ -57,7 +57,7 @@ def lug(sentence):
 def cym(sentence):
     """
 	>>> tokenise("Ond meddylia mae ’na ddoethuriaeth i'w sgwennu.", lang="cym")
-	['Ond', 'meddylia', 'mae', "'na", 'ddoethuriaeth', "i'w", 'sgwennu.']
+	['Ond', 'meddylia', 'mae', "'na", 'ddoethuriaeth', "i'w", 'sgwennu', '.']
     """
     o = sentence
     o = re.sub(r"([!,.:;?¬–—‘-]+)", " \g<1> ", o)
@@ -78,11 +78,12 @@ def fry(sentence):
 
 def cat(sentence):
     """
-        >>> tokenise("L'eslògan \"that'd be great\" (\"això seria genial\") de Lumbergh també s'ha transformat en un popular mem d'internet.", lang="cat")
-        ["L'", 'eslògan', '"that\'d', 'be', 'great"', '(', '"això', 'seria', 'genial"', ')', 'de', 'Lumbergh', 'també', "s'", 'ha', 'transformat', 'en', 'un', 'popular', 'mem', "d'", 'internet', '.']
+        >>> tokenise("L'eslògan \\"that\\'d be great\\" (\\"això seria genial\\") de Lumbergh també s'ha transformat en un popular mem d'internet.", lang="cat")
+	["L'", 'eslògan', '"', "that'd", 'be', 'great', '"', '("', 'això', 'seria', 'genial', '")', 'de', 'Lumbergh', 'també', "s'", 'ha', 'transformat', 'en', 'un', 'popular', 'mem', "d'", 'internet', '.']
+
     """
     o = sentence
-    o = re.sub(r"([!()*+,./:;?@|~¡«°·»¿–—―’“”…]+)", " \g<1> ", o)
+    o = re.sub(r"([!\"()*+,./:;?@|~¡«°·»¿–—―’“”…]+)", " \g<1> ", o)
     o = re.sub(r"([DLSM]['’])", "\g<1> ", o)
     o = re.sub(r"( [dlsm]['’])", " \g<1> ", o)
     o = re.sub(r"  *", " ", o)
@@ -161,8 +162,6 @@ def hin(sentence):
     """
         >>> tokenise("हिट एंड रन केस: भाग्यश्री के खिलाफ भी सलमान खान जैसी शिकायत!", lang="hin")
         ['हिट', 'एंड', 'रन', 'केस', ':', 'भाग्यश्री', 'के', 'खिलाफ', 'भी', 'सलमान', 'खान', 'जैसी', 'शिकायत', '!']
-        NOTE: not using \w as it won't match certain Devanagari chars.
-        FIXME: Improve this, 
     """
     o = sentence
     o = re.sub(r"([!&,.:?|।‘-]+)", " \g<1> ", o)
@@ -176,10 +175,10 @@ def hin(sentence):
 def asm(sentence):
     """
         >>> tokenise("“অ’ গৰখীয়া, অ’ গৰখীয়া গৰু নাৰাখ কিয়?”", lang="asm")
-        ['“', 'অ’', 'গৰখীয়া,', 'অ’', 'গৰখীয়া', 'গৰু', 'নাৰাখ', 'কিয়', '?', '”']
+	['“', 'অ’', 'গৰখীয়া', ',', 'অ’', 'গৰখীয়া', 'গৰু', 'নাৰাখ', 'কিয়', '?', '”']
     """
     o = sentence
-    o = re.sub(r"([!',.:;°।৷৹‘’“-]+)", " \g<1> ", o)
+    o = re.sub(r"([!',.:;°।৷৹‘“-]+)", " \g<1> ", o)
     o = re.sub(r'"', ' " ', o)
     o = o.replace("?", " ? ")
     o = re.sub(r"  *", " ", o)
