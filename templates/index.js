@@ -108,9 +108,10 @@ function updateTask(task) {
 
 function electGap(current_text) {
     // Choose which index to gap out
+    const regex = /[!#%&()*+,.\/:;<=>?@\`|~¡«°·»¿،؛؟٪٫।৷৹–—―‘’“”„‟…‹›↓̣$€½]/;
     do {
         gapIndex = getRandomInt(0, current_text.length - 1);
-    } while (/[!":;\?,\.\(\)]/.test(current_text[gapIndex]));
+    } while (regex.test(current_text[gapIndex]));
     // Do something better here for any punctuation
     return gapIndex;
 }
