@@ -106,12 +106,22 @@ function updateTask(task) {
 }
 
 
-function electGap(current_text) {
+function electGap(current_text, distractors, filter) {
     // Choose which index to gap out
     const regex = /[!#%&()*+,.\/:;<=>?@\`|~¡«°·»¿،؛؟٪٫।৷৹–—―‘’“”„‟…‹›↓̣$€½]/;
-    do {
+    searching = false;       
+    while(searching) {
         gapIndex = getRandomInt(0, current_text.length - 1);
-    } while (regex.test(current_text[gapIndex]));
+        if(!regex.test(current_text[gapIndex])) {
+            if(filter) {
+                var word = current_text[gapIndex];
+                if(distractors[word]) { 
+                    searching = false;
+                } 
+            } else { 
+                searching = false;
+            }
+    }
     // Do something better here for any punctuation
     return gapIndex;
 }
@@ -384,7 +394,7 @@ function onReadySearch() {
         var replacements = current_text; 
         var allWords = Array();
         for(var i = 0; i < 3; i++) {
-            var word = replacements[electGap(replacements)];
+            var word = replacements[electGap(replacements, distractors, true)];
             replacements = arrayRemove(replacements, word);
             var tw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="true">' + word.toLowerCase() + '</span>';
             var distractor = distractors[word][1];
@@ -592,7 +602,7 @@ function onReadyChoice() {
         source.type = 'audio/mp3';
         player.load();
         tbox = document.getElementById('textbox');
-        gap = electGap(current_text);
+        gap = electGap(current_text, distractors, true);
         tbox.innerHTML = buildOptionTbox(current_text, gap, distractors);
     };
     xhr.send();
@@ -615,7 +625,7 @@ function onReadyBlank() {
         source.type = 'audio/mp3';
         player.load();
         var tbox = document.getElementById('textbox');
-        var gap = electGap(current_text);
+        var gap = electGap(current_text, {}, false);
         tbox.innerHTML = buildTbox(current_text, gap);
 
     };
