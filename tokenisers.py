@@ -10,6 +10,16 @@ def quc(sentence):
 
     return [i for i in re.split("(\\w+)", o) if not i.strip() == "" ]
 
+def tam(sentence):
+    """
+	>>> tokenise("கோலத்தினைக் கொய்வ துண்டோ? - \"பெண்கள்", lang="tam")
+	['கோலத்தினைக்', 'கொய்வ', 'துண்டோ', '?', '-', '"', 'பெண்கள்']
+    """
+    o = sentence
+    o = re.sub(r"([!\"',.:;?·–—‘’• ½¾-]+)", " \g<1> ", o)
+    o = re.sub(r"  *", " ", o)
+    return [i.strip() for i in o.split(" ") if not i.strip() == ""]
+
 def por(sentence):
     """
 	>>> tokenise("Tu comestes 'bem? se tu vieres sozinho disse dos infortúnios", lang="por")
@@ -85,7 +95,7 @@ def eng(sentence):
         ["O'Brien", "'s", 'protege', 'and', 'eventual', 'successor', 'in', 'Hollywood', 'was', 'Ray', 'Harryhausen', '.']
     """
     o = sentence
-    o = re.sub(r'(["&()+,-./:;<>?–—‘’“”]+)', " \g<1> ", o)
+    o = re.sub(r'(["&()+,./:;<>?–—‘’“”-]+)', " \g<1> ", o)
     o = o.replace("'ve ", " 've ")
     o = o.replace("'s ", " 's ")
     o = o.replace("I'm ", "I 'm ")
@@ -145,7 +155,7 @@ def hin(sentence):
         FIXME: Improve this, 
     """
     o = sentence
-    o = re.sub(r"([!&,-.:?|।‘]+)", " \g<1> ", o)
+    o = re.sub(r"([!&,.:?|।‘-]+)", " \g<1> ", o)
     o = re.sub(r'"', ' " ', o)
     o = re.sub(r"'", " ' ", o)
     o = re.sub(r"  *", " ", o)
@@ -159,7 +169,7 @@ def asm(sentence):
         ['“', 'অ’', 'গৰখীয়া,', 'অ’', 'গৰখীয়া', 'গৰু', 'নাৰাখ', 'কিয়', '?', '”']
     """
     o = sentence
-    o = re.sub(r"([!',-.:;°।৷৹‘’“]+)", " \g<1> ", o)
+    o = re.sub(r"([!',.:;°।৷৹‘’“-]+)", " \g<1> ", o)
     o = re.sub(r'"', ' " ', o)
     o = o.replace("?", " ? ")
     o = re.sub(r"  *", " ", o)
@@ -324,7 +334,7 @@ def mlt(sentence):
 
 def ori(sentence):
     o = sentence
-    o = re.sub(r"([!',-.:;?|°।–—‘’“]+)", " \g<1> ", o)
+    o = re.sub(r"([!',.:;?|°।–—‘’“-]+)", " \g<1> ", o)
     o = o.replace('"', ' " ')
     o = re.sub(r"  *", " ", o)
     return [x for x in re.split(" ", o) if not x.strip() == ""]
@@ -336,7 +346,7 @@ def roh(sentence):
         ["L'", 'unic', 'chi', 'güda', 'forsa', ',', 'es', 'ün', 'chic', 'sco', 'effet', 'da', 'placebo', '.']
     """
     o = sentence
-    o = re.sub(r"([!,-.:;?«»–‘“„…‹›]+)", " \g<1> ", o)
+    o = re.sub(r"([!,.:;?«»–‘“„…‹›-]+)", " \g<1> ", o)
     for tok in [
         "l'",
         "d'",
@@ -443,6 +453,8 @@ def tokenise(sentence, lang):
         return por(sentence)
     if lang in ["rm", "roh"] or lang.startswith("rm-"):
         return roh(sentence)
+    if lang in ["ta", "tam"]:
+        return tam(sentence)
     if lang in ["th", "tha"]:
         return thai_segmenter.tokenize(sentence)
     if lang in ["tr", "tur"]:
