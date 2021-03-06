@@ -35,7 +35,11 @@ function getLanguages() {
         languages = res["languages"];
         for(var i = 0; i < languages.length; i++) {
             var language = document.createElement("option");
-            var languageText = document.createTextNode(languages[i]);
+            if(language_names[languages[i]]) { 
+                var languageText = document.createTextNode(language_names[languages[i]]);
+            } else {
+                var languageText = document.createTextNode(languages[i]);
+            }
             if(localStorage.getItem('currentLanguage') == languages[i]) {
                 language.setAttribute("selected","");
             }
