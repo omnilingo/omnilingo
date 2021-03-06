@@ -1,7 +1,7 @@
 function main() {
     /* Loads all the js libraries and project modules, then calls onReady. */
     console.log('main()');
-    head.js();
+    head.js('/static/util.js');
 
     // For the first page load we set both tasks to enabled
     if(!localStorage.getItem('enableBlanks')) {
@@ -105,10 +105,6 @@ function updateTask(task) {
     localStorage.setItem(task.id, task.checked);
 }
 
-function getRandomInt(min, max) {
-    // Generate a pseudo-random integer between min and max
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 function electGap(current_text) {
     // Choose which index to gap out
