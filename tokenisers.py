@@ -10,6 +10,18 @@ def quc(sentence):
 
     return [i for i in re.split("(\\w+)", o) if not i.strip() == "" ]
 
+def lug(sentence):
+    """
+	>>> tokenise("Kika kya nnyimba ki ky'osinga okwagala?", lang="lug")
+	['Kika', 'kya', 'nnyimba', 'ki', "ky'osinga", 'okwagala', '?']
+    """
+    o = sentence
+    o = re.sub(r"([!\",./:;?’-]+)", " \g<1> ", o)
+    o = re.sub(r"  *", " ", o)
+    
+    return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == ""]
+
+
 def cym(sentence):
     """
 	>>> tokenise("Ond meddylia mae ’na ddoethuriaeth i'w sgwennu.", lang="cym")
@@ -17,8 +29,8 @@ def cym(sentence):
     """
     o = sentence
     o = re.sub(r"([!,.:;?¬–—‘-]+)", " \g<1> ", o)
-    o = re.sub(r"  *", " ", o)
     o = re.sub(r"['’]", "ʼ", o)
+    o = re.sub(r"  *", " ", o)
 
     return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == ""]
 
@@ -407,6 +419,8 @@ def tokenise(sentence, lang):
         return kab(sentence)
     if lang in ["ka", "kat"]:
         return kat(sentence)
+    if lang in ["lg", "lug"]:
+        return lug(sentence)
     if lang in ["hi", "hin"]:
         return hin(sentence)
     if lang in ["mt", "mlt"]:
