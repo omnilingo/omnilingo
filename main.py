@@ -3,6 +3,7 @@
 import sys
 import os
 import random
+import re
 import question_loader
 
 from flask import Flask, render_template, send_from_directory
@@ -19,20 +20,19 @@ def select_clip(questions):
 
 @app.route("/get_clips") # This should be get clip 
 def get_clips():
-    enabled = request.args.get("enabled", default='blank|choice', type=str)
+    enabled = request.args.get("enabled", default='blank|choice|scramble|search', type=str)
     task_type = random.choice(enabled.split('|'))
     nlevels = request.args.get("nlevels", default=10, type=int)
     ngaps = request.args.get("ngaps", default=1, type=int)
     level = request.args.get("level", default=1, type=int)
     language = request.args.get("language", default="fi", type=str)
-    tipus = request.args.get("type", default="blank", type=str)
-    sorting = request.args.get("sorting", default="difficulty", type=str)
-    selected_questions = []
-    print(questions.keys())
+    print('[task_type]', task_type)
     sorting_scheme = []
+
     if language not in sorting_schemes:
         language = "fi"
-    if sorting == "length":
+
+    if task_type == "scramble":
         sorting_scheme = sorting_schemes[language]['length']
     else:
         sorting_scheme = sorting_schemes[language]['default']
@@ -44,21 +44,39 @@ def get_clips():
         partition_size * (level - 1) : partition_size * level
     ]
     ds = {}
-    while len(selected_questions) < 3:
-        clip = select_clip(partition)
-        selected_question = questions[language][clip[0]]
-        print('[selected_question]', clip, '||',  selected_question)
-        if selected_question not in selected_questions:
-            selected_questions.append(selected_question)
-        if tipus == "choice" or tipus == "search":
-            for tok in selected_question["tokenized"]:
-                ds[tok] = [i[1] for i in distractors[language][tok] if not i[1].lower() == tok.lower()][1:]
+    clip = select_clip(partition)
+    selected_question = questions[language][clip[0]]
+    print('[selected_question]', clip, '||',  selected_question)
+    if task_type == "choice" or task_type == "search":
+        for (i, tok) in enumerate(selected_question["tokenized"]):
+            d = []
+            for j in distractors[language][tok]:
+                print(j)
+                if j[1].lower() != tok.lower() and re.match('\w+', tok):
+                    d.append(j[1])
+            if len(d) != 0:
+                ds[i] = d
+                print(i, tok, ds[i]) 
+
+    if len(ds.items()) < 1:
+        # If we didn't find any distractors then we can't generate a choice/search task
+        task_type = random.choice(["blank", "scramble"])
+  
+    gap = -1
+    if task_type == "choice" or task_type == "search":
+        gap = random.choice([i for i in ds.keys()])
+        print('[distractor]', ds[gap])
+        return {"question": selected_question, "gap": gap, "distractor": ds[gap], "task_type": task_type}
+    else:
+        gap = random.randint(0, len(selected_question["tokenized"]) - 1)
+        val = re.match('\w+', selected_question["tokenized"][gap])
+        while not val:
+            gap = random.randint(0, len(selected_question["tokenized"]) - 1)
+            val = re.match('\w+', selected_question["tokenized"][gap])
+        return {"question": selected_question, "gap": gap, "task_type": task_type}
+
     # Work out a way of encoding gaps + distractors here      
     # distractorsForGaps = {3: ["the", "he"], "2": ["cat", "bat"]}
-    if tipus == "choice" or tipus == "search":
-        return {"questions": selected_questions, "distractors": ds, "task_type": task_type}
-    else: 
-        return {"questions": selected_questions, "task_type": task_type}
 
 @app.route("/")
 def index():

@@ -1,3 +1,83 @@
+function randomSort(a, b) {
+  return Math.random();
+}
+
+function arrayRemove(arr, value) {
+    return arr.filter(function(ele){
+        return ele != value;
+    });
+}
+
+
+function globalKeyDown(e) {
+    console.log('globalKeyDown() ' + e.key);
+
+    if(e.key == 'Tab') {
+      // Play and focus textbox
+      console.log('TAB');
+      var player = document.getElementById('player');
+      player.play();
+    }
+    if(e.key == ' ') {
+      // Next clip
+      location.reload();
+    }
+}
+
+function getLanguages() {
+    // Creates the language selection dialogue
+    console.log('getLanguages()');
+    languageSelector = document.getElementById('languages');
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/get_languages');
+    xhr.onload = function() {
+        res = JSON.parse(xhr.responseText);
+        languages = res["languages"];
+        for(var i = 0; i < languages.length; i++) {
+            var language = document.createElement("option");
+            var languageText = document.createTextNode(languages[i]);
+            if(localStorage.getItem('currentLanguage') == languages[i]) {
+                language.setAttribute("selected","");
+            }
+            language.setAttribute("value", languages[i]);
+            language.appendChild(languageText);
+            languageSelector.appendChild(language);
+        }
+    };
+    xhr.send();
+}
+
+function drawFeedback() {
+    feedback = document.getElementById('feedback');
+    responses = localStorage.getItem('responses');
+    console.log('drawFeedback() ' + responses);
+    for(var i = 0; i < 10; i++) {
+        span = document.createElement('span');
+        if(responses[i] == '-') {
+            t = document.createTextNode(' ✘ ');
+            span.setAttribute("style", "padding:2px;align:center;color:red; border: 1px solid black");
+            span.appendChild(t);
+        } else if(responses[i] == '+') {
+            t = document.createTextNode(' ✔ ');
+            span.setAttribute("style", "padding:2px;align:center;color:green; border: 1px solid black");
+            span.appendChild(t);
+        } else {
+            t = document.createTextNode(' ? ');
+            span.setAttribute("style", "padding:2px;align:center;color:white; border: 1px solid black");
+            span.appendChild(t);
+        }
+        feedback.appendChild(span);
+        padding = document.createElement('span');
+        padding.setAttribute('style', 'width: 20px');
+        t = document.createTextNode(' ');
+        padding.appendChild(t);
+        feedback.appendChild(padding);
+    }
+}
+
+// Above here should be moved to util.js but they are called in main()
+/********************************************************************/
+
 function main() {
     /* Loads all the js libraries and project modules, then calls onReady. */
     console.log('main()');
@@ -181,15 +261,15 @@ function buildOptionTbox(current_text, gap, distractors) {
     line = '';
     console.log('buildOptionTbox()')
     // FIXME: Caps at beginning of sentence
-    var ds = distractors[current_text[gap]];
-    console.log('ds:')
-    console.log(ds);
+    console.log('distractors:')
+    console.log(distractors);
+    var distractor = distractors[0];
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
             if(i == 0) {
-                ds[0][0] = ds[0][0].toUpperCase();
+                distractor[0] = distractor[0].toUpperCase();
             } else {
-                ds[0] = ds[0].toLowerCase();
+                distractor = distractor.toLowerCase();
             } 
             if(getRandomInt(0, 1) == 1) {
                 line += `{<span 
@@ -201,14 +281,14 @@ function buildOptionTbox(current_text, gap, distractors) {
                                 onClick="userInputChoice(event, 0, \'dt${i}'\)"
                                 id="dt${i}"
                                 style="border: thin dotted #000; width: ${current_text[i].length}ch"
-                                data-value="${current_text[i]}">${ds[0]}</span>}`
+                                data-value="${current_text[i]}">${distractor}</span>}`
 
              } else {
                 line += `{<span 
                                 onClick="userInputChoice(event, 0, \'dt${i}'\)"
                                 id="dt${i}"
                                 style="border: thin dotted #000; width: ${current_text[i].length}ch"
-                                data-value="${current_text[i]}">${ds[0]}</span>, 
+                                data-value="${current_text[i]}">${distractor}</span>, 
                            <span 
                                 onClick="userInputChoice(event, 1, \'t${i}'\)"
                                 id="t${i}"
@@ -255,24 +335,6 @@ function focusGap() {
     document.querySelectorAll('[data-focus="true"]')[0].focus();
 }
 
-function chooseTask(enabledTasks) {
-/** 
- * This is called when the page is loaded and selects a random task out of the available tasks
- * Currently called by the onReady() function
- */
-    console.log('enabledTasks:')
-    console.log(enabledTasks);
-    console.log('enabledTasks.length:')
-    console.log(enabledTasks.length);
-    if(enabledTasks.length == 1) {
-        return enabledTasks[0];
-    }
-    task = getRandomInt(0, enabledTasks.length-1);
-    return enabledTasks[task];
-}
-
-
-
 function onReady() {
 /** 
  * First it makes an array of the available tasks
@@ -302,20 +364,45 @@ function onReady() {
         enabledTasks.push("search");
     }
 
-    taskType = chooseTask(enabledTasks);
-    console.log('taskType: ' + taskType);
-    if(taskType == "choice") {
-        onReadyChoice();
-    } else if(taskType == "blank") {
-        onReadyBlank();
-    } else if(taskType == "scramble") {
-        onReadyScramble();
-    } else if(taskType == "search") {
-        onReadySearch();
-    } else {
-        console.log("TASK: not implemented, assigning blank");
-        onReadyBlank();
-    }
+    var tasks = enabledTasks.join("|");
+    var current_language = localStorage.getItem('currentLanguage')
+
+    var questions = {};
+    var player = document.getElementById('player');
+    var source = document.getElementById('audioSource');
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/get_clips?nlevels=10&enabled='+tasks +'&level=' + current_level + '&language=' + current_language);
+    xhr.onload = function() {
+        var res = JSON.parse(xhr.responseText);
+        var current_question = res["question"];
+        var current_audio = current_question["path"];
+        var current_text = current_question["tokenized"];
+        var distractor = res["distractor"];
+        console.log('distractor:');
+        console.log(distractor);
+        var task_type = res["task_type"];
+        var gap = res["gap"];
+
+        source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
+        source.type = 'audio/mp3';
+        player.load();
+
+        console.log('task_type: ' + task_type);
+        if(task_type == "choice") {
+            onReadyChoice(current_text, gap, distractor);
+        } else if(task_type == "blank") {
+            onReadyBlank(current_text, gap);
+        } else if(task_type == "scramble") {
+            onReadyScramble(current_text);
+//        } else if(task_type == "search") {
+//            onReadySearch(current_text, distractor);
+        } else {
+            console.log("TASK: not implemented, assigning blank");
+            onReadyBlank();
+        }
+    };
+// General code starts here
+    xhr.send();
 }
 
 function checkInputSearch(e) {
@@ -336,7 +423,7 @@ function checkInputSearch(e) {
     drawFeedback();
 }
 
-function onReadySearch() {
+function onReadySearch(current_text, distractor) {
 /**
  * Core task function for the 'Search' task
  * - Gets a question from the backend
@@ -346,62 +433,41 @@ function onReadySearch() {
     console.log('onReadySearch()');
 
 // General code starts here
-    var questions = {};
-    var player = document.getElementById('player');
-    var source = document.getElementById('audioSource');
-    var xhr = new XMLHttpRequest();
-    var current_language = localStorage.getItem('currentLanguage')
-    xhr.open('GET', '/get_clips?nlevels=10&type=search&level=' + current_level + '&language=' + current_language);
-    xhr.onload = function() {
-        var res = JSON.parse(xhr.responseText);
-        var current_question = res["questions"][0];
-        var current_audio = current_question["path"];
-        var current_text = current_question["tokenized"];
-        var distractors = res["distractors"];
-
-        source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
-        source.type = 'audio/mp3';
-        player.load();
 
 // Specific code starts here
-	    console.log('distractors:');
-        console.log(distractors);
-	console.log('distractors[current_text[2]]:')
-        console.log(distractors[current_text[2]]);
-	console.log('current_text:');
-        console.log(current_text);
+    console.log('distractors:');
+    console.log(distractor);
+    console.log('current_text:');
+    console.log(current_text);
         
-        var tb = '';
-        var replacements = current_text; 
-        var allWords = Array();
-        for(var i = 0; i < 3; i++) {
-            var word = replacements[electGap(replacements, distractors, true)];
-            replacements = arrayRemove(replacements, word);
-            var tw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="true">' + word.toLowerCase() + '</span>';
-            var distractor = distractors[word][0];
+    var tb = '';
+    var replacements = current_text; 
+    var allWords = Array();
+    for(var i = 0; i < 3; i++) {
+        var word = replacements[electGap(replacements, distractors, true)];
+        replacements = arrayRemove(replacements, word);
+        var tw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="true">' + word.toLowerCase() + '</span>';
+        var distractor = distractor[0];
 
-            console.log('distractor:');
-            console.log(distractor);
-            var fw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="false">' + distractor.toLowerCase() + '</span>';
-            allWords.push(tw);
-            allWords.push(fw);
-        }
-        allWords = allWords.sort(randomSort);
-        for(var i = 0; i < allWords.length; i++) {
-            tb += allWords[i] + ' ';
-        }
+        console.log('distractor:');
+        console.log(distractor);
+        var fw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="false">' + distractor.toLowerCase() + '</span>';
+        allWords.push(tw);
+        allWords.push(fw);
+    }
+    allWords = allWords.sort(randomSort);
+    for(var i = 0; i < allWords.length; i++) {
+        tb += allWords[i] + ' ';
+    }
 
-        tbox = document.getElementById('textbox');
+    tbox = document.getElementById('textbox');
 
-        tbox.innerHTML = tb;
-    };
-// General code starts here
-    xhr.send();
+    tbox.innerHTML = tb;
 }
 
 
 
-function onReadyScramble() {
+function onReadyScramble(current_text) {
     /** 
      *	onReady function for the Scamble task
      *	- It gets a set of characters and randomises the order
@@ -410,59 +476,41 @@ function onReadyScramble() {
      */
     console.log('onReadyScramble()');
 
-// General code
-    var questions = {};
-    var player = document.getElementById('player');
-    var source = document.getElementById('audioSource');
-    var xhr = new XMLHttpRequest();
-    var current_language = localStorage.getItem('currentLanguage')
-    xhr.open('GET', '/get_clips?nlevels=10&type=scramble&sorting=length&level=' + current_level + '&language=' + current_language);
-    xhr.onload = function() {
-        res = JSON.parse(xhr.responseText);
-        current_question = res["questions"][0];
-        current_audio = current_question["path"];
-        current_text = current_question["tokenized"];
+    tbox = document.getElementById('textbox');
 
-        source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
-        source.type = 'audio/mp3';
-        player.load();
-        tbox = document.getElementById('textbox');
 // Specific code
-        chars = Array();
-        for(var i = 0; i < current_text.length; i++) {
-            for(var j = 0; j < current_text[i].length; j++) {
-              chars.push(current_text[i][j]);
-            }
-            chars.push(" ");
+    chars = Array();
+    for(var i = 0; i < current_text.length; i++) {
+        for(var j = 0; j < current_text[i].length; j++) {
+          chars.push(current_text[i][j]);
         }
-        tb = "";
-        for(var i = 0; i < chars.length; i++) {
-            if(chars[i] == " ") {
-              tb += '<span style="color: white"> _ </span>';
-            } else {
-              tb += '<span id="dz'+i+'" style="padding: 2px; text-align:center; border: 2px solid black" onDrop="onScramDrop(event,\'dz'+i+'\')" onDragOver="onScramOver(event)" data-target="'+chars[i]+'"> ? </span>';
-            } 
-
+        chars.push(" ");
+    }
+    tb = "";
+    for(var i = 0; i < chars.length; i++) {
+        if(chars[i] == " ") {
+          tb += '<span style="color: white"> _ </span>';
+        } else {
+          tb += '<span id="dz'+i+'" style="padding: 2px; text-align:center; border: 2px solid black" onDrop="onScramDrop(event,\'dz'+i+'\')" onDragOver="onScramOver(event)" data-target="'+chars[i]+'"> ? </span>';
         } 
-        cbox = document.getElementById('clues');
-        var set1 = new Set(chars);
-        var arr1 = Array.from(set1);
-        arr1 = shuffleArray(arr1);
-        cb = "";
-        for(var i = 0; i < arr1.length; i++) {
-            if(arr1[i] == " ") {
-                continue;
-            }
-            cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i].toLowerCase() + '</span>';
-            cb += '<span style="color: white"> _ </span>';
+
+    } 
+    cbox = document.getElementById('clues');
+    var set1 = new Set(chars);
+    var arr1 = Array.from(set1);
+    arr1 = shuffleArray(arr1);
+    cb = "";
+    for(var i = 0; i < arr1.length; i++) {
+        if(arr1[i] == " ") {
+            continue;
         }
+        cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i].toLowerCase() + '</span>';
+        cb += '<span style="color: white"> _ </span>';
+    }
 	console.log('set1:')
-        console.log(set1);
-        cbox.innerHTML = cb;
-        tbox.innerHTML = tb;
-    };
-    // General code
-    xhr.send();
+    console.log(set1);
+    cbox.innerHTML = cb;
+    tbox.innerHTML = tb;
 }
 
 function onScramOver(e) {
@@ -581,68 +629,6 @@ function onScramDrop(e, tid) {
     }
 }
 
-function onReadyChoice() {
-/**
- * driver function for the Choice task
- * basically setup and then call electGap() to choose a gap and 
- * buildOptionTbox() to build the text box with binary choice
- *
- */
-    console.log('onReadyChoice()');
-
-// General code
-    var questions = {};
-    var player = document.getElementById('player');
-    var source = document.getElementById('audioSource');
-    var xhr = new XMLHttpRequest();
-    var current_language = localStorage.getItem('currentLanguage')
-    xhr.open('GET', '/get_clips?nlevels=10&type=choice&level=' + current_level + '&language=' + current_language);
-    xhr.onload = function() {
-        res = JSON.parse(xhr.responseText);
-        current_question = res["questions"][0];
-        current_audio = current_question["path"];
-        current_text = current_question["tokenized"];
-        distractors = res["distractors"];
-        source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
-        source.type = 'audio/mp3';
-        player.load();
-// Specific code
-        tbox = document.getElementById('textbox');
-        gap = electGap(current_text, distractors, true);
-        tbox.innerHTML = buildOptionTbox(current_text, gap, distractors);
-    };
-    // General code
-    xhr.send();
-}
-
-function onReadyBlank() {
-    console.log('onReadyBlanks()');
-
-    // General code
-    var questions = {};
-    var xhr = new XMLHttpRequest();
-    xhr.onload = function() {
-        res = JSON.parse(xhr.responseText);
-        current_question = res["questions"][0];
-        current_audio = current_question["path"];
-        current_text = current_question["tokenized"];
-        var player = document.getElementById('player');
-        var source = document.getElementById('audioSource');
-
-        source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
-        source.type = 'audio/mp3';
-        player.load();
-        var tbox = document.getElementById('textbox');
-        var gap = electGap(current_text, {}, false);
-        tbox.innerHTML = buildTbox(current_text, gap);
-
-    };
-    current_language = localStorage.getItem('currentLanguage')
-    xhr.open('GET', '/get_clips?nlevels=10&type=blank&level=' + current_level + '&language=' + current_language);
-    // General code
-    xhr.send();
-
-}
 
 function checkInput(tid) {
 /** 
@@ -708,5 +694,31 @@ function checkInput(tid) {
     clearFeedback();
     drawFeedback();
 }
+
+
+/*************************************************************************************/
+// Refactored functions below here
+
+
+function onReadyBlank(current_text, gap) {
+    /**
+     * Run the Blank task
+     */
+    console.log('onReadyBlanks()');
+    var tbox = document.getElementById('textbox');
+    tbox.innerHTML = buildTbox(current_text, gap);
+}
+
+function onReadyChoice(current_text, gap, distractors) {
+    /**
+     * Run the Choice task
+     * buildOptionTbox() to build the text box with binary choice
+     *
+     */
+    console.log('onReadyChoice()');
+    tbox = document.getElementById('textbox');
+    tbox.innerHTML = buildOptionTbox(current_text, gap, distractors);
+}
+
 
 window.onload = main;

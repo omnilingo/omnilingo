@@ -86,11 +86,11 @@ def load_questions(language_name):
     sys.stderr.write("Generating distractors.\n")
     distractors = get_distractors(word_frequency)
 
-    sys.stderr.write("Assigning distractors.\n")
-    for question in questions:
-        question["distractors"] = {}
-        for token in question["tokenized"]:
-            question["distractors"][token] = distractors[token]
+#    sys.stderr.write("Assigning distractors.\n")
+#    for question in questions:
+#        question["distractors"] = {}
+#        for token in question["tokenized"]:
+#            question["distractors"][token] = distractors[token]
 
     sys.stderr.write("Done.\n")
 
@@ -157,6 +157,7 @@ def load_all_languages_cached():
         sys.stderr.write("Loading pre-cached question set...\n")
         with gzip.open("cache/languages.pickle.gz", "rb") as languages_f:
             languages = pickle.load(languages_f)
+        print('[languages]', languages)
         questions = {}
         sorting_schemes = {}
         distractors = {}
