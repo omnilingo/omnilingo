@@ -169,10 +169,15 @@ function buildOptionTbox(current_text, gap, distractors) {
     line = '';
     console.log('buildOptionTbox()')
     // FIXME: Caps at beginning of sentence
-    ds = distractors[current_text[gap]];
+    var ds = distractors[current_text[gap]];
     console.log(ds);
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
+            if(i == 0) {
+                ds[0][0] = ds[0][0].toUpperCase();
+            } else {
+                ds[0] = ds[0].toLowerCase();
+            } 
             if(getRandomInt(0, 1) == 1) {
                 line += `{<span 
                                 onClick="userInputChoice(event, 1, \'t${i}'\)"
