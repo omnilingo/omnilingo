@@ -52,6 +52,7 @@ box-shadow: 10px 5px 5px #dcdcdc;
 	padding: 5px;
   border-radius: 5px;
   font-family: monospace;
+  font-size: 80%;
 /*box-shadow: 10px 5px 5px #dcdcdc;*/
 }
 
@@ -63,4 +64,11 @@ box-shadow: 10px 5px 5px #dcdcdc;
 /*box-shadow: 10px 5px 5px #dcdcdc;*/
 }
 
-
+.wordGuess{
+	border: 1.5px solid black;
+	background-color: #bababa;
+	padding: 5px;
+  border-radius: 5px;
+  font-family: monospace;
+box-shadow: 10px 5px 5px #dcdcdc;
+}

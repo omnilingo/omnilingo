@@ -43,11 +43,11 @@ def get_clips():
         print('[selected_question]', clip, '||',  selected_question)
         if selected_question not in selected_questions:
             selected_questions.append(selected_question)
-        if tipus == "choice":
+        if tipus == "choice" or tipus == "search":
             for tok in selected_question["tokenized"]:
                 ds[tok] = [i[1] for i in selected_question["distractors"][tok] if not i[1].lower() == tok.lower()][1:]
         
-    if tipus == "choice":
+    if tipus == "choice" or tipus == "search":
         return {"questions": selected_questions, "distractors": ds}
     else: 
         return {"questions": selected_questions}

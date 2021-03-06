@@ -19,6 +19,11 @@ function main() {
         eb = document.getElementById('enableScrams');
         eb.setAttribute('checked', true);
     }
+    if(!localStorage.getItem('enableSearch')) {
+        localStorage.setItem('enableSearch', true);
+        eb = document.getElementById('enableSearch');
+        eb.setAttribute('checked', true);
+    }
 
 
     // This allows us to capture Enter, Tab, Space etc.
@@ -307,7 +312,11 @@ function onReady() {
         console.log('3T? ' + localStorage.getItem('enableScrams'))
         enabledTasks.push("scramble");
     }
-
+    var et = localStorage.getItem('enableSearch')
+    if(et == "true") {
+        console.log('4T? ' + localStorage.getItem('enableSearch'))
+        enabledTasks.push("search");
+    }
 
     taskType = chooseTask(enabledTasks);
     console.log('TT: ' + taskType);
@@ -317,11 +326,86 @@ function onReady() {
         onReadyBlank();
     } else if(taskType == "scramble") {
         onReadyScramble();
+    } else if(taskType == "search") {
+        onReadySearch();
     } else {
         console.log("TASK: not implemented, assigning blank");
         onReadyBlank();
     }
 }
+
+
+function arrayRemove(arr, value) { 
+    return arr.filter(function(ele){ 
+        return ele != value; 
+    });
+}
+
+function randomSort(a, b) {  
+  return Math.random();
+}  
+
+function checkInputSearch(e) {
+    console.log('checkInputSearch()');
+    var res = e.target.getAttribute('data-value');
+    if(res == "false") {
+        e.target.setAttribute('class', 'wordGuess incorrect');
+    } else {
+        e.target.setAttribute('class', 'wordGuess correct');
+    }
+
+    clearFeedback();
+    drawFeedback();
+}
+
+function onReadySearch() {
+    console.log('onReadySearch()');
+
+    var questions = {};
+    var player = document.getElementById('player');
+    var source = document.getElementById('audioSource');
+    var xhr = new XMLHttpRequest();
+    var current_language = localStorage.getItem('currentLanguage')
+    xhr.open('GET', '/get_clips?nlevels=10&type=search&level=' + current_level + '&language=' + current_language);
+    xhr.onload = function() {
+        var res = JSON.parse(xhr.responseText);
+        var current_question = res["questions"][0];
+        var current_audio = current_question["path"];
+        var current_text = current_question["tokenized"];
+        var distractors = res["distractors"];
+
+        console.log(distractors);
+        console.log(distractors[current_text[2]]);
+        console.log(current_text);
+        
+        var tb = '';
+        var replacements = current_text; 
+        var allWords = Array();
+        for(var i = 0; i < 3; i++) {
+            var word = replacements[electGap(replacements)];
+            replacements = arrayRemove(replacements, word);
+            var tw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="true">' + word.toLowerCase() + '</span>';
+            var distractor = distractors[word][1];
+            var fw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="false">' + distractor.toLowerCase() + '</span>';
+            allWords.push(tw);
+            allWords.push(fw);
+        }
+        allWords = allWords.sort(randomSort);
+        for(var i = 0; i < allWords.length; i++) {
+            tb += allWords[i] + ' ';
+        }
+        source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
+        source.type = 'audio/mp3';
+        player.load();
+
+        tbox = document.getElementById('textbox');
+
+        tbox.innerHTML = tb;
+    };
+    xhr.send();
+}
+
+
 
 function onReadyScramble() {
     console.log('onReadyScramble()');
@@ -367,7 +451,7 @@ function onReadyScramble() {
             if(arr1[i] == " ") {
                 continue;
             }
-            cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i] + '</span>';
+            cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i].toLowerCase() + '</span>';
             cb += '<span style="color: white"> _ </span>';
         }
         console.log(set1);

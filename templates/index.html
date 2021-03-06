@@ -11,9 +11,10 @@
 <body>
 <div class="content" id="content">
   <div style="float:right">
-    <input class="cb" onClick="updateTask(this)" type="checkbox" id="enableScrams" name="enableScrams"><label for="enableScrams">Scramble</label>
-    <input class="cb" onClick="updateTask(this)" type="checkbox" id="enableBlanks" name="enableBlanks"><label for="enableBlanks">Blanks</label>
-    <input class="cb" onClick="updateTask(this)" type="checkbox" id="enableChoice" name="enableChoice"><label for="enableChoice">Choices</label>
+    <span class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableSearch" name="enableSearch"><label for="enableSearch">Search</label></span>
+    <span class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableScrams" name="enableScrams"><label for="enableScrams">Scramble</label></span>
+    <span class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableBlanks" name="enableBlanks"><label for="enableBlanks">Blanks</label></span>
+    <span class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableChoice" name="enableChoice"><label for="enableChoice">Choices</label></span>
   </div>
   <div style="float:left">
   <select name="languages" id="languages" onChange="changeLanguage(this)"></select>
