@@ -20,6 +20,8 @@ def select_clip(questions):
 
 @app.route("/get_clips") # This should be get clip 
 def get_clips():
+    MAX_LENGTH = 14
+
     enabled = request.args.get("enabled", default='blank|choice|scramble|search', type=str)
     task_type = random.choice(enabled.split('|'))
     nlevels = request.args.get("nlevels", default=10, type=int)
@@ -37,7 +39,6 @@ def get_clips():
     # in terms of length, this can be improved later to take into account
     # frequency for datasets where there are more shorter items.
     if task_type == "scramble":
-        MAX_LENGTH = 14
         sorting_scheme = sorting_schemes[language]['length']
         print("[first_n]", sorting_scheme[0:9])
         partition = [i for i in sorting_scheme if i[1] < MAX_LENGTH]
@@ -70,7 +71,10 @@ def get_clips():
 
     if len(ds.items()) < 1:
         # If we didn't find any distractors then we can't generate a choice/search task
-        task_type = random.choice(["blank", "scramble"])
+        if len(selected_question["sentence"]) < MAX_LENGTH:
+            task_type = random.choice(["blank", "scramble"])
+        else:
+            task_type = "blank"
   
     gap = -1
     if task_type == "choice" or task_type == "search":

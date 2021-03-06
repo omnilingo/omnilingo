@@ -150,7 +150,7 @@ box-shadow: 10px 5px 5px #dcdcdc;
   max-width: 300px;
   max-height: 40vh;
   border-radius: 5px;
-  background: var(--white);
+  background: white;
   overflow: auto;
   cursor: default;
 }
