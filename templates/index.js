@@ -466,6 +466,9 @@ function onReadyScramble() {
 }
 
 function onScramOver(e) {
+/**
+ * Function called on the hover over for the tile dropping
+ */
 //    console.log('onScramOver()');
 //    console.log(e);
 //   e.currentTarget.style.backgroundColor = 'red';
@@ -473,6 +476,9 @@ function onScramOver(e) {
 }
 
 function onScramStart(e) {
+/**
+ * When we start dragging a tile, we set its background colour to yellow.
+ */
     console.log('onScramStart()');
     e.dataTransfer.setData('value', e.currentTarget.dataset.value);
    e.currentTarget.style.backgroundColor = 'yellow';
@@ -481,11 +487,21 @@ function onScramStart(e) {
 }
 
 function onScramEnd(e) {
+/**
+ * When we finish dragging we set the background colour back to white
+ */
+    console.log('onScramStart()');
   e.currentTarget.style.backgroundColor = '#bababa';
 //   e.currentTarget.style.backgroundColor = 'white';
 }
 
 function onScramDrop(e, tid) {
+/**
+ * This is called when we drop the tile on a target
+ * - We should check if the target and the tile match and update the colour
+ * - This also merges those drop squares when the whole word is complete and sets the border to green
+ * - It should also check to see if the whole response is right and update the responses as necessary
+ */
     console.log('onScramDrop()');
     console.log('tid:' + tid);
     let val = e.dataTransfer.getData('value');
@@ -566,8 +582,15 @@ function onScramDrop(e, tid) {
 }
 
 function onReadyChoice() {
+/**
+ * driver function for the Choice task
+ * basically setup and then call electGap() to choose a gap and 
+ * buildOptionTbox() to build the text box with binary choice
+ *
+ */
     console.log('onReadyChoice()');
 
+// General code
     var questions = {};
     var player = document.getElementById('player');
     var source = document.getElementById('audioSource');
@@ -583,16 +606,19 @@ function onReadyChoice() {
         source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
         source.type = 'audio/mp3';
         player.load();
+// Specific code
         tbox = document.getElementById('textbox');
         gap = electGap(current_text, distractors, true);
         tbox.innerHTML = buildOptionTbox(current_text, gap, distractors);
     };
+    // General code
     xhr.send();
 }
 
 function onReadyBlank() {
     console.log('onReadyBlanks()');
 
+    // General code
     var questions = {};
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
@@ -613,6 +639,7 @@ function onReadyBlank() {
     };
     current_language = localStorage.getItem('currentLanguage')
     xhr.open('GET', '/get_clips?nlevels=10&type=blank&level=' + current_level + '&language=' + current_language);
+    // General code
     xhr.send();
 
 }
