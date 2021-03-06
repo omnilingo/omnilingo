@@ -12,27 +12,24 @@
 
 <body>
 <div class="content" id="content">
+<div>
   <div style="float:right">
-    <span class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableSearch" name="enableSearch"><label for="enableSearch">Search</label></span>
-    <span class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableScrams" name="enableScrams"><label for="enableScrams">Scramble</label></span>
-    <span class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableBlanks" name="enableBlanks"><label for="enableBlanks">Blanks</label></span>
-    <span class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableChoice" name="enableChoice"><label for="enableChoice">Choices</label></span>
+    <label class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableSearch" name="enableSearch" checked><span>Srch</span></label>
+    <label class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableScrams" name="enableScrams" checked><span>Scrmbl</span></label>
+    <label class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableBlanks" name="enableBlanks" checked><span>Blnks</span></label>
+    <label class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableChoice" name="enableChoice" checked><span>Chcs</span></label>
   </div>
   <div style="float:left">
   <select name="languages" id="languages" onChange="changeLanguage(this)"></select>
   <select name="levels" id="levels" onChange="changeLevel(this)"></select>
   </div>
-  <!--<input type="button" value="Another" onClick="javascript:location.reload (true)"/>-->
-  <br/>
-  <p style="align:left">
-    <strong>Instructions:</strong> Play the recording, then either type
-    or choose what you hear.
-    After typing, press enter to submit. Spacebar reloads the page.
-  </p>
-
+</div>
+<p/>
+  <div style="float:none">
   <audio id="player" controls="controls" onended="focusGap()">
     <source id="audioSource" />
   </audio>
+  </div>
 <p/>
   <div class="clues" id="clues">
   </div>
@@ -42,6 +39,18 @@
     <input type="range" min="1" max="100" value="100" class="slider" id="hiderSlider">
   </div>-->
   <br/>
+<div style="float:left; padding: 1px; margin: 1px" onClick="openModal(this)">
+<span class="help" id="help" class="open-modal" data-open="modal1" onClick="openModal(this)"><b>?</b></span>
+</div>
+<div class="modal" id="modal1">
+  <div class="modal-dialog">
+    <header class="modal-header">
+       Instructions
+      <button class="close-modal" aria-label="close modal" onClick="closeModal(this)" data-close>✕</button>
+    </header>
+    <section class="modal-content">Put the instructions here<section>
+  </div>
+</div>
 <div style="float:right; padding: 1px; margin: 1px">
 <span class="thumb" id="thumbsDown">👎️</span>
 <span class="thumb" id="thumbsUp">👍️</span> 

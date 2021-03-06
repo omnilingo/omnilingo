@@ -52,9 +52,45 @@ box-shadow: 10px 5px 5px #dcdcdc;
 	padding: 5px;
   border-radius: 5px;
   font-family: monospace;
-  font-size: 80%;
+  font-size: 90%;
 /*box-shadow: 10px 5px 5px #dcdcdc;*/
 }
+
+label > input[type="checkbox"] {
+  display: none;
+  margin:2pt;
+}
+
+label > input[type="checkbox"] + *::before {
+  content: "";
+  display: inline-block;
+  vertical-align: bottom;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 10%;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: gray;
+}
+
+
+label > input[type="checkbox"]:checked + *::before {
+  content: "■";
+  color: white;
+  text-align: center;
+  background: black;
+  border-color: black ;
+}
+
+
+.help{
+	border: 1.5px solid black;
+	padding: 5px;
+  border-radius: 5px;
+  font-family: monospace;
+/*box-shadow: 10px 5px 5px #dcdcdc;*/
+}
+
 
 .thumb{
 	border: 1.5px solid black;
@@ -80,3 +116,47 @@ box-shadow: 10px 5px 5px #dcdcdc;
 	padding: 10px;
 	margin: 20px ;
 }
+
+/*********************/
+
+.open-modal {
+  font-weight: bold;
+  background: white;
+  color: black;
+  padding: .75rem 1.75rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+}
+
+.modal { 
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: white;
+  cursor: pointer;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.35s ease-in;
+}
+ 
+.modal-dialog {
+  position: relative;
+  max-width: 300px;
+  max-height: 40vh;
+  border-radius: 5px;
+  background: var(--white);
+  overflow: auto;
+  cursor: default;
+}
+
+.modal.is-visible {
+  visibility: visible;
+  opacity: 0.5;
+}
+

@@ -32,17 +32,27 @@ def get_clips():
     if language not in sorting_schemes:
         language = "fi"
 
+    partition = []
+    # For the scramble task it seems to be better to have a limited size
+    # in terms of length, this can be improved later to take into account
+    # frequency for datasets where there are more shorter items.
     if task_type == "scramble":
+        MAX_LENGTH = 14
         sorting_scheme = sorting_schemes[language]['length']
+        print("[first_n]", sorting_scheme[0:9])
+        partition = [i for i in sorting_scheme if i[1] < MAX_LENGTH]
+        print("[slice] 0 :", len(partition))
     else:
+        # FIXME: Replace this with difficulty-based sorting
         sorting_scheme = sorting_schemes[language]['default']
-    print("[first_n]", sorting_scheme[0:9])
-    partition_size = len(sorting_scheme) // nlevels
-    print("[partition_size]", partition_size)
-    print("[slice]", partition_size * (level - 1), ":", partition_size * level)
-    partition = sorting_scheme[
-        partition_size * (level - 1) : partition_size * level
-    ]
+        print("[first_n]", sorting_scheme[0:9])
+        partition_size = len(sorting_scheme) // nlevels
+        print("[partition_size]", partition_size)
+        print("[slice]", partition_size * (level - 1), ":", partition_size * level)
+        partition = sorting_scheme[
+            partition_size * (level - 1) : partition_size * level
+        ]
+
     ds = {}
     clip = select_clip(partition)
     selected_question = questions[language][clip[0]]
