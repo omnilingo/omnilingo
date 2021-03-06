@@ -16,11 +16,21 @@ def cym(sentence):
 	['Ond', 'meddylia', 'mae', "'na", 'ddoethuriaeth', "i'w", 'sgwennu.']
     """
     o = sentence
-    o = re.sub(r"([!,-.:;?¬–—‘]+)", " \g<1> ", o)
+    o = re.sub(r"([!,.:;?¬–—‘-]+)", " \g<1> ", o)
     o = re.sub(r"  *", " ", o)
-    o = re.sub("['’]", "ʼ", sentence)
+    o = re.sub(r"['’]", "ʼ", o)
 
     return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == ""]
+
+def fry(sentence):
+    """
+	>>> tokenise("Wêr't er ek nei harket, dy muzyk is allegearre like hurd.", lang="fry")
+	["Wêr't", 'er', 'ek', 'nei', 'harket', ',', 'dy', 'muzyk', 'is', 'allegearre', 'like', 'hurd', '.']
+    """
+    o = sentence
+    o = re.sub(r"([!,\"\.:;?‘-]+)", " \g<1> ", o)
+    o = re.sub(r"  *", " ", o)
+    return [i for i in o.split(" ") if not i.strip() == ""]
 
 def cat(sentence):
     """
@@ -387,6 +397,8 @@ def tokenise(sentence, lang):
         return pes(sentence)
     if lang in ["fr", "fra"]:
         return fra(sentence)
+    if lang in ["fy", "fry"] or lang.startswith("fy-"):
+        return fry(sentence)
     if lang in ["ga", "gle"] or lang.startswith("ga-"):
         return gle(sentence)
     #     if lang in ["ja", "jpn"]:
