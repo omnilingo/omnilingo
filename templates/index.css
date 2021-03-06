@@ -11,6 +11,12 @@ body {
 position:relative;
 }
 
+.header{
+	background-color: #cdcdcd;
+	padding: 10px;
+	margin: 20px ;
+	text-align: right;
+}
 .content {
 	text-align: center;
 	background-color: white;

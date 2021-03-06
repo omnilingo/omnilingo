@@ -14,6 +14,9 @@
 </head>
 
 <body>
+<div class="header" id="header">
+  <select name="languages" id="languages" onChange="changeLanguage(this)"></select>
+</div>
 <div class="content" id="content">
 <div>
   <div style="float:right">
@@ -23,7 +26,6 @@
     <label class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableChoice" name="enableChoice" checked><span>Chcs</span></label>
   </div>
   <div style="float:left">
-  <select name="languages" id="languages" onChange="changeLanguage(this)"></select>
   <select name="levels" id="levels" onChange="changeLevel(this)"></select>
   </div>
 </div>
