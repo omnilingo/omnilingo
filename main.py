@@ -47,7 +47,6 @@ def get_clips():
         if tipus == "choice" or tipus == "search":
             for tok in selected_question["tokenized"]:
                 ds[tok] = [i[1] for i in distractors[language][tok] if not i[1].lower() == tok.lower()][1:]
-            print(ds, file=sys.stderr)
         
     if tipus == "choice" or tipus == "search":
         return {"questions": selected_questions, "distractors": ds}
