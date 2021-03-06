@@ -72,3 +72,11 @@ box-shadow: 10px 5px 5px #dcdcdc;
   font-family: monospace;
 box-shadow: 10px 5px 5px #dcdcdc;
 }
+
+.footer{
+	font-size:80%;
+	background-color: #cdcdcd;
+	text-align:center;
+	padding: 10px;
+	margin: 20px ;
+}
