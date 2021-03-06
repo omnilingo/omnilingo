@@ -1,91 +1,17 @@
-function randomSort(a, b) {
-  return Math.random();
-}
 
-function arrayRemove(arr, value) {
-    return arr.filter(function(ele){
-        return ele != value;
-    });
-}
-
-
-function globalKeyDown(e) {
-    console.log('globalKeyDown() ' + e.key);
-
-    if(e.key == 'Tab') {
-      // Play and focus textbox
-      console.log('TAB');
-      var player = document.getElementById('player');
-      player.play();
-    }
-    if(e.key == ' ') {
-      // Next clip
-      location.reload();
-    }
-}
-
-function getLanguages() {
-    // Creates the language selection dialogue
-    console.log('getLanguages()');
-    languageSelector = document.getElementById('languages');
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/get_languages');
-    xhr.onload = function() {
-        res = JSON.parse(xhr.responseText);
-        languages = res["languages"];
-        for(var i = 0; i < languages.length; i++) {
-            var language = document.createElement("option");
-            if(language_names[languages[i]]) { 
-                var languageText = document.createTextNode(language_names[languages[i]]);
-            } else {
-                var languageText = document.createTextNode(languages[i]);
-            }
-            if(localStorage.getItem('currentLanguage') == languages[i]) {
-                language.setAttribute("selected","");
-            }
-            language.setAttribute("value", languages[i]);
-            language.appendChild(languageText);
-            languageSelector.appendChild(language);
-        }
-    };
-    xhr.send();
-}
-
-function drawFeedback() {
-    feedback = document.getElementById('feedback');
-    responses = localStorage.getItem('responses');
-    console.log('drawFeedback() ' + responses);
-    for(var i = 0; i < 10; i++) {
-        span = document.createElement('span');
-        if(responses[i] == '-') {
-            t = document.createTextNode(' ✘ ');
-            span.setAttribute("style", "padding:2px;align:center;color:red; border: 1px solid black");
-            span.appendChild(t);
-        } else if(responses[i] == '+') {
-            t = document.createTextNode(' ✔ ');
-            span.setAttribute("style", "padding:2px;align:center;color:green; border: 1px solid black");
-            span.appendChild(t);
-        } else {
-            t = document.createTextNode(' ? ');
-            span.setAttribute("style", "padding:2px;align:center;color:white; border: 1px solid black");
-            span.appendChild(t);
-        }
-        feedback.appendChild(span);
-        padding = document.createElement('span');
-        padding.setAttribute('style', 'width: 20px');
-        t = document.createTextNode(' ');
-        padding.appendChild(t);
-        feedback.appendChild(padding);
-    }
-}
-
+/********************************************************************/
 // Above here should be moved to util.js but they are called in main()
 /********************************************************************/
 
 function main() {
     /* Loads all the js libraries and project modules, then calls onReady. */
     console.log('main()');
-    head.js('/static/util.js');
+
+    enabledTasks = localStorage.getItem('enabledTasks');
+    if(!enabledTasks) {
+        localStorage.setItem('enabledTasks', {'blanks': true, 'choice': true, 'scramble': true, 'search':true});
+    }
+    enabledTasks = localStorage.getItem('enabledTasks');
 
     // For the first page load we set both tasks to enabled
     if(!localStorage.getItem('enableBlanks')) {
@@ -157,7 +83,7 @@ function main() {
     }
 
 
-    head.ready(onReady);
+    onReady();
 }
 
 function updateTask(task) {
@@ -206,21 +132,6 @@ function userInputChoice(e, correct, tid) {
     drawFeedback();
 }
 
-function userInput(e, tid) {
-/**
- * Checks to see if the user pressed 'Enter' 
- *
- * Used in the gap task to check for the user completing the task 
- */
-    console.log('userInput:', e);
-    console.log('tid:')
-    console.log(tid);
-
-    if(e.key == 'Enter') {
-      checkInput(tid);
-    }
-}
-
 function buildOptionTbox(current_text, gap, distractors) {
 /**
  * Used in the choice task, it produces two spans one with the right answer and the other with a distractor
@@ -267,30 +178,6 @@ function buildOptionTbox(current_text, gap, distractors) {
                                 style="border: thin dotted #000; width: ${current_text[i].length}ch"
                                 data-value="${current_text[i]}">${current_text[i]}</span>}`
              }
-        } else {
-            line += current_text[i] + ' '
-        }
-    }
-    line = '<p>' + line + ' </p>';
-    return line;
-}
-
-
-function buildTbox(current_text, gap) {
-/**
- *  This builds a text entry box for the text-gap task
- *  Goes through the text and either writes the input box (at the gap) or writes the text 
- *  Wraps it in a paragraph for spacing/layout reasons.
- */ 
-    line = '';
-    for (var i = 0; i < current_text.length; i++) {
-        if (i == gap) {
-            line += `<input type="text"
-                            onKeyPress="userInput(event, \'t${i}'\)"
-                            id="t${i}"
-                            data-focus="true"
-                            style="font-size: 110%; border: thin dotted #000; width: ${current_text[i].length}ch"
-                            data-value="${current_text[i]}"/> `
         } else {
             line += current_text[i] + ' '
         }
@@ -619,84 +506,8 @@ function onScramDrop(e, tid) {
 }
 
 
-function checkInput(tid) {
-/** 
- * This code checks to see if the user got the right input value in the gap task.
- * It subsequently marks the answer either as correct (in green)
- * or as incorrect (in red) and gives the correct answer (in green)
- * It also updates the localstorage responses with if the answer was correct or not.
- */
-    console.log('checkInput() ' + tid);
-    input = document.getElementById(tid);
-    console.log("input: ", input)
-    correct = input.getAttribute("data-value");
-    console.log('input: ')
-    console.log(input);
-    console.log('input.value: ')
-    console.log(input.value);
-    guess = input.value;
-
-    if(guess == '') {
-        span.focus();
-        return;
-    }
-
-    console.log('correct: ' + correct);
-    console.log('guess: ' + guess);
-
-    responses = localStorage.getItem('responses');
-
-    console.log('responses: ');
-    console.log(responses);
-    if (guess.toLowerCase() == correct.toLowerCase()) {
-        var answer = document.createElement("span");
-        answer.setAttribute("class", "correct");
-        var answerTextNode = document.createTextNode(correct + " ");
-        answer.appendChild(answerTextNode);
-        input.parentNode.insertBefore(answer, input.nextSibling);
-        input.remove();
-        responses += "+";
-//        if (span.childNodes.length != 1) {
-//            span.childNodes[1].remove();
-//        }
-    } else {
-        var shouldBe = document.createElement("span");
-        shouldBe.setAttribute("style", "color: green");
-        var correctTextNode = document.createTextNode(" [" + correct + "] ");
-        shouldBe.appendChild(correctTextNode);
-        input.parentNode.insertBefore(shouldBe, input.nextSibling);
-
-        console.log('INCORRECT!');
-        var incorrectAnswer = document.createElement("span");
-        incorrectAnswer.setAttribute("style", "color: red");
-        var incorrectTextNode = document.createTextNode(guess);
-        incorrectAnswer.appendChild(incorrectTextNode);
-        input.parentNode.insertBefore(incorrectAnswer, input.nextSibling);
-
-        input.remove();
-
-        responses += "-";
-    }
-    console.log('responses: ');
-    console.log(responses);
-    localStorage.setItem('responses', responses);
-    clearFeedback();
-    drawFeedback();
-}
-
-
 /*************************************************************************************/
 // Refactored functions below here
-
-
-function onReadyBlank(current_text, gap) {
-    /**
-     * Run the Blank task
-     */
-    console.log('onReadyBlanks()');
-    var tbox = document.getElementById('textbox');
-    tbox.innerHTML = buildTbox(current_text, gap);
-}
 
 function onReadyChoice(current_text, gap, distractors) {
     /**
