@@ -366,7 +366,7 @@ function onReady() {
 //            onReadySearch(current_text, distractor);
         } else {
             console.log("TASK: not implemented, assigning blank");
-            onReadyBlank();
+            onReadyBlank(current_text);
         }
     };
 // General code starts here
