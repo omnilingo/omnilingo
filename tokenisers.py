@@ -20,6 +20,16 @@ def tam(sentence):
     o = re.sub(r"  *", " ", o)
     return [i.strip() for i in o.split(" ") if not i.strip() == ""]
 
+def pan(sentence):
+    """
+	>>> tokenise("ਮੇਰਾ ਸਭਾਵ ਦ੍ਰਸ਼ਟਾ ਦਾ ਹੈ; ਮੈਂ ਤਿੰਨਾਂ ਤੋਂ ਪਾਰ ਚੌਥੇ ਨੂੰ ਪਛਾਣ ਲਿਆ ਹੈ", lang="pan")
+	['ਮੇਰਾ', 'ਸਭਾਵ', 'ਦ੍ਰਸ਼ਟਾ', 'ਦਾ', 'ਹੈ', ';', 'ਮੈਂ', 'ਤਿੰਨਾਂ', 'ਤੋਂ', 'ਪਾਰ', 'ਚੌਥੇ', 'ਨੂੰ', 'ਪਛਾਣ', 'ਲਿਆ', 'ਹੈ']
+    """
+    o = sentence
+    o = re.sub(r"([.;¦×॥–’¤]+)", " \g<1> ", o)
+    o = re.sub(r"  *", " ", o)
+    return [i.strip() for i in o.split(" ") if not i.strip() == ""]
+
 def por(sentence):
     """
 	>>> tokenise("Tu comestes 'bem? se tu vieres sozinho disse dos infortúnios", lang="por")
@@ -449,6 +459,8 @@ def tokenise(sentence, lang):
         return mlt(sentence)
     if lang in ["or", "ori"]:
         return ori(sentence)
+    if lang in ["pa", "pan"] or lang.startswith("pa-"):
+        return pan(sentence)
     if lang in ["pt", "por"]:
         return por(sentence)
     if lang in ["rm", "roh"] or lang.startswith("rm-"):
