@@ -60,6 +60,6 @@ def get_distractors(frequencies):
         # do something better here with partitioning
         if d[1:11]:
             distractors[token1] = d[1:11]  # skip the first one which will be 0
-        print((token1, distractors[token1]))
-
+        #print((token1, distractors[token1]))
+    print('[distractors] generated',len(distractors.keys()),'distractors')
     return distractors
