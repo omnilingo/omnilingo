@@ -9,7 +9,18 @@ def quc(sentence):
     o = re.sub("’", "ʼ", o)
 
     return [i for i in re.split("(\\w+)", o) if not i.strip() == "" ]
-     
+
+def cym(sentence):
+    """
+	>>> tokenise("Ond meddylia mae ’na ddoethuriaeth i'w sgwennu.", lang="cym")
+	['Ond', 'meddylia', 'mae', "'na", 'ddoethuriaeth', "i'w", 'sgwennu.']
+    """
+    o = sentence
+    o = re.sub(r"([!,-.:;?¬–—‘]+)", " \g<1> ", o)
+    o = re.sub(r"  *", " ", o)
+    o = re.sub("['’]", "ʼ", sentence)
+
+    return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == ""]
 
 def cat(sentence):
     """
@@ -366,6 +377,8 @@ def tokenise(sentence, lang):
         return bre(sentence)
     if lang in ["ca", "cat"]:
         return cat(sentence)
+    if lang in ["cy", "cym"]:
+        return cym(sentence)
     if lang in ["dv", "div"]:
         return div(sentence)
     if lang in ["en", "eng"]:
