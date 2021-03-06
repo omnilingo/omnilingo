@@ -10,6 +10,18 @@ def quc(sentence):
 
     return [i for i in re.split("(\\w+)", o) if not i.strip() == "" ]
 
+def por(sentence):
+    """
+	>>> tokenise("Tu comestes 'bem? se tu vieres sozinho disse dos infortúnios", lang="por")
+	['Tu', 'comestes', "'bem", '?', 'se', 'tu', 'vieres', 'sozinho', 'disse', 'dos', 'infortúnios']
+    """
+    o = sentence
+    o = re.sub(r"([!\",./:;?’]+)", " \g<1> ", o)
+    o = o.replace(" d'", " d' ")
+    o = re.sub(r"  *", " ", o)
+    
+    return [i.strip() for i in o.split(" ") if not i.strip() == ""]
+
 def lug(sentence):
     """
 	>>> tokenise("Kika kya nnyimba ki ky'osinga okwagala?", lang="lug")
@@ -427,6 +439,8 @@ def tokenise(sentence, lang):
         return mlt(sentence)
     if lang in ["or", "ori"]:
         return ori(sentence)
+    if lang in ["pt", "por"]:
+        return por(sentence)
     if lang in ["rm", "roh"] or lang.startswith("rm-"):
         return roh(sentence)
     if lang in ["th", "tha"]:
