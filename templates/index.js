@@ -76,73 +76,63 @@ function main() {
     head.ready(onReady);
 }
 
-function getLanguages() {
-    console.log('onReadyChoice()');
-    languageSelector = document.getElementById('languages');
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/get_languages');
-    xhr.onload = function() {
-        res = JSON.parse(xhr.responseText);
-        languages = res["languages"];
-        for(var i = 0; i < languages.length; i++) {
-            var language = document.createElement("option");
-            var languageText = document.createTextNode(languages[i]);
-            if(localStorage.getItem('currentLanguage') == languages[i]) {
-                language.setAttribute("selected","");
-            }
-            language.setAttribute("value", languages[i]);
-            language.appendChild(languageText);
-            languageSelector.appendChild(language);
-        } 
-    };
-    xhr.send();
-}
-
-
-
 function updateTask(task) {
-    // Update the state of the two check boxes
+	/*
+	 * On the top-right corner of the website, there are switches that toggle different task types.
+	 * This function stores those task types, so that we know which are enabled and which aren't.
+	 *
+	 * Example invocation in the HTML:
+	 *
+	 *  <span class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableBlanks" name="enableBlanks"><label for="enableBlanks">Blanks</label></span>
+	 *
+	 * So essentially we're doing here localStorage.setItem("enableBlanks", true); // (or false).
+	 *
+	 */
     localStorage.setItem(task.id, task.checked);
 }
 
 
 function electGap(current_text, distractors, filter) {
     // Choose which index to gap out
+    //   current_text = ['This', 'is', 'a', 'test', '.']
+    //   distractors = {'is': ['if', 'it'], ...}
+    //   filter = filter by distractors or not 
+    // We want to not generate gaps if they are just punctuation
+    // For the choice/search tasks we only want to generate a gap 
+    //   if we  have a distractor.
+    // For the gap task we don't have distractors, or for tile task
+    console.log('electGap()');
     const regex = /[!#%&()*+,.\/:;<=>?@\`|~¡«°·»¿،؛؟٪٫।৷৹–—―‘’“”„‟…‹›↓̣$€½]/;
-    searching = false;       
-    while(searching) {
-        gapIndex = getRandomInt(0, current_text.length - 1);
-        if(!regex.test(current_text[gapIndex])) {
-            if(filter) {
-                var word = current_text[gapIndex];
-                if(distractors[word]) { 
-                    searching = false;
-                } 
-            } else { 
-                searching = false;
-            }
-        }
+    var gapIndex = -1;
+    if(filter) { // gap,tile
+      do {
+          gapIndex = getRandomInt(0, current_text.length - 1);
+      } while (regex.test(current_text[gapIndex]));
+
+    } else { // choice,search
+      clone = current_text.slice();
+      var arr1 = clone.sort(randomSort); 
+      for(var i = 0; i < arr1.length; i++) { 
+        var word = arr1[i];
+	if(!regex.test(word) && distractors[word].length > 0) {
+	   gapIndex = current_text.indexOf(word);
+	}
+      }
     }
+    console.log('gapIndex: ' + gapIndex + ' ||| ' + current_text[gapIndex]);
     // Do something better here for any punctuation
     return gapIndex;
 }
 
-function changeLanguage(elem) {
-   console.log('changeLanguage: ' + elem.value);
-   localStorage.setItem('currentLanguage', elem.value);
-   localStorage.setItem('responses', Array());
-   location.reload(); 
-}
-
-
-function changeLevel(elem) {
-   console.log('changeLevel: ' + elem.value);
-   localStorage.setItem('currentLevel', elem.value);
-   location.reload(); 
-}
-
 function userInputChoice(e, correct, tid) {
+/** 
+ * This function is called in the choice task, it checks to see if the user chose the correct option.
+ * And then updates the spans with colours and disables the onClick event and redraws the feedback line
+ * Example invocation in buildOptionTbox():
+ *    onClick="userInputChoice(event, 1, \'t${i}'\)"                                                                        
+ */
     console.log('userInputChoice:', e);
+    console.log('tid:')
     console.log(tid);
     responses = localStorage.getItem('responses');
     answer = document.getElementById(tid);
@@ -165,7 +155,13 @@ function userInputChoice(e, correct, tid) {
 }
 
 function userInput(e, tid) {
+/**
+ * Checks to see if the user pressed 'Enter' 
+ *
+ * Used in the gap task to check for the user completing the task 
+ */
     console.log('userInput:', e);
+    console.log('tid:')
     console.log(tid);
 
     if(e.key == 'Enter') {
@@ -174,10 +170,19 @@ function userInput(e, tid) {
 }
 
 function buildOptionTbox(current_text, gap, distractors) {
+/**
+ * Used in the choice task, it produces two spans one with the right answer and the other with a distractor
+ * The order of the spans is chosen randomly
+ * It modifies the casing of the distractors to match the correct choice
+ * Words which are not selected as the target word are written out without a span
+ * The whole thing is wrapped in a paragraph for spacing/layout reasons.
+ * When one of the spans is clicked, userInputChoice() is called.
+ */ 
     line = '';
     console.log('buildOptionTbox()')
     // FIXME: Caps at beginning of sentence
     var ds = distractors[current_text[gap]];
+    console.log('ds:')
     console.log(ds);
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
@@ -210,8 +215,6 @@ function buildOptionTbox(current_text, gap, distractors) {
                                 style="border: thin dotted #000; width: ${current_text[i].length}ch"
                                 data-value="${current_text[i]}">${current_text[i]}</span>}`
              }
-
-
         } else {
             line += current_text[i] + ' '
         }
@@ -222,6 +225,11 @@ function buildOptionTbox(current_text, gap, distractors) {
 
 
 function buildTbox(current_text, gap) {
+/**
+ *  This builds a text entry box for the text-gap task
+ *  Goes through the text and either writes the input box (at the gap) or writes the text 
+ *  Wraps it in a paragraph for spacing/layout reasons.
+ */ 
     line = '';
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
@@ -240,63 +248,21 @@ function buildTbox(current_text, gap) {
 }
 
 function focusGap() {
-    // Focus the input box that is a gap
+/**
+ * After the audio finishes playing we can focus the text entry box, so the user doesn't have to click on it 
+ *
+ */
     document.querySelectorAll('[data-focus="true"]')[0].focus();
 }
 
-function globalKeyDown(e) {
-    console.log('globalKeyDown() ' + e.key);
-
-    if(e.key == 'Tab') {
-      // Play and focus textbox
-      console.log('TAB');
-      var player = document.getElementById('player');
-      player.play();
-    }
-    if(e.key == ' ') {
-      // Next clip
-      location.reload();
-    }
-}
-
-function clearFeedback() {
-    console.log('clearFeedback()');
-    var myNode = document.getElementById("feedback");
-    while (myNode.firstChild) {
-        myNode.removeChild(myNode.firstChild);
-    }
-}
-
-function drawFeedback() {
-    feedback = document.getElementById('feedback');
-    responses = localStorage.getItem('responses');
-    console.log('drawFeedback() ' + responses);
-    for(var i = 0; i < 10; i++) {
-        span = document.createElement('span');
-        if(responses[i] == '-') {
-            t = document.createTextNode(' ✘ ');
-            span.setAttribute("style", "padding:2px;align:center;color:red; border: 1px solid black");
-            span.appendChild(t);
-        } else if(responses[i] == '+') {
-            t = document.createTextNode(' ✔ ');
-            span.setAttribute("style", "padding:2px;align:center;color:green; border: 1px solid black");
-            span.appendChild(t);
-        } else {
-            t = document.createTextNode(' ? ');
-            span.setAttribute("style", "padding:2px;align:center;color:white; border: 1px solid black");
-            span.appendChild(t);
-        }
-        feedback.appendChild(span);
-        padding = document.createElement('span');
-        padding.setAttribute('style', 'width: 20px');
-        t = document.createTextNode(' ');
-        padding.appendChild(t);
-        feedback.appendChild(padding);
-    }
-}
-
 function chooseTask(enabledTasks) {
+/** 
+ * This is called when the page is loaded and selects a random task out of the available tasks
+ * Currently called by the onReady() function
+ */
+    console.log('enabledTasks:')
     console.log(enabledTasks);
+    console.log('enabledTasks.length:')
     console.log(enabledTasks.length);
     if(enabledTasks.length == 1) {
         return enabledTasks[0];
@@ -305,8 +271,13 @@ function chooseTask(enabledTasks) {
     return enabledTasks[task];
 }
 
+
+
 function onReady() {
-    // Here we choose a global task 
+/** 
+ * First it makes an array of the available tasks
+ * Then it chooses a task and calls the relevant sub-onReady function.
+ */
      
     var enabledTasks = Array();
     var et = localStorage.getItem('enableChoice')
@@ -332,7 +303,7 @@ function onReady() {
     }
 
     taskType = chooseTask(enabledTasks);
-    console.log('TT: ' + taskType);
+    console.log('taskType: ' + taskType);
     if(taskType == "choice") {
         onReadyChoice();
     } else if(taskType == "blank") {
@@ -347,18 +318,12 @@ function onReady() {
     }
 }
 
-
-function arrayRemove(arr, value) { 
-    return arr.filter(function(ele){ 
-        return ele != value; 
-    });
-}
-
-function randomSort(a, b) {  
-  return Math.random();
-}  
-
 function checkInputSearch(e) {
+/**
+ * This is for the searching task, which is select K words found in the audio from N words in total
+ * It checks to see if the answer is correct or incorrect and sets the colour accordingly
+ * Then it redraws the feedback.
+ */ 
     console.log('checkInputSearch()');
     var res = e.target.getAttribute('data-value');
     if(res == "false") {
@@ -372,8 +337,15 @@ function checkInputSearch(e) {
 }
 
 function onReadySearch() {
+/**
+ * Core task function for the 'Search' task
+ * - Gets a question from the backend
+ * - Makes 6 boxes (spans) where 3 are correct and three are incorrect
+ * - The boxes are arranged randomly
+ */
     console.log('onReadySearch()');
 
+// General code starts here
     var questions = {};
     var player = document.getElementById('player');
     var source = document.getElementById('audioSource');
@@ -387,8 +359,16 @@ function onReadySearch() {
         var current_text = current_question["tokenized"];
         var distractors = res["distractors"];
 
+        source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
+        source.type = 'audio/mp3';
+        player.load();
+
+// Specific code starts here
+	    console.log('distractors:');
         console.log(distractors);
+	console.log('distractors[current_text[2]]:')
         console.log(distractors[current_text[2]]);
+	console.log('current_text:');
         console.log(current_text);
         
         var tb = '';
@@ -398,7 +378,10 @@ function onReadySearch() {
             var word = replacements[electGap(replacements, distractors, true)];
             replacements = arrayRemove(replacements, word);
             var tw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="true">' + word.toLowerCase() + '</span>';
-            var distractor = distractors[word][1];
+            var distractor = distractors[word][0];
+
+            console.log('distractor:');
+            console.log(distractor);
             var fw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="false">' + distractor.toLowerCase() + '</span>';
             allWords.push(tw);
             allWords.push(fw);
@@ -407,22 +390,27 @@ function onReadySearch() {
         for(var i = 0; i < allWords.length; i++) {
             tb += allWords[i] + ' ';
         }
-        source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
-        source.type = 'audio/mp3';
-        player.load();
 
         tbox = document.getElementById('textbox');
 
         tbox.innerHTML = tb;
     };
+// General code starts here
     xhr.send();
 }
 
 
 
 function onReadyScramble() {
+    /** 
+     *	onReady function for the Scamble task
+     *	- It gets a set of characters and randomises the order
+     * - It creates tiles (spans) for each of the characters
+     * - Creates slots for the tiles to be dragged into.
+     */
     console.log('onReadyScramble()');
 
+// General code
     var questions = {};
     var player = document.getElementById('player');
     var source = document.getElementById('audioSource');
@@ -439,6 +427,7 @@ function onReadyScramble() {
         source.type = 'audio/mp3';
         player.load();
         tbox = document.getElementById('textbox');
+// Specific code
         chars = Array();
         for(var i = 0; i < current_text.length; i++) {
             for(var j = 0; j < current_text[i].length; j++) {
@@ -467,26 +456,13 @@ function onReadyScramble() {
             cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i].toLowerCase() + '</span>';
             cb += '<span style="color: white"> _ </span>';
         }
+	console.log('set1:')
         console.log(set1);
         cbox.innerHTML = cb;
         tbox.innerHTML = tb;
     };
+    // General code
     xhr.send();
-}
-
-function shuffleArray(array) {
-   let curId = array.length;
-   // There remain elements to shuffle
-   while (0 !== curId) {
-      // Pick a remaining element
-      let randId = Math.floor(Math.random() * curId);
-      curId -= 1;
-      // Swap it with the current element.
-      let tmp = array[curId];
-      array[curId] = array[randId];
-      array[randId] = tmp;
-   }
-   return array;
 }
 
 function onScramOver(e) {
@@ -500,6 +476,7 @@ function onScramStart(e) {
     console.log('onScramStart()');
     e.dataTransfer.setData('value', e.currentTarget.dataset.value);
    e.currentTarget.style.backgroundColor = 'yellow';
+   console.log('e:')
     console.log(e);
 }
 
@@ -549,8 +526,12 @@ function onScramDrop(e, tid) {
             current_token += tbox.children[i].textContent;
             console.log('#' + i + ': ' + tbox.children[i].textContent + ' // ' + tbox.children[i].getAttribute('data-target'));
         }
+
+        console.log('target_tokens:');
         console.log(target_tokens);
+        console.log('target_ids:');
         console.log(target_ids);
+        console.log('current_tokens:');
         console.log(current_tokens);
         var ncorrect = 0; // Number of tokens found as being correct
         for(var i = 0; i < target_tokens.length; i++) {
@@ -637,11 +618,19 @@ function onReadyBlank() {
 }
 
 function checkInput(tid) {
+/** 
+ * This code checks to see if the user got the right input value in the gap task.
+ * It subsequently marks the answer either as correct (in green)
+ * or as incorrect (in red) and gives the correct answer (in green)
+ * It also updates the localstorage responses with if the answer was correct or not.
+ */
     console.log('checkInput() ' + tid);
     input = document.getElementById(tid);
     console.log("input: ", input)
     correct = input.getAttribute("data-value");
+    console.log('input: ')
     console.log(input);
+    console.log('input.value: ')
     console.log(input.value);
     guess = input.value;
 
@@ -655,6 +644,7 @@ function checkInput(tid) {
 
     responses = localStorage.getItem('responses');
 
+    console.log('responses: ');
     console.log(responses);
     if (guess.toLowerCase() == correct.toLowerCase()) {
         var answer = document.createElement("span");
@@ -685,6 +675,7 @@ function checkInput(tid) {
 
         responses += "-";
     }
+    console.log('responses: ');
     console.log(responses);
     localStorage.setItem('responses', responses);
     clearFeedback();
