@@ -121,6 +121,7 @@ function electGap(current_text, distractors, filter) {
             } else { 
                 searching = false;
             }
+        }
     }
     // Do something better here for any punctuation
     return gapIndex;
