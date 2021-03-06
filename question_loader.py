@@ -78,9 +78,9 @@ def load_questions(language_name):
     ]
     sorting_schemes["length"].sort(key=lambda x: x[1])
 
-    print("[sorting_schemes]")
-    print("default:", sorting_schemes["default"][0:10])
-    print("length", sorting_schemes["length"][0:10])
+    #print("[sorting_schemes]")
+    #print("default:", sorting_schemes["default"][0:10])
+    #print("length", sorting_schemes["length"][0:10])
 
     # FIXME: This is really slow...
     sys.stderr.write("Generating distractors.\n")
@@ -153,29 +153,36 @@ def regenerate_cache():
 
 
 def load_all_languages_cached():
+    sys.stderr.write("Trying to load pre-cached question set...\n")
+    languages = {}
+    questions = {}
+    sorting_schemes = {}
+    distractors = {}
     try:
-        sys.stderr.write("Loading pre-cached question set...\n")
         with gzip.open("cache/languages.pickle.gz", "rb") as languages_f:
             languages = pickle.load(languages_f)
         print('[languages]', languages)
-        questions = {}
-        sorting_schemes = {}
-        distractors = {}
-        question_files = list(pathlib.Path("cache").glob("questions__*"))
-        question_files = tqdm.tqdm(question_files)
-        for path in question_files:
-            with gzip.open(path, "rb") as questions_f:
-                # extract whatever's between the __ and the extension
-                language = path.name.split("__")[1].split(".")[0]
-                (questions[language], sorting_schemes[language], distractors[language]) = pickle.load(
-                    questions_f
-                )
     except FileNotFoundError:
         try:
             os.mkdir("cache")
         except FileExistsError:
             pass
         languages, questions, sorting_schemes, distractors = regenerate_cache()
+
+    question_files = list(pathlib.Path("cache").glob("questions__*"))
+    question_files = tqdm.tqdm(question_files)
+    for path in question_files:
+        try:
+            with gzip.open(path, "rb") as questions_f:
+                # extract whatever's between the __ and the extension
+                language = path.name.split("__")[1].split(".")[0]
+                (questions[language], sorting_schemes[language], distractors[language]) = pickle.load(
+                    questions_f
+                )
+        except FileNotFoundError:
+            print('[not found]', path)
+            pass
+
     return languages, questions, sorting_schemes, distractors
 
 
