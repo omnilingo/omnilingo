@@ -14,7 +14,8 @@ The sentences are ranked according to difficulty, and you can choose a level
 from 1 to 10 where 1 is the easiest and 10 is the hardest.
 
 The project aims to not require any knowledge of a meta language in order to start
-learning. 
+learning.  If you are interested in a more traditional course creation project,
+check out [LibreLingo](https://github.com/kantord/LibreLingo/).
 
 # Tasks
 
