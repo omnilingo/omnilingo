@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import os
 import random
 import question_loader
@@ -45,7 +46,8 @@ def get_clips():
             selected_questions.append(selected_question)
         if tipus == "choice" or tipus == "search":
             for tok in selected_question["tokenized"]:
-                ds[tok] = [i[1] for i in selected_question["distractors"][tok] if not i[1].lower() == tok.lower()][1:]
+                ds[tok] = [i[1] for i in distractors[language][tok] if not i[1].lower() == tok.lower()][1:]
+            print(ds, file=sys.stderr)
         
     if tipus == "choice" or tipus == "search":
         return {"questions": selected_questions, "distractors": ds}
@@ -69,5 +71,5 @@ def serve_static(path):
 
 if __name__ == "__main__":
 
-    languages, questions, sorting_schemes = question_loader.load_all_languages_cached()
-    app.run(port=int(os.environ.get("FLASK_PORT", "5001")), host="0.0.0.0")
+    languages, questions, sorting_schemes, distractors = question_loader.load_all_languages_cached()
+    app.run(port=int(os.environ.get("FLASK_PORT", "5001")), host="127.0.0.1")

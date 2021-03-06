@@ -94,7 +94,7 @@ def load_questions(language_name):
 
     sys.stderr.write("Done.\n")
 
-    return language_name, questions, word_frequency, sorting_schemes
+    return language_name, questions, word_frequency, sorting_schemes, distractors
 
 
 def difficulty_function(question, word_frequency, most_common_word):
@@ -118,23 +118,25 @@ def load_all_languages(languages=None):
     most_common_word = collections.defaultdict(lambda: dict)
     questions = collections.defaultdict(lambda: dict)
     sorting_schemes = collections.defaultdict(lambda: dict)
+    distractors = {}
     if languages is None:
         languages = [
             language.name for language in pathlib.Path(PREFIX).glob("*")
         ]
     with multiprocessing.Pool(4) as p:
-        for lng, lng_questions, lng_word_frequency, lng_sorting in p.map(
+        for lng, lng_questions, lng_word_frequency, lng_sorting, lng_distractors in p.map(
             load_questions, languages
         ):
             questions[lng] = lng_questions
             sorting_schemes[lng] = lng_sorting
             word_frequency[lng] = lng_word_frequency
             most_common_word[lng] = word_frequency[lng].most_common(1)[0]
-    return languages, dict(questions), sorting_schemes
+            distractors[lng] = lng_distractors
+    return languages, dict(questions), sorting_schemes, distractors
 
 
 def regenerate_cache():
-    languages, questions, sorting_schemes = load_all_languages()
+    languages, questions, sorting_schemes , distractors = load_all_languages()
     with gzip.open("cache/languages.pickle.gz", "wb") as languages_f:
 
         pickle.dump(languages, languages_f)
@@ -144,7 +146,7 @@ def regenerate_cache():
         ) as questions_f:
             sys.stderr.write("Saving the models...\n")
             pickle.dump(
-                (questions[language], sorting_schemes[language]), questions_f
+                (questions[language], sorting_schemes[language], distractors[language]), questions_f
             )
 
     return languages, questions, sorting_schemes
@@ -157,13 +159,14 @@ def load_all_languages_cached():
             languages = pickle.load(languages_f)
         questions = {}
         sorting_schemes = {}
+        distractors = {}
         question_files = list(pathlib.Path("cache").glob("questions__*"))
         question_files = tqdm.tqdm(question_files)
         for path in question_files:
             with gzip.open(path, "rb") as questions_f:
                 # extract whatever's between the __ and the extension
                 language = path.name.split("__")[1].split(".")[0]
-                (questions[language], sorting_schemes[language]) = pickle.load(
+                (questions[language], sorting_schemes[language], distractors[language]) = pickle.load(
                     questions_f
                 )
     except FileNotFoundError:
@@ -171,8 +174,8 @@ def load_all_languages_cached():
             os.mkdir("cache")
         except FileExistsError:
             pass
-        languages, questions, sorting_schemes = regenerate_cache()
-    return languages, questions, sorting_schemes
+        languages, questions, sorting_schemes, distractors = regenerate_cache()
+    return languages, questions, sorting_schemes, distractors
 
 
 if __name__ == "__main__":
