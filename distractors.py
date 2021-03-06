@@ -58,7 +58,8 @@ def get_distractors(frequencies):
         d = [(t, l) for (l, t) in m[token1].items()]
         d.sort()
         # do something better here with partitioning
-        distractors[token1] = d[1:11]  # skip the first one which will be 0
+        if d[1:11]:
+            distractors[token1] = d[1:11]  # skip the first one which will be 0
         print((token1, distractors[token1]))
 
     return distractors

@@ -14,9 +14,15 @@ app = Flask(__name__, static_url_path="")
 def select_clip(questions):
     return random.choice(questions)
 
-@app.route("/get_clips")
+# The backend needs to select a task between the ones that the user has enabled
+# then return a clip and relevant data (question + distractors)
+
+@app.route("/get_clips") # This should be get clip 
 def get_clips():
+    enabled = request.args.get("enabled", default='blank|choice', type=str)
+    task_type = random.choice(enabled.split('|'))
     nlevels = request.args.get("nlevels", default=10, type=int)
+    ngaps = request.args.get("ngaps", default=1, type=int)
     level = request.args.get("level", default=1, type=int)
     language = request.args.get("language", default="fi", type=str)
     tipus = request.args.get("type", default="blank", type=str)
@@ -47,11 +53,12 @@ def get_clips():
         if tipus == "choice" or tipus == "search":
             for tok in selected_question["tokenized"]:
                 ds[tok] = [i[1] for i in distractors[language][tok] if not i[1].lower() == tok.lower()][1:]
-        
+    # Work out a way of encoding gaps + distractors here      
+    # distractorsForGaps = {3: ["the", "he"], "2": ["cat", "bat"]}
     if tipus == "choice" or tipus == "search":
-        return {"questions": selected_questions, "distractors": ds}
+        return {"questions": selected_questions, "distractors": ds, "task_type": task_type}
     else: 
-        return {"questions": selected_questions}
+        return {"questions": selected_questions, "task_type": task_type}
 
 @app.route("/")
 def index():
