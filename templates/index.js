@@ -172,38 +172,6 @@ function updateTask(task) {
 }
 
 
-function electGap(current_text, distractors, filter) {
-    // Choose which index to gap out
-    //   current_text = ['This', 'is', 'a', 'test', '.']
-    //   distractors = {'is': ['if', 'it'], ...}
-    //   filter = filter by distractors or not 
-    // We want to not generate gaps if they are just punctuation
-    // For the choice/search tasks we only want to generate a gap 
-    //   if we  have a distractor.
-    // For the gap task we don't have distractors, or for tile task
-    console.log('electGap()');
-    const regex = /[!#%&()*+,.\/:;<=>?@\`|~¡«°·»¿،؛؟٪٫।৷৹–—―‘’“”„‟…‹›↓̣$€½]/;
-    var gapIndex = -1;
-    if(filter) { // gap,tile
-      do {
-          gapIndex = getRandomInt(0, current_text.length - 1);
-      } while (regex.test(current_text[gapIndex]));
-
-    } else { // choice,search
-      clone = current_text.slice();
-      var arr1 = clone.sort(randomSort); 
-      for(var i = 0; i < arr1.length; i++) { 
-        var word = arr1[i];
-	if(!regex.test(word) && distractors[word].length > 0) {
-	   gapIndex = current_text.indexOf(word);
-	}
-      }
-    }
-    console.log('gapIndex: ' + gapIndex + ' ||| ' + current_text[gapIndex]);
-    // Do something better here for any punctuation
-    return gapIndex;
-}
-
 function userInputChoice(e, correct, tid) {
 /** 
  * This function is called in the choice task, it checks to see if the user chose the correct option.
@@ -432,18 +400,18 @@ function onReadySearch(current_text, distractor) {
  */
     console.log('onReadySearch()');
 
-// General code starts here
-
 // Specific code starts here
     console.log('distractors:');
     console.log(distractor);
     console.log('current_text:');
     console.log(current_text);
+
         
     var tb = '';
     var replacements = current_text; 
     var allWords = Array();
     for(var i = 0; i < 3; i++) {
+        // FIXME: We need an API change here, we need to be able to get more than one distractor
         var word = replacements[electGap(replacements, distractors, true)];
         replacements = arrayRemove(replacements, word);
         var tw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="true">' + word.toLowerCase() + '</span>';
