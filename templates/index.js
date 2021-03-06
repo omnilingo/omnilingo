@@ -450,7 +450,8 @@ function onReadyScramble(current_text) {
 
     tbox = document.getElementById('textbox');
 
-// Specific code
+
+    // Generate an array of characters containing all the characters in the text 
     chars = Array();
     for(var i = 0; i < current_text.length; i++) {
         for(var j = 0; j < current_text[i].length; j++) {
@@ -458,8 +459,14 @@ function onReadyScramble(current_text) {
         }
         chars.push(" ");
     }
+    // Generate boxes to drag the characters into.
     tb = "";
     for(var i = 0; i < chars.length; i++) {
+        // FIXME: do this properly
+        if(chars[i] == '.' || chars[i] == '?' || chars[i] == ','  || chars[i] == ':'  || chars[i] == ';'  || chars[i] == '!') {
+          tb += '<span>' + chars[i] + '</span>';
+          continue;
+        }
         if(chars[i] == " ") {
           tb += '<span style="color: white"> _ </span>';
         } else {
@@ -473,11 +480,21 @@ function onReadyScramble(current_text) {
     arr1 = shuffleArray(arr1);
     cb = "";
     for(var i = 0; i < arr1.length; i++) {
+        if(i % 8 == 0) {
+            // FIXME: do this properly
+            cb += '<br/>';
+            cb += '<br/>';
+        }
         if(arr1[i] == " ") {
             continue;
         }
-        cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i].toLowerCase() + '</span>';
-        cb += '<span style="color: white"> _ </span>';
+        // FIXME: do this properly
+        if(arr1[i] == '.' || chars[i] == '?' || chars[i] == ','  || chars[i] == ':'  || chars[i] == ';'  || chars[i] == '!') {
+            continue;
+        } else {    
+            cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i].toLowerCase() + '</span>';
+            cb += '<span style="color: white"> _ </span>';
+        } 
     }
 	console.log('set1:')
     console.log(set1);
