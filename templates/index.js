@@ -4,12 +4,7 @@ function main() {
     console.log('main()');
 
     var enabledTasks = localStorage.getItem('enabledTasks');
-    if(enabledTasks == null) {
-        var et = {'blanks': true, 'choice': true, 'scramble': true, 'search':true};
-        localStorage.setItem('enabledTasks', JSON.stringify(et));
-    }
-    var enabledTasks = localStorage.getItem('enabledTasks');
-    if(enabledTasks.length == 0 || enabledTasks.length == 15) {
+    if(enabledTasks == null) { // optimism that JS returns a null
         var et = {'blanks': true, 'choice': true, 'scramble': true, 'search':true};
         localStorage.setItem('enabledTasks', JSON.stringify(et));
     }
