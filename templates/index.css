@@ -11,17 +11,35 @@ body {
 position:relative;
 }
 
+.footer{
+	font-size:80%;
+	background-color: #cdcdcd;
+	text-align:center;
+	padding: 10px;
+	margin-left: 20px ;
+	margin-right: 20px ;
+	margin-top: 0px ;
+	margin-bottom: 20px;
+}
+
+
 .header{
 	background-color: #cdcdcd;
 	padding: 10px;
-	margin: 20px ;
+	margin-left: 20px ;
+	margin-right: 20px ;
+	margin-top: 20px ;
+	margin-bottom: 0px;
 	text-align: right;
 }
 .content {
 	text-align: center;
 	background-color: white;
 	padding: 20px;
-	margin: 20px ;
+	margin-left: 20px ;
+	margin-right: 20px ;
+	margin-top: 0px ;
+	margin-bottom: 0px;
     height: 100%; 
     min-height: 100%; 
 }
@@ -114,15 +132,6 @@ label > input[type="checkbox"]:checked + *::before {
   font-family: monospace;
 box-shadow: 10px 5px 5px #dcdcdc;
 }
-
-.footer{
-	font-size:80%;
-	background-color: #cdcdcd;
-	text-align:center;
-	padding: 10px;
-	margin: 20px ;
-}
-
 /*********************/
 
 .open-modal {
