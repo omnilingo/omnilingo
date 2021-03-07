@@ -22,9 +22,12 @@ function main() {
     if(!localStorage.getItem('currentLevel')) {
         localStorage.setItem('currentLevel', 1);
     }
-
-    if(!localStorage.getItem('currentLanguage')) {
+    var foundLang = findGetParameter("language");
+    if(!localStorage.getItem('currentLanguage') && foundLang == null) {
         localStorage.setItem('currentLanguage', 'fi');
+    } else if(foundLang != null) {
+        // FIXME: this should probably check that it is a valid language
+        localStorage.setItem('currentLanguage', foundLang);
     }
     var lang = localStorage.getItem('currentLanguage');
     var h = document.documentElement;
@@ -149,6 +152,17 @@ function onReady() {
     };
 // General code starts here
     xhr.send();
+}
+
+function findGetParameter(parameterName) {
+    var result = null,
+        tmp = [];
+    var items = location.search.substr(1).split("&");
+    for (var index = 0; index < items.length; index++) {
+        tmp = items[index].split("=");
+        if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+    }
+    return result;
 }
 
 window.onload = main;
