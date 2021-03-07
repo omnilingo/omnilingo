@@ -65,7 +65,10 @@ def get_clip_and_then(fn):
         j = json.loads(ajax_obj.read())
         fn(j)
 
-    url = "/get_clips?nlevels=10&enabled=blanks&level=1&language=pl"
+    url = (
+        f"/get_clips?nlevels=10&enabled=blanks&level={get_current_level}"
+        "&language=pl"
+    )
     return browser.ajax.get(url, mode="text", oncomplete=process_and_call)
 
 
@@ -155,8 +158,9 @@ def open_modal(el_):
     pass  # TODO
 
 
-def change_level(el_):
-    pass  # TODO
+def change_level(el):
+    browser.local_storage.storage["currentLevel"] = el.value
+    browser.document.location.reload()
 
 
 def update_task(el_):
@@ -173,17 +177,41 @@ def bind_events():
         "click", lambda ev: open_modal(find("open_modal_empty_div"))
     )
     find("help").bind("click", lambda ev: open_modal(find("help")))
-    find('levels').bind('click', lambda ev: change_level(find('levels')))
-    for el in browser.document.getElementsByClassName('cb'):
-        el.bind('click', lambda ev: update_task(el))
-    find('languages').bind(
-        'change', lambda ev: change_language(find('languages'))
+    find("levels").bind("click", lambda ev: change_level(find("levels")))
+    for el in browser.document.getElementsByClassName("cb"):
+        el.bind("click", lambda ev: update_task(el))
+    find("languages").bind(
+        "change", lambda ev: change_language(find("languages"))
     )
+
+
+def get_current_level():
+    return int(browser.local_storage.storage.get("currentLevel", "1"))
+
+
+def draw_levels():
+    levels = browser.document.getElementById("levels")
+    current_level = get_current_level()
+    for i in range(1, 11):
+        level = browser.document.createElement("option")
+        level_text = browser.document.createTextNode(str(i))
+        if i == current_level:
+            level.selected = "true"
+        level.value = str(i)
+        level.attach(level_text)
+        levels.attach(level)
+
+
+def draw_challenge_types():
+    pass
+
 
 def main():
     bind_events()
     draw_languages()
     draw_feedback()
+    draw_levels()
+    draw_challenge_types()
     get_clip_and_then(draw_clip)
 
 
