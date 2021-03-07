@@ -8,6 +8,7 @@ import pathlib
 import random
 import pickle
 import gzip
+import re
 import os
 import sqlite3
 
@@ -32,7 +33,9 @@ def tokenize_sentence(question):
 def process_question(question, word_frequency):
     words = tokenize_sentence(question)
     for word in words:
-        word_frequency[word] += 1
+        # Ensure that every word has at least one alphabetic character
+        if re.match('\w+', word):
+            word_frequency[word] += 1
     question["tokenized"] = words
     return question
 

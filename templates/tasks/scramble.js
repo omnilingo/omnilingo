@@ -39,7 +39,7 @@ function onReadyScramble(current_text) {
     arr1 = shuffleArray(arr1);
     cb = "";
     for(var i = 0; i < arr1.length; i++) {
-        if(i % 8 == 0) {
+        if(i % (arr1.length/2) == 0) {
             // FIXME: do this properly
             cb += '<br/>';
             cb += '<br/>';
@@ -58,7 +58,7 @@ function onReadyScramble(current_text) {
 	console.log('set1:')
     console.log(set1);
     cbox.innerHTML = cb;
-    tbox.innerHTML = tb;
+    tbox.innerHTML = '<br/>' + tb;
 }
 
 function onScramOver(e) {
@@ -107,7 +107,7 @@ function onScramDrop(e, tid) {
     console.log('value:' + val);
     console.log('target:' + trg);
 
-    if(val == trg) {
+    if(val.toLowerCase() == trg.toLowerCase()) {
         console.log('CORRECT!');
         dz.innerHTML = val;
         dz.setAttribute('class', 'correct');

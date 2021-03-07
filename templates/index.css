@@ -44,6 +44,10 @@ position:relative;
     min-height: 100%; 
 }
 
+.clues {
+     margin-top: 0px;
+}
+
 .clue {
 	font-size: 175%;
 	border: 1.5px solid black;
