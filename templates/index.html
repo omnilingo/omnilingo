@@ -5,15 +5,16 @@
 <title>OmniLingo</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" href="./static/index.css" />
-<script type="text/javascript" src="./static/languages.js"></script>
-<script type="text/javascript" src="./static/util.js"></script>
-<script type="text/javascript" src="./static/tasks/blank.js"></script>
-<script type="text/javascript" src="./static/tasks/choice.js"></script>
-<script type="text/javascript" src="./static/tasks/scramble.js"></script>
-<script type="text/javascript" src="./static/tasks/search.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/brython@3.9.0/brython.min.js">
+    </script>
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/brython@3.9.0/brython_stdlib.min.js">
+    </script>
+
 </head>
 
-<body>
+<body onload="brython()">
 <div class="header" id="header">
   <select name="languages" id="languages" onChange="changeLanguage(this)"></select>
 </div>
@@ -31,7 +32,7 @@
 </div>
 <p>&nbsp;</p>
   <div style="float:none">
-  <audio id="player" controls="controls" onended="focusGap()">
+  <audio id="player" controls="controls">
     <source id="audioSource" />
   </audio>
   </div>
@@ -67,6 +68,6 @@
 <div class="footer">
 <a href="https://github.com/omnilingo/omnilingo">Get the code!</a> <b>·</b> <a href="https://commonvoice.mozilla.org/datasets">Get the data!</a>
 </div>
-<script type="text/javascript" src="./static/index.js"></script>
+<script type="text/python" src="./static/index.py"></script>
 </body>
 </html>
