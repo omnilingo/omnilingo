@@ -126,6 +126,7 @@ def load_all_languages(languages=None):
         languages = [
             language.name for language in pathlib.Path(PREFIX).glob("*")
         ]
+    print('[languages][ ]', languages)
     with multiprocessing.Pool(4) as p:
         for lng, lng_questions, lng_word_frequency, lng_sorting, lng_distractors in p.map(
             load_questions, languages
@@ -140,6 +141,7 @@ def load_all_languages(languages=None):
 
 def regenerate_cache():
     languages, questions, sorting_schemes , distractors = load_all_languages()
+    print('[languages][w]', languages)
     with gzip.open("cache/languages.pickle.gz", "wb") as languages_f:
 
         pickle.dump(languages, languages_f)
@@ -164,7 +166,7 @@ def load_all_languages_cached():
     try:
         with gzip.open("cache/languages.pickle.gz", "rb") as languages_f:
             languages = pickle.load(languages_f)
-        print('[languages]', languages)
+        print('[languages][r]', languages)
     except FileNotFoundError:
         try:
             os.mkdir("cache")
