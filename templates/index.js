@@ -91,15 +91,6 @@ function updateTask(task) {
     localStorage.setItem('enabledTasks', JSON.stringify(enabledTasks));
 }
 
-
-function focusGap() {
-/**
- * After the audio finishes playing we can focus the text entry box, so the user doesn't have to click on it 
- *
- */
-    document.querySelectorAll('[data-focus="true"]')[0].focus();
-}
-
 function onReady() {
 /** 
  * First it makes an array of the available tasks
