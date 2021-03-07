@@ -81,29 +81,8 @@ box-shadow: 10px 5px 5px #dcdcdc;
 }
 
 label > input[type="checkbox"] {
-  display: none;
+/*  display: none;*/
   margin:2pt;
-}
-
-label > input[type="checkbox"] + *::before {
-  content: "";
-  display: inline-block;
-  vertical-align: bottom;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 10%;
-  border-style: solid;
-  border-width: 0.1rem;
-  border-color: gray;
-}
-
-
-label > input[type="checkbox"]:checked + *::before {
-  content: "■";
-  color: white;
-  text-align: center;
-  background: black;
-  border-color: black ;
 }
 
 
