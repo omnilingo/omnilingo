@@ -7,34 +7,14 @@ function main() {
     /* Loads all the js libraries and project modules, then calls onReady. */
     console.log('main()');
 
-    enabledTasks = localStorage.getItem('enabledTasks');
-    if(!enabledTasks) {
-        localStorage.setItem('enabledTasks', {'blanks': true, 'choice': true, 'scramble': true, 'search':true});
+    var enabledTasks = localStorage.getItem('enabledTasks');
+    if(enabledTasks.length == 0 || enabledTasks.length == 15) {
+        var et = {'blanks': true, 'choice': true, 'scramble': true, 'search':true};
+        localStorage.setItem('enabledTasks', JSON.stringify(et));
     }
-    enabledTasks = localStorage.getItem('enabledTasks');
-
-    // For the first page load we set both tasks to enabled
-    if(!localStorage.getItem('enableBlanks')) {
-        localStorage.setItem('enableBlanks', true);
-        eb = document.getElementById('enableBlanks');
-        eb.setAttribute('checked', true);
-    }
-    if(!localStorage.getItem('enableChoice')) {
-        localStorage.setItem('enableChoice', true);
-        eb = document.getElementById('enableChoice');
-        eb.setAttribute('checked', true);
-    }
-    if(!localStorage.getItem('enableScrams')) {
-        localStorage.setItem('enableScrams', true);
-        eb = document.getElementById('enableScrams');
-        eb.setAttribute('checked', true);
-    }
-    if(!localStorage.getItem('enableSearch')) {
-        localStorage.setItem('enableSearch', true);
-        eb = document.getElementById('enableSearch');
-        eb.setAttribute('checked', true);
-    }
-
+    enabledTasks = JSON.parse(localStorage.getItem('enabledTasks'));
+    console.log('enabledTasks:');
+    console.log(enabledTasks);
 
     // This allows us to capture Enter, Tab, Space etc.
     window.onkeydown = globalKeyDown;
@@ -87,18 +67,26 @@ function main() {
 }
 
 function updateTask(task) {
-	/*
-	 * On the top-right corner of the website, there are switches that toggle different task types.
-	 * This function stores those task types, so that we know which are enabled and which aren't.
-	 *
-	 * Example invocation in the HTML:
-	 *
-	 *  <span class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableBlanks" name="enableBlanks"><label for="enableBlanks">Blanks</label></span>
-	 *
-	 * So essentially we're doing here localStorage.setItem("enableBlanks", true); // (or false).
-	 *
-	 */
-    localStorage.setItem(task.id, task.checked);
+    /*
+     * On the top-right corner of the website, there are switches that toggle different task types.
+     * This function stores those task types, so that we know which are enabled and which aren't.
+     *
+     */
+    console.log('updateTask() ' + task.id + ' → ' + task.checked);
+    var enabledTasks = JSON.parse(localStorage.getItem('enabledTasks'));
+    if(task.id == 'enableBlanks') {
+        enabledTasks['blanks'] = task.checked;
+    } 
+    if(task.id == 'enableChoice') {
+        enabledTasks['choice'] = task.checked;
+    } 
+    if(task.id == 'enableScrams') {
+        enabledTasks['scramble'] = task.checked;
+    } 
+    if(task.id == 'enableSearch') {
+        enabledTasks['search'] = task.checked;
+    } 
+    localStorage.setItem('enabledTasks', JSON.stringify(enabledTasks));
 }
 
 
@@ -116,37 +104,20 @@ function onReady() {
  * Then it chooses a task and calls the relevant sub-onReady function.
  */
      
-    var enabledTasks = Array();
-    var et = localStorage.getItem('enableChoice')
-    // FIXME: This is horrible, why doesn't javascript allow if(et) or a tonne of better things?
-    if(et == "true") {
-        console.log('1T? ' + localStorage.getItem('enableChoice'))
-        enabledTasks.push("choice");
-    }
-    var et = localStorage.getItem('enableBlanks')
-    if(et == "true") {
-        console.log('2T? ' + localStorage.getItem('enableBlanks'))
-        enabledTasks.push("blank");
-    }
-    var et = localStorage.getItem('enableScrams')
-    if(et == "true") {
-        console.log('3T? ' + localStorage.getItem('enableScrams'))
-        enabledTasks.push("scramble");
-    }
-    var et = localStorage.getItem('enableSearch')
-    if(et == "true") {
-        console.log('4T? ' + localStorage.getItem('enableSearch'))
-        enabledTasks.push("search");
-    }
+    var enabledTasks = JSON.parse(localStorage.getItem('enabledTasks'));
+    var tasks = Array();
+    if(enabledTasks['blanks']) { tasks.push('blanks'); }
+    if(enabledTasks['choice']) { tasks.push('choice'); }
+    if(enabledTasks['scramble']) { tasks.push('scramble'); }
+    if(enabledTasks['search']) { tasks.push('search'); }
 
-    var tasks = enabledTasks.join("|");
     var current_language = localStorage.getItem('currentLanguage')
 
     var questions = {};
     var player = document.getElementById('player');
     var source = document.getElementById('audioSource');
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/get_clips?nlevels=10&enabled='+tasks +'&level=' + current_level + '&language=' + current_language);
+    xhr.open('GET', '/get_clips?nlevels=10&enabled='+tasks.join("|") +'&level=' + current_level + '&language=' + current_language);
     xhr.onload = function() {
         var res = JSON.parse(xhr.responseText);
         var current_question = res["question"];
