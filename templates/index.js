@@ -1,8 +1,4 @@
 
-/********************************************************************/
-// Above here should be moved to util.js but they are called in main()
-/********************************************************************/
-
 function main() {
     /* Loads all the js libraries and project modules, then calls onReady. */
     console.log('main()');
@@ -146,8 +142,8 @@ function onReady() {
             onReadyBlank(current_text, gap);
         } else if(task_type == "scramble") {
             onReadyScramble(current_text);
-//        } else if(task_type == "search") {
-//            onReadySearch(current_text, distractor);
+        } else if(task_type == "search") {
+            onReadySearch(current_text, distractor);
         } else {
             console.log("TASK: not implemented, assigning blank");
             onReadyBlank(current_text, gap);
