@@ -23,13 +23,16 @@ function main() {
         localStorage.setItem('currentLevel', 1);
     }
     var foundLang = findGetParameter("language");
+    console.log('foundLang: ' + foundLang);
     if(!localStorage.getItem('currentLanguage') && foundLang == null) {
         localStorage.setItem('currentLanguage', 'fi');
-    } else if(foundLang != null) {
+    }
+    if(foundLang != null) {
         // FIXME: this should probably check that it is a valid language
         localStorage.setItem('currentLanguage', foundLang);
     }
     var lang = localStorage.getItem('currentLanguage');
+    console.log('lang: ' + lang);
     var h = document.documentElement;
     if(lang == "ar" || lang == "fa" || lang == "dv") { // FIXME: be cleverer here
         // <html dir="rtl" lang="ar">
@@ -155,6 +158,7 @@ function onReady() {
 }
 
 function findGetParameter(parameterName) {
+    console.log('findGetParameter() ' + parameterName);
     var result = null,
         tmp = [];
     var items = location.search.substr(1).split("&");
