@@ -4,7 +4,11 @@ function main() {
     console.log('main()');
 
     var enabledTasks = localStorage.getItem('enabledTasks');
-    if(enabledTasks.length == 0 || enabledTasks.length == 15 || enabledTasks == null) {
+    if(enabledTasks == null) {
+        var et = {'blanks': true, 'choice': true, 'scramble': true, 'search':true};
+        localStorage.setItem('enabledTasks', JSON.stringify(et));
+    }
+    if(enabledTasks.length == 0 || enabledTasks.length == 15) {
         var et = {'blanks': true, 'choice': true, 'scramble': true, 'search':true};
         localStorage.setItem('enabledTasks', JSON.stringify(et));
     }
