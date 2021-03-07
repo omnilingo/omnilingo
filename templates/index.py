@@ -151,7 +151,37 @@ def draw_clip(clip):
     draw_challenge_blanks_mode(current_text, gap)
 
 
+def open_modal(el_):
+    pass  # TODO
+
+
+def change_level(el_):
+    pass  # TODO
+
+
+def update_task(el_):
+    pass  # TODO
+
+
+def change_language(el_):
+    pass  # TODO
+
+
+def bind_events():
+    find = browser.document.getElementById
+    find("open_modal_empty_div").bind(
+        "click", lambda ev: open_modal(find("open_modal_empty_div"))
+    )
+    find("help").bind("click", lambda ev: open_modal(find("help")))
+    find('levels').bind('click', lambda ev: change_level(find('levels')))
+    for el in browser.document.getElementsByClassName('cb'):
+        el.bind('click', lambda ev: update_task(el))
+    find('languages').bind(
+        'change', lambda ev: change_language(find('languages'))
+    )
+
 def main():
+    bind_events()
     draw_languages()
     draw_feedback()
     get_clip_and_then(draw_clip)
