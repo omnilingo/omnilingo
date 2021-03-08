@@ -14,7 +14,7 @@ def on_audio_ended(_ev):
 
 def on_correct_answer():
     responses = browser.local_storage.storage.get("responses", "")
-    responses += "-"
+    responses += "+"
     browser.local_storage.storage["responses"] = responses
 
 
