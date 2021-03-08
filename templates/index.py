@@ -179,7 +179,7 @@ def draw_languages():
         j = json.loads(ajax_obj.read())
         current_language = browser.local_storage.storage["currentLanguage"]
         language_selector = browser.document.getElementById('languages')
-        for language in j['languages']:
+        for language in sorted(j['languages']):
             option = browser.document.createElement('option')
             text = browser.document.createTextNode(
                 language_names.get(language, language)
