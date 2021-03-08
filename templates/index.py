@@ -344,9 +344,11 @@ def draw_clip(clip):
     current_text = clip["question"]["tokenized"]
     gap = clip["gap"]
     init_audio_player(clip["question"]["locale"], clip["question"]["path"])
-    if clip['task_type'] == 'search':
-        distractor = clip["distractor"]
+    distractor = clip.get("distractor")
+    if clip["task_type"] == "search":
         draw_challenge_search_mode(current_text, distractor)
+    elif clip["task_type"] == "choice":
+        draw_challenge_choice_mode(current_text, gap, distractor)
     else:
         draw_challenge_blanks_mode(current_text, gap)
 
@@ -413,6 +415,84 @@ def draw_challenge_types():
         task_type = el.children[0]["name"].split("enable")[1]
         if tasks.get(task_type):
             el.checked = True
+
+
+def user_input_choice(e, correct, tid):
+    # FIXME: if user already answered, don't mark feedback
+    responses = browser.local_storage.storage["responses"]
+    answer = browser.document.getElementById(tid)
+    other = (
+        browser.document.getElementById(tid[1:])
+        if tid[0] == "d"
+        else browser.document.getElementById("d" + tid)
+    )
+    if correct == 1:
+        answer.setAttribute("class", "correct")
+        responses += "+"
+    else:
+        answer.setAttribute("class", "incorrect")
+        other.setAttribute("class", "correct")
+        responses += "-"
+    answer.removeAttribute("onClick")
+    other.removeAttribute("onClick")
+    browser.local_storage.storage["responses"] = responses
+    clear_feedback()
+    draw_feedback()
+
+
+def draw_challenge_choice_mode(current_text, gap, distractors):
+    tbox = browser.document.getElementById("textbox")
+    distractor = distractors[0]
+    for i in range(len(current_text)):
+        if i != gap:
+            tbox.attach(browser.document.createTextNode(current_text[i] + " "))
+            continue
+        if i == 0:
+            distractor = distractor[0].upper() + distractor[1:]
+        else:
+            distractor = distractor.lower()
+
+        def put_correct():
+            span = browser.document.createElement("span")
+            span["id"] = "t" + str(i)
+            span[
+                "style"
+            ] = f"border: thin dotted #000; width: {len(current_text[i])}ch"
+            span["data-value"] = "{current_text[i]}"
+            span.bind(
+                "click", lambda event: user_input_choice(event, 1, span["id"])
+            )
+            text = browser.document.createTextNode(current_text[i])
+            span.attach(text)
+
+            tbox.attach(span)
+
+        def put_distractor():
+            span = browser.document.createElement("span")
+            span["id"] = "dt" + str(i)
+            span[
+                "style"
+            ] = f"border: thin dotted #000; width: {len(current_text[i])}ch"
+            span["data-value"] = "{current_text[i]}"
+            span.bind(
+                "click", lambda event: user_input_choice(event, 0, span["id"])
+            )
+            text = browser.document.createTextNode(distractor)
+            span.attach(text)
+            tbox.attach(span)
+
+        if random.random() > 0.5:
+            tbox.attach(browser.document.createTextNode("{"))
+            put_correct()
+            tbox.attach(browser.document.createTextNode(","))
+            put_distractor()
+            tbox.attach(browser.document.createTextNode("}"))
+        else:
+            tbox.attach(browser.document.createTextNode("{"))
+            put_distractor()
+            tbox.attach(browser.document.createTextNode(","))
+            put_correct()
+            tbox.attach(browser.document.createTextNode("}"))
 
 
 def main():
