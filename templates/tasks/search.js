@@ -13,6 +13,15 @@ function onReadySearch(current_text, distractor) {
     console.log('current_text:');
     console.log(current_text);
 
+    var pruned_text = Array();
+    for(var i = 0; i < current_text.length; i++) { 
+        if(current_text[i].match(/\w+/)) {
+            pruned_text.push(current_text[i]);
+        }
+    } 
+    console.log('pruned_text:');
+    console.log(pruned_text);
+
     var tb = '';
     var allWords = Array();
     var distractors = Array();
@@ -20,7 +29,7 @@ function onReadySearch(current_text, distractor) {
     
     for(var i = 0; i < 3; i++) {
         distractors.push(getRandomInt(0,distractor.length - 1));
-        repl.push(getRandomInt(0,current_text.length - 1));
+        repl.push(getRandomInt(0,pruned_text.length - 1));
     }
   
     console.log('distractors:');
@@ -28,12 +37,12 @@ function onReadySearch(current_text, distractor) {
     console.log('repl:');
     console.log(repl);
 
-    var replacements = current_text.slice(); 
+    var replacements = pruned_text.slice(); 
     for(var i = 0; i < 3; i++) {
         var d = distractors[i];
         console.log('d: ' + d);
         // FIXME: We need an API change here, we need to be able to get more than one distractor
-        var word = current_text[repl[i]];
+        var word = pruned_text[repl[i]];
         console.log('word: ' + word);
         replacements = arrayRemove(replacements, word);
         var tw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="true">' + word.toLowerCase() + '</span>';
@@ -58,6 +67,9 @@ function onReadySearch(current_text, distractor) {
 }
 
 function maybeCounter(counter) {
+/** 
+ * A function that either returns or initialises a counter in localstorage
+ */
     var counter = localStorage.getItem(counter);
     if(counter == false) {
         localStorage.setItem(counter, Number(0));
