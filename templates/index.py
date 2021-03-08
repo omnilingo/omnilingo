@@ -65,8 +65,11 @@ def get_clip_and_then(fn):
         j = json.loads(ajax_obj.read())
         fn(j)
 
+    tasks = json.loads(browser.local_storage.storage["enabledTasks"])
+    enabled = '|'.join(k for k in tasks if tasks[k])
+
     url = (
-        f"/get_clips?nlevels=10&enabled=blanks&level={get_current_level}"
+        f"/get_clips?nlevels=10&enabled={enabled}&level={get_current_level}"
         "&language=pl"
     )
     return browser.ajax.get(url, mode="text", oncomplete=process_and_call)
@@ -163,8 +166,14 @@ def change_level(el):
     browser.document.location.reload()
 
 
-def update_task(el_):
-    pass  # TODO
+def update_task(el):
+    task_type = el.children[0]['name'].split('enable')[1]
+    tasks = json.loads(browser.local_storage.storage["enabledTasks"])
+    if 'checked' in el:
+        tasks[task_type] = True
+    else:
+        tasks[task_type] = False
+    browser.local_storage.storage["enabledTasks"] = json.dumps(tasks)
 
 
 def change_language(el_):
@@ -203,7 +212,11 @@ def draw_levels():
 
 
 def draw_challenge_types():
-    pass
+    tasks = json.loads(browser.local_storage.storage["enabledTasks"])
+    for el in browser.document.getElementsByClassName("cb"):
+        task_type = el.children[0]['name'].split('enable')[1]
+        if tasks.get(task_type):
+            el.checked = True
 
 
 def main():
