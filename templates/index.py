@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import json
 
 import browser
@@ -178,21 +180,20 @@ def draw_languages():
     def update_language_list(ajax_obj):
         j = json.loads(ajax_obj.read())
         current_language = browser.local_storage.storage["currentLanguage"]
-        language_selector = browser.document.getElementById('languages')
-        for language in sorted(j['languages']):
-            option = browser.document.createElement('option')
+        language_selector = browser.document.getElementById("languages")
+        for language in sorted(j["languages"]):
+            option = browser.document.createElement("option")
             text = browser.document.createTextNode(
                 language_names.get(language, language)
             )
             if language == current_language:
-                option['selected'] = True
-            option['value'] = language
+                option["selected"] = True
+            option["value"] = language
             option.attach(text)
             language_selector.attach(option)
 
-
     browser.ajax.get(
-        '/get_languages', mode="text", oncomplete=update_language_list
+        "/get_languages", mode="text", oncomplete=update_language_list
     )
 
 
@@ -314,8 +315,8 @@ def update_task(el):
 
 
 def change_language(el):
-    browser.local_storage.storage['responses'] = ''
-    browser.local_storage.storage['currentLanguage'] = el.value
+    browser.local_storage.storage["responses"] = ""
+    browser.local_storage.storage["currentLanguage"] = el.value
     browser.document.location.reload()
 
 
@@ -367,4 +368,5 @@ def main():
     get_clip_and_then(draw_clip)
 
 
-main()
+if __name__ == '__brython__':
+    main()
