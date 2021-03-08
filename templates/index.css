@@ -11,6 +11,11 @@ body {
 position:relative;
 }
 
+#nextButton{
+	border: 1.5px solid black;
+	font-size: 150%;
+}
+
 .footer{
 	font-size:80%;
 	background-color: #cdcdcd;
@@ -26,11 +31,12 @@ position:relative;
 .header{
 	background-color: #cdcdcd;
 	padding: 10px;
+        height: 25px;
 	margin-left: 20px ;
 	margin-right: 20px ;
 	margin-top: 20px ;
 	margin-bottom: 0px;
-	text-align: right;
+/*	text-align: right;*/
 }
 .content {
 	text-align: center;
