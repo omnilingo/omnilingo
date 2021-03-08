@@ -57,7 +57,143 @@ def draw_feedback():
 
 
 def draw_languages():
-    pass  # TODO
+    language_names = {
+        "ab": "Аԥсуа",
+        "ace": "Bahsa Acèh",
+        "am": "አማርኛ",
+        "an": "Aragonés",
+        "ar": "العربية",
+        "ast": "Asturianu",
+        "as": "অসমীয়া",
+        "az": "Azərbaycanca",
+        "bas": "Basaa",
+        "ba": "Башҡортса",
+        "be": "Беларуская",
+        "bg": "Български",
+        "bn": "বাংলা",
+        "br": "Brezhoneg",
+        "bxr": "Буряад",
+        "ca": "català",
+        "cak": "Kaqchikel",
+        "ckb": "کوردی ناوەندی",
+        "cnh": "Laiholh (Hakha)",
+        "co": "Corsu",
+        "cs": "Čeština",
+        "cv": "Чӑвашла",
+        "cy": "Cymraeg",
+        "da": "Dansk",
+        "de": "Deutsch",
+        "dsb": "Dolnoserbšćina",
+        "dv": "ދިވެހި",
+        "el": "Ελληνικά",
+        "en": "English",
+        "eo": "Esperanto",
+        "es": "Español",
+        "et": "eesti",
+        "eu": "Euskara",
+        "fa": "فارسی",
+        "ff": "Pulaar-Fulfulde",
+        "fi": "suomi",
+        "fo": "Føroyskt",
+        "fr": "Français",
+        "fy-NL": "Frysk",
+        "ga-IE": "Gaeilge",
+        "gl": "Galego",
+        "gn": "Guarani",
+        "ha": "Hausa",
+        "he": "עברית",
+        "hi": "हिंदी",
+        "hr": "Hrvatski",
+        "hsb": "Hornjoserbšćina",
+        "hu": "Magyar",
+        "hy-AM": "Հայերեն",
+        "ia": "Interlingua",
+        "id": "Bahasa Indonesia",
+        "is": "Íslenska",
+        "it": "Italiano",
+        "ja": "日本語",
+        "kab": "Taqbaylit",
+        "ka": "ქართული",
+        "kbd": "Адыгэбзэ (Къэбэрдэй)",
+        "kk": "Қазақ тілі",
+        "kmr": "Kurdî (Kurmancî)",
+        "ko": "한국어",
+        "kpv": "Коми кыв",
+        "kw": "Kernowek",
+        "ky": "Кыргызча",
+        "lg": "Luganda",
+        "lij": "Lìgure",
+        "lt": "Lietuvių",
+        "lv": "Latviešu",
+        "mk": "Македонски",
+        "ml": "മലയാളം",
+        "mn": "Монгол хэл",
+        "ms": "Bahasa Melayu",
+        "mt": "Malti",
+        "myv": "Эрзякс",
+        "my": "ဗမာ",
+        "nb-NO": "Norsk (bokmål)",
+        "ne-NP": "नेपाली",
+        "nl": "Nederlands",
+        "nn-NO": "Norsk (nynorsk)",
+        "oc": "Occitan",
+        "or": "ଓଡ଼ିଆ",
+        "pa-IN": "ਪੰਜਾਬੀ",
+        "pl": "polski",
+        "pt": "Português",
+        "rm-sursilv": "romontsch sursilvan",
+        "rm-vallader": "Rumantsch vallader",
+        "ro": "Română",
+        "ru": "Русский",
+        "rw": "Ikinyarwanda",
+        "sah": "Саха тыла",
+        "scn": "Sicilianu",
+        "sc": "Sardu",
+        "si": "සිංහල",
+        "sk": "slovenčina",
+        "sl": "slovenščina",
+        "sq": "Shqip",
+        "sr": "Српски",
+        "sv-SE": "Svenska",
+        "sw": "Kiswahili",
+        "syr": "ܣܘܼܪܝܝܐ",
+        "ta": "தமிழ்",
+        "te": "తెలుగు",
+        "tg": "Тоҷикӣ",
+        "th": "ไทย",
+        "tl": "Tagalog",
+        "tr": "Türkçe",
+        "tt": "Татарча",
+        "uk": "Українська",
+        "ur": "اردو",
+        "uz": "O‘zbek",
+        "vec": "Vèneto",
+        "vi": "Việt",
+        "vot": "vad̕d̕a",
+        "zh-CN": "汉语（中国大陆）",
+        "zh-HK": "中文（香港）",
+        "zh-TW": "華語（台灣）",
+    }
+
+    def update_language_list(ajax_obj):
+        j = json.loads(ajax_obj.read())
+        current_language = browser.local_storage.storage["currentLanguage"]
+        language_selector = browser.document.getElementById('languages')
+        for language in j['languages']:
+            option = browser.document.createElement('option')
+            text = browser.document.createTextNode(
+                language_names.get(language, language)
+            )
+            if language == current_language:
+                option['selected'] = True
+            option['value'] = language
+            option.attach(text)
+            language_selector.attach(option)
+
+
+    browser.ajax.get(
+        '/get_languages', mode="text", oncomplete=update_language_list
+    )
 
 
 def get_clip_and_then(fn):
@@ -66,7 +202,7 @@ def get_clip_and_then(fn):
         fn(j)
 
     tasks = json.loads(browser.local_storage.storage["enabledTasks"])
-    enabled = '|'.join(k for k in tasks if tasks[k])
+    enabled = "|".join(k for k in tasks if tasks[k])
 
     url = (
         f"/get_clips?nlevels=10&enabled={enabled}&level={get_current_level}"
@@ -167,17 +303,19 @@ def change_level(el):
 
 
 def update_task(el):
-    task_type = el.children[0]['name'].split('enable')[1]
+    task_type = el.children[0]["name"].split("enable")[1]
     tasks = json.loads(browser.local_storage.storage["enabledTasks"])
-    if 'checked' in el:
+    if "checked" in el:
         tasks[task_type] = True
     else:
         tasks[task_type] = False
     browser.local_storage.storage["enabledTasks"] = json.dumps(tasks)
 
 
-def change_language(el_):
-    pass  # TODO
+def change_language(el):
+    browser.local_storage.storage['responses'] = ''
+    browser.local_storage.storage['currentLanguage'] = el.value
+    browser.document.location.reload()
 
 
 def bind_events():
@@ -214,7 +352,7 @@ def draw_levels():
 def draw_challenge_types():
     tasks = json.loads(browser.local_storage.storage["enabledTasks"])
     for el in browser.document.getElementsByClassName("cb"):
-        task_type = el.children[0]['name'].split('enable')[1]
+        task_type = el.children[0]["name"].split("enable")[1]
         if tasks.get(task_type):
             el.checked = True
 
