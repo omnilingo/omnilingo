@@ -9,6 +9,7 @@ body {
 	background-color: grey;
 	margin: auto;
 position:relative;
+	min-height: 100vh;
 }
 
 #nextButton{
