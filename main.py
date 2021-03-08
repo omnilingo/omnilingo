@@ -20,7 +20,8 @@ def select_clip(questions):
 
 @app.route("/get_clips") # This should be get clip 
 def get_clips():
-    MAX_LENGTH = 14
+    print('======================================================================')
+    MAX_LENGTH = 18
 
     enabled = request.args.get("enabled", default='blank|choice|scramble|search', type=str)
     task_type = random.choice(enabled.split('|'))
@@ -71,10 +72,12 @@ def get_clips():
 
     if len(ds.items()) < 1:
         # If we didn't find any distractors then we can't generate a choice/search task
+        print('[ERROR] No distractors:', ds)
         if len(selected_question["sentence"]) < MAX_LENGTH:
             task_type = random.choice(["blank", "scramble"])
         else:
             task_type = "blank"
+        print('[ERROR] len:', len(selected_question["sentence"]), ', selected', task_type)
   
     gap = -1
     if task_type == "choice" or task_type == "search":
