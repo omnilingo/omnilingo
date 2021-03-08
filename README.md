@@ -75,3 +75,7 @@ put it in `templates/cv-corpus-6.1-2020-12-11`.
 The project should be accessible through http://localhost:5001/
 
 Happy hacking! :)
+
+# Acknowledgements
+
+Logo by [Fabi Yamada](https://society6.com/yamadamx)! Licensed under CC-BY.
