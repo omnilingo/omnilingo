@@ -1,22 +1,3 @@
-
-function checkInputSearch(e) {
-/**
- * This is for the searching task, which is select K words found in the audio from N words in total
- * It checks to see if the answer is correct or incorrect and sets the colour accordingly
- * Then it redraws the feedback.
- */ 
-    console.log('checkInputSearch()');
-    var res = e.target.getAttribute('data-value');
-    if(res == "false") {
-        e.target.setAttribute('class', 'wordGuessIncorrect');
-    } else {
-        e.target.setAttribute('class', 'wordGuessCorrect');
-    }
-
-    clearFeedback();
-    drawFeedback();
-}
-
 function onReadySearch(current_text, distractor) {
 /**
  * Core task function for the 'Search' task
@@ -32,11 +13,11 @@ function onReadySearch(current_text, distractor) {
     console.log('current_text:');
     console.log(current_text);
 
-        
     var tb = '';
     var allWords = Array();
     var distractors = Array();
     var repl = Array();
+    
     for(var i = 0; i < 3; i++) {
         distractors.push(getRandomInt(0,distractor.length - 1));
         repl.push(getRandomInt(0,current_text.length - 1));
@@ -75,4 +56,59 @@ function onReadySearch(current_text, distractor) {
 
     tbox.innerHTML = tb;
 }
+
+function maybeCounter(counter) {
+    var counter = localStorage.getItem(counter);
+    if(counter == false) {
+        localStorage.setItem(counter, Number(0));
+        counter = localStorage.getItem(counter);
+    }
+    return Number(counter);
+}
+
+function checkInputSearch(e) {
+/**
+ * This is for the searching task, which is select K words found in the audio from N words in total
+ * It checks to see if the answer is correct or incorrect and sets the colour accordingly
+ * Then it redraws the feedback.
+ */ 
+    console.log('checkInputSearch()');
+
+    var nclicks = maybeCounter('searchClicks'); // always returns either 0 or the number
+    localStorage.setItem('searchClicks', Number(nclicks) + Number(1));
+
+    var trueclicks = maybeCounter('trueClicks');
+
+    var res = e.target.getAttribute('data-value');
+    if(res == "false") {
+        e.target.setAttribute('class', 'wordGuessIncorrect');
+    } else {
+        e.target.setAttribute('class', 'wordGuessCorrect');
+        localStorage.setItem('trueClicks', Number(trueclicks) + Number(1));
+    }
+
+    console.log('nclicks: ' + nclicks);
+    console.log('trueclicks: ' + trueclicks);
+
+    if(nclicks == 2) {
+        var buttons = document.querySelectorAll('[class="wordGuess"]')
+        for(var i = 0; i < buttons.length; i++) {
+          buttons[i].removeAttribute("onClick");
+        }
+        var responses = localStorage.getItem("responses");
+        if(nclicks == trueclicks) {
+            console.log('CORRECT!');
+            responses += '+';
+        } else {
+            responses += '-';
+        }
+        localStorage.setItem("responses", responses);
+        localStorage.removeItem('searchClicks'); 
+        localStorage.removeItem('trueClicks'); 
+    }
+
+    clearFeedback();
+    drawFeedback();
+}
+
 
