@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import random
 
 import browser
 import browser.ajax
@@ -288,11 +289,66 @@ def init_audio_player(locale, audio_path):
     player.bind("ended", on_audio_ended)
 
 
+def check_input_search(e):
+    res = e.target.getAttribute("data-value")
+    if res == "false":
+        e.target.setAttribute("class", "wordGuessIncorrect")
+    else:
+        e.target.setAttribute("class", "wordGuessCorrect")
+
+    # TODO: actually give some feedback - tricky, because it has to happen once
+
+    clear_feedback()
+    draw_feedback()
+
+
+def draw_challenge_search_mode(current_text, distractor):
+    allWords = []
+    distractors = []
+    repl = []
+    tbox = browser.document.getElementById("textbox")
+    for i in range(3):
+        distractors.append(random.randint(0, len(distractor) - 1))
+        repl.append(random.randint(0, len(current_text) - 1))
+
+    replacements = current_text
+    for i in range(3):
+        d = distractors[i]
+        word = current_text[repl[i]]
+        replacements.remove(word)
+
+        tw = browser.document.createElement("span")
+        tw.bind("click", check_input_search)
+        tw["class"] = "wordGuess"
+        tw["data-value"] = "true"
+        text = browser.document.createTextNode(word.lower())
+        tw.attach(text)
+        allWords.append(tw)
+
+        fw = browser.document.createElement("span")
+        fw.bind("click", check_input_search)
+        fw["class"] = "wordGuess"
+        fw["data-value"] = "false"
+        text = browser.document.createTextNode(distractor[d].lower())
+        fw.attach(text)
+        allWords.append(fw)
+
+    random.shuffle(allWords)
+    for i, word in enumerate(allWords):
+        if i == 3:
+            tbox.attach(browser.document.createElement("p"))
+        tbox.attach(word)
+
+
 def draw_clip(clip):
     current_text = clip["question"]["tokenized"]
     gap = clip["gap"]
     init_audio_player(clip["question"]["locale"], clip["question"]["path"])
-    draw_challenge_blanks_mode(current_text, gap)
+    if clip['task_type'] == 'search':
+        distractor = clip["distractor"]
+        draw_challenge_search_mode(current_text, distractor)
+    else:
+        draw_challenge_blanks_mode(current_text, gap)
 
 
 def open_modal(el_):
@@ -368,5 +424,5 @@ def main():
     get_clip_and_then(draw_clip)
 
 
-if __name__ == '__brython__':
+if __name__ == "__brython__":
     main()
