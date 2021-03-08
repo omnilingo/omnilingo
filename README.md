@@ -43,11 +43,19 @@ This system is designed with two main user groups in mind:
 The system endeavours to be audio first, with knowledge of writing built 
 up by hearing.
 
-# Talk to us!
+# Contact
+
+## Talk to us!
 
 * IRC: `irc.freenode.net` `#OmniLingo`
 * Matrix: `#OmniLingo:matrix.org`  (access via [Element](https://app.element.io/#/room/#OmniLingo:matrix.org))
 * Telegram: [OmniLingo](https://t.me/omnilingo)
+
+## Follow us!
+
+* https://www.reddit.com/r/OmniLingo/
+* https://twitter.com/OmniLingo
+
 
 # Available languages
 
@@ -79,3 +87,5 @@ Happy hacking! :)
 # Acknowledgements
 
 Logo by [Fabi Yamada](https://society6.com/yamadamx)! Licensed under CC-BY.
+
+
