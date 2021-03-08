@@ -105,15 +105,15 @@ function drawFeedback() {
         span = document.createElement('span');
         if(responses[i] == '-') {
             t = document.createTextNode(' ✘ ');
-            span.setAttribute("style", "padding:2px;align:center;color:red; border: 1px solid black");
+            span.setAttribute("style", "padding:2px;align:center;color:red; border: 0");
             span.appendChild(t);
         } else if(responses[i] == '+') {
             t = document.createTextNode(' ✔ ');
-            span.setAttribute("style", "padding:2px;align:center;color:green; border: 1px solid black");
+            span.setAttribute("style", "padding:2px;align:center;color:green; border: 0");
             span.appendChild(t);
         } else {
             t = document.createTextNode(' ? ');
-            span.setAttribute("style", "padding:2px;align:center;color:white; border: 1px solid black");
+            span.setAttribute("style", "padding:2px;align:center;color:white; border: 0");
             span.appendChild(t);
         }
         feedback.appendChild(span);

@@ -76,7 +76,11 @@ box-shadow: 10px 5px 5px #dcdcdc;
 }
 
 .feedback {
+  width:300px ;
+display:inline-block;
 	font-size: 125%;
+  border-radius: 5px;
+	border: 1.5px solid black;
 }
 
 
@@ -103,14 +107,6 @@ label > input[type="checkbox"] {
 }
 
 
-.help{
-	border: 1.5px solid black;
-	padding: 5px;
-  border-radius: 5px;
-  font-family: monospace;
-/*box-shadow: 10px 5px 5px #dcdcdc;*/
-}
-
 
 .thumb{
 	border: 1.5px solid black;
@@ -119,6 +115,20 @@ label > input[type="checkbox"] {
   font-family: monospace;
 /*box-shadow: 10px 5px 5px #dcdcdc;*/
 }
+
+.modaldiv {
+  float:left;
+}
+.open-modal {
+  background: white;
+  border: 1.5px solid black;
+  padding: 5px;
+  border-radius: 5px;
+  float:left;
+  color: black;
+  /*padding: 5px;*/
+}
+
 
 .wordGuessIncorrect{
 	border: 1.5px solid red;
@@ -151,15 +161,6 @@ box-shadow: 10px 5px 5px #dcdcdc;
 }
 
 /*********************/
-
-.open-modal {
-  font-weight: bold;
-  background: white;
-  color: black;
-  padding: .75rem 1.75rem;
-  margin-bottom: 1rem;
-  border-radius: 5px;
-}
 
 .modal { 
   position: fixed;
