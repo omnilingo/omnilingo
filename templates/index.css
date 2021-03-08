@@ -14,6 +14,7 @@ position:relative;
 
 #nextButton{
 	border: 1.5px solid black;
+  border-radius: 5px;
 	font-size: 150%;
 }
 
