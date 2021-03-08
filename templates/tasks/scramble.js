@@ -29,7 +29,7 @@ function onReadyScramble(current_text) {
         if(chars[i] == " ") {
           tb += '<span style="color: white"> _ </span>';
         } else {
-          tb += '<span id="dz'+i+'" style="padding: 2px; text-align:center; border: 2px solid black" onDrop="onScramDrop(event,\'dz'+i+'\')" onDragOver="onScramOver(event)" data-target="'+chars[i]+'"> ? </span>';
+          tb += '<span id="dz'+i+'" style="padding: 2px; text-align:center; border: 2px solid black" onClick="onTargetClick(event,\'dz'+i+'\')" data-target="'+chars[i]+'"> ? </span>';
         } 
 
     } 
@@ -51,7 +51,7 @@ function onReadyScramble(current_text) {
         if(arr1[i] == '.' || arr1[i] == '?' || arr1[i] == ','  || arr1[i] == ':'  || arr1[i] == ';'  || arr1[i] == '!' || arr1[i] == '“' || arr1[i] == '"') {
             continue;
         } else {    
-            cb += '<span class="clue" onDragEnd="onScramEnd(event)" onDragStart="onScramStart(event)" draggable="true" data-value="'+arr1[i] +'">' + arr1[i].toLowerCase() + '</span>';
+            cb += '<span class="clue" onClick="onSourceClick(event)" data-value="'+arr1[i] +'">' + arr1[i].toLowerCase() + '</span>';
             cb += '<span style="color: white"> _ </span>';
         } 
     }
@@ -61,55 +61,41 @@ function onReadyScramble(current_text) {
     tbox.innerHTML = '<br/>' + tb;
 }
 
-function onScramOver(e) {
+function onSourceClick(e) {
 /**
- * Function called on the hover over for the tile dropping
+ * When we click on a source tile
+ * - We set its background colour to yellow.
  */
-//    console.log('onScramOver()');
-//    console.log(e);
-//   e.currentTarget.style.backgroundColor = 'red';
-    e.preventDefault();
-}
-
-function onScramStart(e) {
-/**
- * When we start dragging a tile, we set its background colour to yellow.
- */
-    console.log('onScramStart()');
-    e.dataTransfer.setData('value', e.currentTarget.dataset.value);
-   e.currentTarget.style.backgroundColor = 'yellow';
+    console.log('onSourceClick()');
    console.log('e:')
     console.log(e);
+    e.target.setAttribute('data-clicked', 'tile');
+//    e.dataTransfer.setData('value', e.currentTarget.dataset.value);
+   e.currentTarget.style.backgroundColor = 'yellow';
 }
 
-function onScramEnd(e) {
-/**
- * When we finish dragging we set the background colour back to white
- */
-    console.log('onScramStart()');
-  e.currentTarget.style.backgroundColor = '#bababa';
-//   e.currentTarget.style.backgroundColor = 'white';
-}
-
-function onScramDrop(e, tid) {
+function onTargetClick(e, tid) {
 /**
  * This is called when we drop the tile on a target
  * - We should check if the target and the tile match and update the colour
  * - This also merges those drop squares when the whole word is complete and sets the border to green
  * - It should also check to see if the whole response is right and update the responses as necessary
  */
-    console.log('onScramDrop()');
+    console.log('onTargetClick()');
     console.log('tid:' + tid);
-    let val = e.dataTransfer.getData('value');
+    var trg = e.target;
+    var trg_val = trg.getAttribute('data-target');
     dz = document.getElementById(tid);
-    let trg = dz.getAttribute('data-target');
-    console.log('dz:' + dz);
-    console.log('value:' + val);
-    console.log('target:' + trg);
+    var src = document.querySelectorAll('[data-clicked="tile"]')[0];
+    var src_val = src.getAttribute('data-value');
 
-    if(val.toLowerCase() == trg.toLowerCase()) {
+    console.log('dz:' + dz);
+    console.log('[src] tile [value]:' + src_val);
+    console.log('[trg] box [value]:' + trg_val);
+
+    if(src_val.toLowerCase() == trg_val.toLowerCase()) {
         console.log('CORRECT!');
-        dz.innerHTML = val;
+        dz.innerHTML = trg_val;
         dz.setAttribute('class', 'correct');
         // Check if the word is complete here 
         tbox = document.getElementById('textbox');
@@ -146,6 +132,7 @@ function onScramDrop(e, tid) {
         console.log('current_tokens:');
         console.log(current_tokens);
         var ncorrect = 0; // Number of tokens found as being correct
+/*
         for(var i = 0; i < target_tokens.length; i++) {
             // If the token matches
             if(target_tokens[i] == current_tokens[i]) {
@@ -162,6 +149,7 @@ function onScramDrop(e, tid) {
                 wbox.innerHTML = target_tokens[i];
             }
         }
+*/
         // FIXME: Currently because we delete the nodes, the target tokens are never rebuilt
         // after they are correct, so we can't calculate ncorrect properly.
         console.log('XX: ' + ncorrect + ' || ' + target_tokens.length);
@@ -175,5 +163,7 @@ function onScramDrop(e, tid) {
     } else {
         console.log('INCORRECT!');
     }
+    src.removeAttribute('data-clicked');
+    src.setAttribute('style', 'background-color:#bababa');
 }
 

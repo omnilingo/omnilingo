@@ -30,28 +30,41 @@ def split_into_buckets(
 
 
 def get_distractors(frequencies):
-    m = {}
-    distractors = collections.defaultdict(list)
 
-    frequencies = collections.Counter({k: frequencies[k] for k in frequencies if frequencies[k] > 5})
     # TODO: buckets should be dependent on size of input, more lines -> more buckets
     print('[frequencies]', len(frequencies))
     if len(frequencies) == 0:
         return distractors
-    nbuckets = 10 ** int(math.log(len(frequencies), 50))
-    buckets = split_into_buckets(
-        frequencies,
-        nbuckets=nbuckets,
-        key_fn=lambda x: frequencies[x],
-        build_reverse_partitions=False,
-    )
-    for level in buckets:
-        for token1 in buckets[level]:
-            for token2 in buckets[level]:
-                if token1 not in m:
-                    m[token1] = {}
+
+    m = {}
+
+    distractors = collections.defaultdict(list)
+
+    MIN_FREQ = 1
+    if len(frequencies) < 5000:
+        for token1 in frequencies:
+            if token1 not in m:
+                m[token1] = {}
+            for token2 in frequencies:
                 if token2 not in m[token1]:
                     m[token1][token2] = distance(token1, token2)
+    else:
+        MIN_FREQ = 5
+        frequencies = collections.Counter({k: frequencies[k] for k in frequencies if frequencies[k] > MIN_FREQ})
+        nbuckets = 10 ** int(math.log(len(frequencies), 50))
+        buckets = split_into_buckets(
+            frequencies,
+            nbuckets=nbuckets,
+            key_fn=lambda x: frequencies[x],
+            build_reverse_partitions=False,
+        )
+        for level in buckets:
+            for token1 in buckets[level]:
+                for token2 in buckets[level]:
+                    if token1 not in m:
+                        m[token1] = {}
+                    if token2 not in m[token1]:
+                        m[token1][token2] = distance(token1, token2)
 
 
     for token1 in frequencies:
@@ -66,3 +79,4 @@ def get_distractors(frequencies):
         #print((token1, distractors[token1]))
     print('[distractors] generated',len(distractors.keys()),'distractors')
     return distractors
+
