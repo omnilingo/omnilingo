@@ -203,10 +203,11 @@ def get_clip_and_then(fn):
 
     tasks = json.loads(browser.local_storage.storage["enabledTasks"])
     enabled = "|".join(k for k in tasks if tasks[k])
+    current_language = browser.local_storage.storage["currentLanguage"]
 
     url = (
         f"/get_clips?nlevels=10&enabled={enabled}&level={get_current_level}"
-        "&language=pl"
+        f"&language={current_language}"
     )
     return browser.ajax.get(url, mode="text", oncomplete=process_and_call)
 
