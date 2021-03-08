@@ -53,9 +53,9 @@ up by hearing.
 
 ## Follow us!
 
+* https://polyglot.city/@omnilingo
 * https://www.reddit.com/r/OmniLingo/
 * https://twitter.com/OmniLingo
-
 
 # Available languages
 
