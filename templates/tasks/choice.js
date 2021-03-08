@@ -44,6 +44,23 @@ function userInputChoice(e, correct, tid) {
     drawFeedback();
 }
 
+function matchCase(word, distractor) {
+/** 
+ * Matches the case of a distractor to the word it is intended to replace
+ */
+   console.log('matchCase() ' + word + ' ||| ' + distractor);
+   if(word[0] == word[0].toUpperCase()) {
+       var recasedDistractor = distractor[0].toUpperCase() + distractor.slice(1, distractor.length);
+       return recasedDistractor;
+   } else if(word[0] == word[0].toLowerCase()) {
+       var recasedDistractor = distractor[0].toLowerCase() + distractor.slice(1, distractor.length);
+       return recasedDistractor;
+   } else {
+       console.log('FAIL? ' + word + ' ||| ' + distractor);
+       return distractor;
+   }
+}
+
 function buildOptionTbox(current_text, gap, distractors) {
 /**
  * Used in the choice task, it produces two spans one with the right answer and the other with a distractor
@@ -58,14 +75,9 @@ function buildOptionTbox(current_text, gap, distractors) {
     // FIXME: Caps at beginning of sentence
     console.log('distractors:')
     console.log(distractors);
-    var distractor = distractors[0];
+    var distractor = matchCase(current_text[gap], distractors[0]); 
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
-            if(i == 0) {
-                distractor[0] = distractor[0].toUpperCase();
-            } else {
-                distractor = distractor.toLowerCase();
-            } 
             if(getRandomInt(0, 1) == 1) {
                 line += `{<span 
                                 onClick="userInputChoice(event, 1, \'t${i}'\)"
