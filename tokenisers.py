@@ -10,6 +10,49 @@ def quc(sentence):
 
     return [i for i in re.split("(\\w+)", o) if not i.strip() == "" ]
 
+def ita(sentence):
+    """
+	>>> tokenise('L’Olivetti sopravvisse mentre l’Olimpia, il suo competitor più grande, chiuse.', lang='ita')
+	['L’', 'Olivetti', 'sopravvisse', 'mentre', 'l’', 'Olimpia', ',', 'il', 'suo', 'competitor', 'più', 'grande', ',', 'chiuse', '.']
+    """
+    o = sentence
+    o = re.sub(r"([!\"#$+,./:;<=>?~¡«°»–‘“”„…]+)", " \g<1> ", o)
+    o = o.replace('[', ' [ ')
+    o = o.replace(']', ' ] ')
+    o = o.replace('(', ' ( ')
+    o = o.replace(')', ' ) ')
+    o = o.replace("L'", " L' ")
+    contractions = [
+        "l",
+        "dell",
+        "all",
+        "d",
+        "un",
+        "nell",
+        "dall",
+        "c",
+        "quest",
+        "sull",
+        "anch",
+        "quell",
+        "po",
+        "tutt",
+        "s",
+        "vent",
+        "trent",
+        "de",
+        "sant"
+    ]
+    for tok in contractions:
+        o = o.replace(tok.title() + "'", tok.title() + "' ")
+        o = o.replace(tok.title() + "’", tok.title() + "’ ")
+        o = o.replace(" " + tok + "'", " " + tok + "' ")
+        o = o.replace(" " + tok + "’", " " + tok + "’ ")
+    o = re.sub(r"  *", " ", o)
+    o = o.strip()
+    return [i.strip() for i in o.split(" ") if not i.strip() == ""]
+
+
 def tam(sentence):
     """
 	>>> tokenise("கோலத்தினைக் கொய்வ துண்டோ? - \\"பெண்கள்", lang="tam")
@@ -454,6 +497,8 @@ def tokenise(sentence, lang):
         return lug(sentence)
     if lang in ["hi", "hin"]:
         return hin(sentence)
+    if lang in ["it", "ita"]:
+        return ita(sentence)
     if lang in ["mt", "mlt"]:
         return mlt(sentence)
     if lang in ["or", "ori"]:
