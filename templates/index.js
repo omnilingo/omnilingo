@@ -125,6 +125,10 @@ function onReady() {
         source.src = '/static/cv-corpus-6.1-2020-12-11/' + current_question['locale'] + '/clips/' + current_audio;
         source.type = 'audio/mp3';
         player.load();
+        var nextButton = document.getElementById('nextButton');
+        console.log('player height: ' + player.clientHeight);
+        nextButton.setAttribute('style', 'height: ' + player.clientHeight + 'px');
+       
 
         console.log('task_type: ' + task_type);
         if(task_type == "choice") {

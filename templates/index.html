@@ -16,7 +16,8 @@
 <body>
   <!-- The header -->
   <div class="header" id="header">
-    <select name="languages" id="languages" onChange="changeLanguage(this)"></select>
+    <span style="float:left"><img src="https://omnilingo.xyz/logo.png" height="35px"/></span>
+    <span style="float:right; text-align:right"><select name="languages" id="languages" onChange="changeLanguage(this)"></select></span>
   </div>
   <!-- Content -->
   <div class="content" id="content">
@@ -39,7 +40,7 @@
         </audio>
       </div>
       <div style="float:right">
-       <input type="button" onClick="window.location.reload()" value="Next"/>
+       <input id="nextButton" type="button" onClick="window.location.reload()" value="⏭"/>
       </div>
     </div>
     <p>&nbsp;</p>
