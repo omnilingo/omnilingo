@@ -160,6 +160,12 @@ box-shadow: 10px 5px 5px #dcdcdc;
 box-shadow: 10px 5px 5px #dcdcdc;
 }
 
+.targetBox {
+padding: 2px; 
+text-align:center; 
+border: 2px solid black
+}
+
 /*********************/
 
 .modal { 
