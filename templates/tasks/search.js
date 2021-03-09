@@ -16,11 +16,15 @@ function onReadySearch(current_text, distractor) {
     var pruned_text = Array();
     for(var i = 0; i < current_text.length; i++) { 
         if(current_text[i].match(/\w+/)) {
-            pruned_text.push(current_text[i]);
+            pruned_text.push(current_text[i].toLowerCase());
         }
     } 
     console.log('pruned_text:');
     console.log(pruned_text);
+    var pruned_distractors = Array();
+    for(var i = 0; i < distractor.length; i++) { 
+        pruned_distractors.push(distractor[i].toLowerCase());
+    }
 
     var tb = '';
     var allWords = Array();
@@ -28,8 +32,13 @@ function onReadySearch(current_text, distractor) {
     var repl = Array();
     
     for(var i = 0; i < 3; i++) {
-        distractors.push(getRandomInt(0,distractor.length - 1));
-        repl.push(getRandomInt(0,pruned_text.length - 1));
+        var dselect = randomChoice(pruned_distractors);
+        distractors.push(dselect);
+        arrayRemove(pruned_distractors, dselect);
+
+        var wselect = randomChoice(pruned_text);
+        repl.push(wselect);
+        arrayRemove(pruned_text, wselect);
     }
   
     console.log('distractors:');
@@ -42,13 +51,11 @@ function onReadySearch(current_text, distractor) {
         var d = distractors[i];
         console.log('d: ' + d);
         // FIXME: We need an API change here, we need to be able to get more than one distractor
-        var word = pruned_text[repl[i]];
+        var word = repl[i];
         console.log('word: ' + word);
-        replacements = arrayRemove(replacements, word);
+//        replacements = arrayRemove(replacements, word);
         var tw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="true">' + word.toLowerCase() + '</span>';
-        var ds = distractor[d]; 
-        console.log('ds: ' + ds);
-        var fw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="false">' + ds.toLowerCase() + '</span>';
+        var fw = '<span onClick="checkInputSearch(event)" class="wordGuess" data-value="false">' + d.toLowerCase() + '</span>';
         allWords.push(tw);
         allWords.push(fw);
     }
@@ -64,6 +71,11 @@ function onReadySearch(current_text, distractor) {
     tbox = document.getElementById('textbox');
 
     tbox.innerHTML = tb;
+}
+
+function randomChoice(choices) {
+    var index = Math.floor(Math.random() * choices.length);
+    return choices[index];
 }
 
 function maybeCounter(counter) {
