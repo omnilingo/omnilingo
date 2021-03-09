@@ -21,7 +21,8 @@ check out [LibreLingo](https://github.com/kantord/LibreLingo/).
 
 * Fill in the blanks: A cloze-style task
 * Pick the right one: Get two options and choose the right one
-* Drag and drop: Get a set of tiles and drag them to build a sentence
+* Drag and drop: Get a set of tiles and click on them to build a word or sentence
+* Spot the word: Get set of six tiles and click on the ones that appear in the audio
 
 # Keys
 
