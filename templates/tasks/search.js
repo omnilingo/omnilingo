@@ -8,9 +8,9 @@ function onReadySearch(current_text, distractor) {
     console.log('onReadySearch()');
 
 // Specific code starts here
-    console.log('distractors:');
+    console.log('[1] distractors:');
     console.log(distractor);
-    console.log('current_text:');
+    console.log('[1] current_text:');
     console.log(current_text);
 
     var pruned_text = Array();
@@ -19,12 +19,16 @@ function onReadySearch(current_text, distractor) {
             pruned_text.push(current_text[i].toLowerCase());
         }
     } 
-    console.log('pruned_text:');
+    var pruned_text_set = new Set(pruned_text);
+    pruned_text = Array.from(pruned_text_set);
+    console.log('[2] pruned_text:');
     console.log(pruned_text);
     var pruned_distractors = Array();
     for(var i = 0; i < distractor.length; i++) { 
         pruned_distractors.push(distractor[i].toLowerCase());
     }
+    var pruned_distractors_set = new Set(pruned_distractors);
+    pruned_distractors = Array.from(pruned_distractors_set);
 
     var tb = '';
     var allWords = Array();
@@ -32,18 +36,24 @@ function onReadySearch(current_text, distractor) {
     var repl = Array();
     
     for(var i = 0; i < 3; i++) {
-        var dselect = randomChoice(pruned_distractors);
-        distractors.push(dselect);
-        arrayRemove(pruned_distractors, dselect);
 
         var wselect = randomChoice(pruned_text);
         repl.push(wselect);
-        arrayRemove(pruned_text, wselect);
+        pruned_text = arrayRemove(pruned_text, wselect);
+
+        var dselect = randomChoice(pruned_distractors);
+        distractors.push(dselect);
+        pruned_distractors = arrayRemove(pruned_distractors, dselect);
+
+        console.log('[3] pruned_distractors:');
+        console.log(pruned_distractors);
+        console.log('[3] pruned_text:');
+        console.log(pruned_text);
     }
   
-    console.log('distractors:');
+    console.log('[4] distractors:');
     console.log(distractors);
-    console.log('repl:');
+    console.log('[4] repl:');
     console.log(repl);
 
     var replacements = pruned_text.slice(); 
