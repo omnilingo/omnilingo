@@ -13,6 +13,9 @@ function onReadySearch(current_text, distractor) {
     console.log('[1] current_text:');
     console.log(current_text);
 
+    var nclicks = maybeCounter('searchClicks'); // always returns either 0 or the number
+    var trueclicks = maybeCounter('trueClicks');
+
     var pruned_text = Array();
     for(var i = 0; i < current_text.length; i++) { 
         if(current_text[i].match(/\w+/)) {
@@ -109,7 +112,6 @@ function checkInputSearch(e) {
     console.log('checkInputSearch()');
 
     var nclicks = maybeCounter('searchClicks'); // always returns either 0 or the number
-    localStorage.setItem('searchClicks', Number(nclicks) + Number(1));
 
     var trueclicks = maybeCounter('trueClicks');
 
@@ -147,7 +149,10 @@ function checkInputSearch(e) {
         localStorage.removeItem('searchClicks'); 
         localStorage.removeItem('trueClicks'); 
         endTask();
+    } else {
+        localStorage.setItem('searchClicks', Number(nclicks) + Number(1));
     }
+
 
     clearFeedback();
     drawFeedback();
