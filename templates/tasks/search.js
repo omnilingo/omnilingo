@@ -136,6 +136,13 @@ function checkInputSearch(e) {
         } else {
             responses += '-';
         }
+        var allTrue = document.querySelectorAll('[data-value="true"]');
+        for(var i = 0; i < allTrue.length; i++) {
+            if(allTrue[i].getAttribute('class') == 'wordGuessCorrect') { 
+                continue;
+            }
+            allTrue[i].setAttribute('style', 'color:green');
+        }
         localStorage.setItem("responses", responses);
         localStorage.removeItem('searchClicks'); 
         localStorage.removeItem('trueClicks'); 
