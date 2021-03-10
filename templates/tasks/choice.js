@@ -40,6 +40,7 @@ function userInputChoice(e, correct, tid) {
     answer.removeAttribute("onClick");
     other.removeAttribute("onClick");
     localStorage.setItem('responses', responses);
+    endTask();
     clearFeedback();
     drawFeedback();
 }

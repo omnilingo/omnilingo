@@ -18,6 +18,13 @@ position:relative;
 	font-size: 150%;
 }
 
+#timer {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .footer{
 	font-size:80%;
 	background-color: #cdcdcd;

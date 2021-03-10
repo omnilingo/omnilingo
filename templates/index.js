@@ -108,6 +108,7 @@ function onReady() {
 
     var questions = {};
     var player = document.getElementById('player');
+    player.setAttribute('onPlay', 'startTimer()');
     var source = document.getElementById('audioSource');
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/get_clips?nlevels=10&enabled='+tasks.join("|") +'&level=' + current_level + '&language=' + current_language);
@@ -126,10 +127,11 @@ function onReady() {
         source.type = 'audio/mp3';
         player.load();
         var nextButton = document.getElementById('nextButton');
+        var timer = document.getElementById('timer');
         console.log('player height: ' + player.clientHeight);
         nextButton.setAttribute('style', 'height: ' + player.clientHeight + 'px');
-       
-
+        timer.setAttribute('style', 'height: ' + player.clientHeight + 'px');
+ 
         console.log('task_type: ' + task_type);
         if(task_type == "choice") {
             onReadyChoice(current_text, gap, distractor);
@@ -148,6 +150,21 @@ function onReady() {
     xhr.send();
 }
 
+function stopTimer() {
+clearInterval(localStorage.getItem('refreshIntervalId'));
+}
+
+function startTimer() {
+    console.log('startTimer()');
+    var sec = 0;
+    var res = setInterval( function(){
+        document.getElementById("seconds").innerHTML=pad(++sec%60);
+        document.getElementById("minutes").innerHTML=pad(parseInt(sec/60,10));
+    }, 1000);
+    localStorage.setItem('refreshIntervalId', res);
+}
+
+
 function findGetParameter(parameterName) {
     console.log('findGetParameter() ' + parameterName);
     var result = null,
@@ -158,6 +175,11 @@ function findGetParameter(parameterName) {
         if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
     }
     return result;
+}
+
+
+function pad (val) { 
+    return val > 9 ? val : "0" + val; 
 }
 
 window.onload = main;

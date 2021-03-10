@@ -139,6 +139,7 @@ function checkInputSearch(e) {
         localStorage.setItem("responses", responses);
         localStorage.removeItem('searchClicks'); 
         localStorage.removeItem('trueClicks'); 
+        endTask();
     }
 
     clearFeedback();

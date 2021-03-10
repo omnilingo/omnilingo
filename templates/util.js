@@ -125,6 +125,9 @@ function drawFeedback() {
     }
 }
 
+function endTask() {
+    stopTimer();
+}
 
 function openModal(e) {
     const openEls = document.querySelectorAll("[data-open]");

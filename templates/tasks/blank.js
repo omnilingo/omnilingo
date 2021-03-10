@@ -124,6 +124,7 @@ function checkInput(tid) {
     console.log('responses: ');
     console.log(responses);
     localStorage.setItem('responses', responses);
+    endTask();
     clearFeedback();
     drawFeedback();
 }
