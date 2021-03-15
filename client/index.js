@@ -156,6 +156,7 @@ function buildTbox(current_text, gap) {
  *  Wraps it in a paragraph for spacing/layout reasons.
  */ 
     line = '';
+    var tbox = document.createElement('p');
     for (var i = 0; i < current_text.length; i++) {
         if (i == gap) {
             line += `<input type="text"
@@ -252,6 +253,30 @@ function checkInput(tid) {
     clearFeedback();
     drawFeedback();
 }
+
+function stopTimer() {
+clearInterval(localStorage.getItem('refreshIntervalId'));
+}
+
+function startTimer() {
+    console.log('startTimer()');
+    var sec = 0;
+    var res = setInterval( function(){
+        document.getElementById("seconds").innerHTML=pad(++sec%60);
+        document.getElementById("minutes").innerHTML=pad(parseInt(sec/60,10));
+    }, 1000);
+    localStorage.setItem('refreshIntervalId', res);
+}
+
+function endTask() {
+    stopTimer();
+}
+
+
+function pad (val) { 
+    return val > 9 ? val : "0" + val; 
+}
+
 
 
 
