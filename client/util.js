@@ -70,28 +70,24 @@ function globalKeyDown(e) {
     }
 }
 
-function getLanguages() {
+function getIndexes() {
     // Creates the language selection dialogue
-    console.log('getLanguages()');
+    console.log('getIndexes()');
     languageSelector = document.getElementById('languages');
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/get_languages');
+    xhr.open('GET', '/indexes');
     xhr.onload = function() {
-        res = JSON.parse(xhr.responseText);
-        languages = res["languages"];
-        for(var i = 0; i < languages.length; i++) {
-            var language = document.createElement("option");
-            if(language_names[languages[i]]) { 
-                var languageText = document.createTextNode(language_names[languages[i]]);
-            } else {
-                var languageText = document.createTextNode(languages[i]);
+        var res = JSON.parse(xhr.responseText);
+        var indexes = res["indexes"];
+        for(var language in indexes) {
+            var languageElem = document.createElement("option");
+            var languageText = document.createTextNode(indexes[language]["display"]); // Display name
+            if(localStorage.getItem('currentLanguage') == language) {
+                languageElem.setAttribute("selected","");
             }
-            if(localStorage.getItem('currentLanguage') == languages[i]) {
-                language.setAttribute("selected","");
-            }
-            language.setAttribute("value", languages[i]);
-            language.appendChild(languageText);
-            languageSelector.appendChild(language);
+            languageElem.setAttribute("value", language);
+            languageElem.appendChild(languageText);
+            languageSelector.appendChild(languageElem);
         }
     };
     xhr.send();
@@ -151,3 +147,17 @@ function closeModal(e) {
       });
     }
 }
+
+function findGetParameter(parameterName) {
+    console.log('findGetParameter() ' + parameterName);
+    var result = null,
+        tmp = [];
+    var items = location.search.substr(1).split("&");
+    for (var index = 0; index < items.length; index++) {
+        tmp = items[index].split("=");
+        if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+    }
+    return result;
+}
+
+

@@ -73,15 +73,14 @@ To bootstrap the project for Finnish, `git clone` the repository, then run the f
 commands:
 
 ```bash
-cd templates && wget --no-check-certificate http://cl.indiana.edu/\~ftyers/cv/cv-corpus-6.1-2020-12-11.tar.gz -O- | tar zxf - && cd ..
-pip install -r requirements.txt
+make
 ./main.py
 ```
 
-To add more languages, download a dataset from [Common Voice](https://commonvoice.mozilla.org/datasets) and 
-put it in `templates/cv-corpus-6.1-2020-12-11`.
-
 The project should be accessible through http://localhost:5001/
+
+To add more languages, download a dataset from [Common Voice](https://commonvoice.mozilla.org/datasets) and 
+put it in `cv-corpus-6.1-2020-12-11/`.
 
 Happy hacking! :)
 

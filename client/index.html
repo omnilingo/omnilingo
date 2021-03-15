@@ -4,14 +4,9 @@
 <head>
   <title>OmniLingo</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <link rel="stylesheet" href="./static/index.css" />
-  <script type="text/javascript" src="./static/languages.js"></script>
-<meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
-  <script type="text/javascript" src="./static/util.js"></script>
-  <script type="text/javascript" src="./static/tasks/blank.js"></script>
-  <script type="text/javascript" src="./static/tasks/choice.js"></script>
-  <script type="text/javascript" src="./static/tasks/scramble.js"></script>
-  <script type="text/javascript" src="./static/tasks/search.js"></script>
+  <link rel="stylesheet" href="./client/index.css" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+<script type="text/javascript" src="./client/graph.js"></script>
 </head>
 
 <body>
@@ -42,7 +37,7 @@
       </div>
       <span id="timer"><label id="minutes">00</label>:<label id="seconds">00</label><span>
       <div style="float:right">
-       <input id="nextButton" type="button" onClick="window.location.reload()" value="⏭"/>
+       <input id="nextButton" type="button" onClick="nextButton()" value="⏭"/>
       </div>
     </div>
     <p>&nbsp;</p>
@@ -66,8 +61,8 @@
   </div>
   </div>
   <div class="footer">
-<a href="https://github.com/omnilingo/omnilingo"> <img src="/static/assets/github.png" height="20px"/></a> <a href="https://commonvoice.mozilla.org/datasets"><img src="/static/assets/commonvoice.png" height="23px"/></a>
+<a href="https://github.com/omnilingo/omnilingo"> <img src="./client/assets/github.png" height="20px"/></a> <a href="https://commonvoice.mozilla.org/datasets"><img src="./client/assets/commonvoice.png" height="23px"/></a>
   </div>
-<script type="text/javascript" src="./static/index.js"></script>
+<script type="text/javascript" src="./client/index.js"></script>
 </body>
 </html>
