@@ -95,8 +95,17 @@ const main = async () => {
     var graph = new Graph();
     graph.fromIndex(document.questions);
 
-    nextQuestion(lang);
+    nextBatch(graph, lang);
 
+}
+
+const nextBatch = async (graph, lang) => {
+    start_node = graph.getRandomNode();
+
+    console.log('start_node:');
+    console.log(start_node);
+    
+    nextQuestion(lang);
 }
 
 const getIndex = async (lang) => {
