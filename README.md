@@ -67,6 +67,10 @@ Abkhaz · Arabic · Assamese · Breton · Catalan · Hakha Chin · Czech · Chuv
 If you want to work with a language not yet in Common Voice, we highly recommend that you [get set up in Common Voice](https://github.com/common-voice/common-voice/blob/main/docs/LANGUAGE.md), but 
 in the meantime, you can check out the [format guidelines](docs/FORMAT.md).
 
+# Releases 
+
+* [0.1.0](https://github.com/omnilingo/omnilingo/tree/v0.1.0) Functional proof of concept
+
 # Deployment
 
 To bootstrap the project for Finnish, `git clone` the repository, then run the following
