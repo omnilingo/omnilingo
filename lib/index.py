@@ -13,6 +13,7 @@ def index(input_path, output_file):
 	"""
 		Indexes a validated.tsv file
 	"""
+	skipped = 0
 	input_fd = open(input_path + '/validated.tsv', 'r')	
 	output_fd = open(output_file, 'w+')
 	line = input_fd.readline()
@@ -27,19 +28,31 @@ def index(input_path, output_file):
 		sent = re.sub('[^\w ]+', '', sent_orig)
 		nc = len(row[2])
 		ns = len(row[2].split(' '))
+
+		if nc >= MAX_TEXT_LENGTH:
+			skipped += 1
+			line = input_fd.readline()
+			continue	
+
 		hsh = hashlib.sha256(sent.encode('utf-8')).hexdigest()
 		af =  input_path + '/clips/' + fn
 		afd = open(af, 'rb')
 		ahsh = hashlib.sha256(afd.read()).hexdigest()
 		audio = MP3(afd)
 		afd.close()
+
+		if audio.info.length >= MAX_AUDIO_LENGTH:
+			skipped += 1
+			line = input_fd.readline()
+			continue	
+
 		print('%d\t%d\t%d\t%s\t%s\t%s\t%s' % (ns,nc,audio.info.length,fn,ahsh, sent_orig,hsh),file=output_fd)
 		line = input_fd.readline()
 		i += 1
 
-	return i
+	return (i, skipped)
 
 if __name__ == "__main__":
-	n_lines = index(sys.argv[1], 'cache/' + sys.argv[1].split('/')[-2])
+	(n_lines, n_skipped) = index(sys.argv[1], 'cache/' + sys.argv[1].split('/')[-2])
 
-	print(n_lines,'indexed.')
+	print(n_lines,'indexed,', n_skipped, 'skipped.')
