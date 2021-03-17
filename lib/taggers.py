@@ -36,7 +36,7 @@ def default(sentence):
     return tags
 
 
-def tokenise(sentence, lang):
+def tag(sentence, lang):
     if lang in ["de", "deu"]:
         return deu(sentence)
 
