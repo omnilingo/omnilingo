@@ -16,6 +16,8 @@ def index(input_path, output_file):
 		Indexes a validated.tsv file
 	"""
 
+	# FIXME: The buckets should contain only the text hashes, having one example per 
+	# text should be enough for a first version.
 	buckets = {}
 	for i in range(1,11):
 		buckets[i] = []
