@@ -31,7 +31,7 @@ def indexes():
 @app.route("/index/<path:path>")
 def index(path):
     lines = [line.strip().split('\t') for line in open('cache/' + path).readlines()]
-    return {"index": lines}
+    return {"index": [[line[0], line[1], line[2], line[4], line[6]] for line in lines]}
 
 @app.route("/static/<path:path>")
 def serve_static(path):

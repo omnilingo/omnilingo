@@ -8,11 +8,13 @@ Graph.prototype.setup = function () {
     console.log('Graph.setup()');
     this.nodes = [];
     this.edges = new Map();
+    this.weights = new Map();
 }
 
-Graph.prototype.addNode = function (n) { 
+Graph.prototype.addNode = function (n, w) { 
     console.log('[add_node] ' + n);
     this.nodes.push(n); 
+    this.weights.set(n, w); 
     this.edges.set(n, []); 
 }
 
@@ -21,13 +23,18 @@ Graph.prototype.addEdge = function (n, e, w) {
     this.edges.get(n).push([e, w]);
 }
 
+Graph.prototype.getWeight = function(nodeId) { 
+    return this.weights[nodeId];
+}
+
 Graph.prototype.fromIndex = function(index) {
     console.log('fromIndex() ' + index.length );
     this.index = index;  
     for(element in this.index) {
-        let nodeId = this.index[element][6];
+        let nodeId = this.index[element][4];
         this.addNode(nodeId);
-    } 
+        this.weights[nodeId] = Number(this.index[element][2]); 
+    }  
 
     for(node1 in this.nodes) { 
         for(node2 in this.nodes) { 

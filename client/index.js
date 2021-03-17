@@ -23,19 +23,23 @@ const displayQuestion = async (question) => {
 
 }
 
-const nextQuestion = async (lang) => {
+const nextQuestion = async (graph, lang) => {
     console.log('nextQuestion() ' + lang);
     // 8	69	6	common_voice_fi_24001101.mp3	fa032123ba94a9aafc037ca10a5eac754ef410288c8dde2b2c666ed5e10222f2	Mysteerimies oli oppinut moraalinsa taruista, elokuvista ja peleistä.	a8f9eb3f56f2048df119a9ad1d210d0b98fda56f3e2a387f14fe2d652241f3ec
+    // 8	69	6	fa032123ba94a9aafc037ca10a5eac754ef410288c8dde2b2c666ed5e10222f2	a8f9eb3f56f2048df119a9ad1d210d0b98fda56f3e2a387f14fe2d652241f3ec
+
 
     var index = document.questionIndex;
 
-    var current_question = getRandomInt(0, index.length);
+//    var current_question = getRandomInt(0, index.length);
+
+    var text_hash = document.graph.getRandomNode();
 
     console.log('[current_question] ' + current_question);
 
     console.log(index[current_question]);
 
-    var audio_hash = index[current_question][4];
+    var audio_hash = index[current_question][3];
 
     console.log('[audio_hash] ' + audio_hash);
 
@@ -43,7 +47,7 @@ const nextQuestion = async (lang) => {
 
     console.log('[audio_path] ' + current_audio);
 
-    var text_hash = index[current_question][6];
+    var text_hash = index[current_question][4];
     var current_text = text_hash.slice(0,2) + '/' + text_hash.slice(2,6) + '/' + text_hash + '/text';
     var current_tokens = text_hash.slice(0,2) + '/' + text_hash.slice(2,6) + '/' + text_hash + '/tokens';
 
@@ -93,17 +97,19 @@ const main = async () => {
     console.log(document.questions);
 
     var graph = new Graph();
-    graph.fromIndex(document.questions);
+    document.graph = graph.fromIndex(document.questions);
 
-    nextBatch(graph, lang);
+    nextBatch(lang);
 
 }
 
-const nextBatch = async (graph, lang) => {
+const nextBatch = async (lang) => {
     start_node = graph.getRandomNode();
 
     console.log('start_node:');
     console.log(start_node);
+    console.log('weight:');
+    console.log(document.graph.getWeight(start_node));
     
     nextQuestion(lang);
 }

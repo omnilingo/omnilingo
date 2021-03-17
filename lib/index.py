@@ -6,6 +6,7 @@ import re
 import os
 from mutagen.mp3 import MP3
 
+TRANSCRIPT_BLACKLIST = ['Hey', 'Hei', 'Firefox']
 MAX_TEXT_LENGTH = 100 # in characters
 MAX_AUDIO_LENGTH = 10 # in seconds
 
@@ -24,6 +25,12 @@ def index(input_path, output_file):
 		row = line.split('\t')
 		fn = row[1]
 		sent_orig = row[2].strip()
+
+		if sent_orig in TRANSCRIPT_BLACKLIST:
+			skipped += 1
+			line = input_fd.readline()
+			continue	
+
 		locale = row[8].strip()
 		sent = re.sub('[^\w ]+', '', sent_orig)
 		nc = len(row[2])
