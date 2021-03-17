@@ -6,7 +6,7 @@ pip: cv-corpus-6.1-2020-12-11/fi
 cv-corpus-6.1-2020-12-11/fi:
 	wget --no-check-certificate http://cl.indiana.edu/~ftyers/cv/cv-corpus-6.1-2020-12-11.tar.gz -O- | tar zxf -
 
-cache/fi: cv-corpus-6.1-2020-12-11/fi
+cache/fi: cv-corpus-6.1-2020-12-11/fi pip
 	mkdir -p cache
 	./lib/index.py ./cv-corpus-6.1-2020-12-11/fi/
 
