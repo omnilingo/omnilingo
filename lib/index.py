@@ -75,7 +75,8 @@ def index(input_path, output_file):
 		i += 1
 
 	for bucket in buckets:
-		print('bucket',bucket,'->',len(buckets[bucket]))
+		n_clips = len(buckets[bucket])
+		print('bucket ' + str(bucket).zfill(2) + ' ->',n_clips,'.'*(n_clips//10), file=sys.stderr)
 		for line in buckets[bucket]:
 			print('%d\t%d\t%.2f\t%s\t%s\t%s\t%s' % (line[0], line[1], line[2], line[3], line[4], line[5], line[6]),file=output_fd)
 
