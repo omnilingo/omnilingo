@@ -3,14 +3,11 @@
 import sys
 import os
 
-from lib import languages as codes
 from pathlib import Path
 
 from flask import Flask, send_from_directory
-from flask import request
 
 app = Flask(__name__, static_url_path="")
-
 
 @app.route("/")
 def front():
@@ -30,8 +27,7 @@ def indexes():
 
 @app.route("/index/<path:path>")
 def index(path):
-    lines = [line.strip().split('\t') for line in open('cache/' + path).readlines()]
-    return {"index": [[line[0], line[1], line[2], line[4], line[6]] for line in lines]}
+    return send_from_directory("static/index/", path)
 
 @app.route("/static/<path:path>")
 def serve_static(path):
