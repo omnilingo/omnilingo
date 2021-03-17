@@ -1,4 +1,4 @@
-all: static/fi
+all: cache/fi static/fi
 
 pip: cv-corpus-6.1-2020-12-11/fi
 	pip3 install -r requirements.txt
@@ -6,12 +6,13 @@ pip: cv-corpus-6.1-2020-12-11/fi
 cv-corpus-6.1-2020-12-11/fi:
 	wget --no-check-certificate http://cl.indiana.edu/~ftyers/cv/cv-corpus-6.1-2020-12-11.tar.gz -O- | tar zxf -
 
-cache/fi: cv-corpus-6.1-2020-12-11/fi pip
+cache/%: ./cv-corpus-6.1-2020-12-11/% pip
 	mkdir -p cache
-	./lib/index.py ./cv-corpus-6.1-2020-12-11/fi/
+	./lib/index.py ./cv-corpus-6.1-2020-12-11/$*
 
-static/fi: cache/fi
+static/%: ./cache/%
 	mkdir -p static
-	./lib/deploy.py cv-corpus-6.1-2020-12-11/fi/ cache/fi static/
+	./lib/deploy.py cv-corpus-6.1-2020-12-11/$* $< static/
+
 clean:
 	rm -rf cache/* static/*

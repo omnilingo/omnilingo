@@ -29,8 +29,14 @@ def index(input_path, output_file):
 	# Skip the header
 	line = input_fd.readline()
 	i = 0
+	total = 0
 	full = 0
 	while line:
+		if full == len(buckets.keys()):
+			total += 1	
+			line = input_fd.readline()
+			continue
+			break	
 		row = line.split('\t')
 		fn = row[1]
 		sent_orig = row[2].strip()
@@ -64,27 +70,29 @@ def index(input_path, output_file):
 			line = input_fd.readline()
 			continue	
 
+		if audio_length == 0:
+			audio_length = 1
+
 		if audio_length in buckets and len(buckets[audio_length]) < MAX_PER_BUCKET:	
 			buckets[audio_length].append([ns,nc,audio.info.length,fn,ahsh,sent_orig,hsh])
 
 		if len(buckets[audio_length]) == MAX_PER_BUCKET:
 			full += 1
 
-		if full == len(buckets.keys()):
-			break	
 
 		line = input_fd.readline()
 		i += 1
+		total += 1
 
 	for bucket in buckets:
 		n_clips = len(buckets[bucket])
-		print('bucket ' + str(bucket).zfill(2) + ' ->',n_clips,'.'*(n_clips//10), file=sys.stderr)
+		print('bucket ' + str(bucket).zfill(2) + ' -> ' + str(n_clips).rjust(5),'.'*(n_clips//10), file=sys.stderr)
 		for line in buckets[bucket]:
 			print('%d\t%d\t%.2f\t%s\t%s\t%s\t%s' % (line[0], line[1], line[2], line[3], line[4], line[5], line[6]),file=output_fd)
 
-	return (i, skipped)
+	return (total, i, skipped)
 
 if __name__ == "__main__":
-	(n_lines, n_skipped) = index(sys.argv[1], 'cache/' + sys.argv[1].split('/')[-2])
+	(n_total, n_lines, n_skipped) = index(sys.argv[1], 'cache/' + sys.argv[1].split('/')[-1])
 
-	print(n_lines,'indexed,', n_skipped, 'skipped.', file=sys.stderr)
+	print(n_lines,'/',n_total,'indexed,', n_skipped, 'skipped.', file=sys.stderr)
