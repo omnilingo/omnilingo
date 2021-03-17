@@ -9,11 +9,17 @@ from mutagen.mp3 import MP3
 TRANSCRIPT_BLACKLIST = ['Hey', 'Hei', 'Firefox']
 MAX_TEXT_LENGTH = 100 # in characters
 MAX_AUDIO_LENGTH = 10 # in seconds
+MAX_PER_BUCKET = 1000 # in clips
 
 def index(input_path, output_file):
 	"""
 		Indexes a validated.tsv file
 	"""
+
+	buckets = {}
+	for i in range(1,11):
+		buckets[i] = []
+	
 	skipped = 0
 	input_fd = open(input_path + '/validated.tsv', 'r')	
 	output_fd = open(output_file, 'w+')
@@ -21,6 +27,7 @@ def index(input_path, output_file):
 	# Skip the header
 	line = input_fd.readline()
 	i = 0
+	full = 0
 	while line:
 		row = line.split('\t')
 		fn = row[1]
@@ -48,18 +55,33 @@ def index(input_path, output_file):
 		audio = MP3(afd)
 		afd.close()
 
-		if audio.info.length >= MAX_AUDIO_LENGTH:
+		audio_length = int(audio.info.length)
+
+		if audio.info.length > MAX_AUDIO_LENGTH:
 			skipped += 1
 			line = input_fd.readline()
 			continue	
 
-		print('%d\t%d\t%d\t%s\t%s\t%s\t%s' % (ns,nc,audio.info.length,fn,ahsh, sent_orig,hsh),file=output_fd)
+		if audio_length in buckets and len(buckets[audio_length]) < MAX_PER_BUCKET:	
+			buckets[audio_length].append([ns,nc,audio.info.length,fn,ahsh,sent_orig,hsh])
+
+		if len(buckets[audio_length]) == MAX_PER_BUCKET:
+			full += 1
+
+		if full == len(buckets.keys()):
+			break	
+
 		line = input_fd.readline()
 		i += 1
+
+	for bucket in buckets:
+		print('bucket',bucket,'->',len(buckets[bucket]))
+		for line in buckets[bucket]:
+			print('%d\t%d\t%.2f\t%s\t%s\t%s\t%s' % (line[0], line[1], line[2], line[3], line[4], line[5], line[6]),file=output_fd)
 
 	return (i, skipped)
 
 if __name__ == "__main__":
 	(n_lines, n_skipped) = index(sys.argv[1], 'cache/' + sys.argv[1].split('/')[-2])
 
-	print(n_lines,'indexed,', n_skipped, 'skipped.')
+	print(n_lines,'indexed,', n_skipped, 'skipped.', file=sys.stderr)
