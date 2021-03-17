@@ -77,6 +77,7 @@ To bootstrap the project for Finnish, `git clone` the repository, then run the f
 commands:
 
 ```bash
+pip install -r requirements.txt
 make
 ./main.py
 ```

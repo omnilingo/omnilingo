@@ -26,7 +26,7 @@ def client(path):
 
 @app.route("/indexes")
 def indexes():
-    return {"indexes": indexes}
+    return send_from_directory("static", "indexes")
 
 @app.route("/index/<path:path>")
 def index(path):
@@ -41,9 +41,4 @@ def serve_static(path):
 if __name__ == "__main__":
     languages = [p.name for p in Path('cache/').glob('*')]
     print('[languages]', languages)
-    indexes = {}
-    for language in languages:
-        indexes[language] = {}
-        indexes[language]['display'] = codes.language_names[language]
-        indexes[language]['size'] = os.path.getsize('cache/' + language)
     app.run(port=int(os.environ.get("FLASK_PORT", "5001")), host="127.0.0.1")
