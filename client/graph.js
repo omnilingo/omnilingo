@@ -1,103 +1,88 @@
-function Graph() {
-    console.log('Graph()');
+class Graph { 
 
-    this.setup();
-}
-
-Graph.prototype.setup = function () {
-    console.log('Graph.setup()');
-    this.nodes = [];
-    this.edges = new Map();
-    this.weights = new Map();
-}
-
-Graph.prototype.addNode = function (n, w) { 
-    console.log('[add_node] ' + n);
-    this.nodes.push(n); 
-    this.weights.set(n, w); 
-    this.edges.set(n, []); 
-}
-
-Graph.prototype.addEdge = function (n, e, w) {
-    console.log('[add_edge] ' + n + ' || ' + e + ' || ' + w);
-    this.edges.get(n).push([e, w]);
-}
-
-Graph.prototype.getWeight = function(nodeId) { 
-    return this.weights[nodeId];
-}
-
-Graph.prototype.fromIndex = function(index) {
-    console.log('fromIndex() ' + index.length );
-    this.index = index;  
-    for(element in this.index) {
-        let nodeId = this.index[element][4];
-        this.addNode(nodeId);
-        this.weights[nodeId] = Number(this.index[element][2]); 
-    }  
-
-    for(node1 in this.nodes) { 
-        for(node2 in this.nodes) { 
-            this.addEdge(this.nodes[node1], this.nodes[node2], 1);
-        }
+    constructor(noOfNodes) 
+    { 
+        this.noOfNodes = noOfNodes; 
+        this.Nodes = new Map(); 
+        this.Weights = new Map(); 
+        this.AdjList = new Map(); 
     }
 
-}
-
-Graph.prototype.weightedRandomInt = function (data) {
-    console.log('[weightedRandomInt]'); 
-    console.log(data); 
-    total = 0;
-    for (let i = 0; i < data.length; ++i) {
-        total += data[i][1];
+    getNode(v) 
+    {
+        return this.Nodes.get(v);
     }
-
-    const threshold = Math.random() * total;
-
-    let total = 0;
-    for (let i = 0; i < data.length - 1; ++i) {
-        // Add the weight to our running total.
-        total += data[i][1];
-
-        // If this value falls within the threshold, we're done!
-        if (total >= threshold) {
-            return data[i][0];
-        }
-    }
-
-    return data[data.length - 1][0];
-}
-
-Graph.prototype.getRandomInt = function (min, max) {
-    // Generate a pseudo-random integer between min and max
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-
-Graph.prototype.getRandomNode = function() {
-    console.log('[getRandomNode]');
-    var next = getRandomInt(0,this.nodes.length-1);
-    console.log(next);
-    console.log(this.nodes);
-    return this.nodes[next];
-
-}
-
-Graph.prototype.step = function (node) {
-    /**
-     *
-     */
- 
-    console.log('[step] ' + node);
- 
-    var transitions = this.nodes.get(n);
-
-    var selected_transition = this.weightedRandomInt(transitions);
-
-    console.log(selected_transition);
-
-    console.log(transitions[selected_transition]);
     
-}
+    addNode(v, d) 
+    { 
+        this.Nodes.set(v, d);
+        this.AdjList.set(v, []); 
+    } 
 
+    getWeight(v) 
+    {
+        return this.Weights.get(v);
+    }
+
+    setWeight(v, w) 
+    {
+        this.Weights.set(v, w);
+    }
+
+    addEdge(v, w) 
+    { 
+        this.AdjList.get(v).push(w); 
+        this.AdjList.get(w).push(v); 
+    } 
+    
+    shuffleArray(array) 
+    {
+       let curId = array.length;
+       // There remain elements to shuffle
+       while (0 !== curId) {
+          // Pick a remaining element
+          let randId = Math.floor(Math.random() * curId);
+          curId -= 1;
+          // Swap it with the current element.
+          let tmp = array[curId];
+          array[curId] = array[randId];
+          array[randId] = tmp;
+       }
+       return array;
+    }
+    
+
+    // Main DFS method 
+    dfs(startingNode) 
+    { 
+        var visited = {}; 
+        var walk = {order: new Array()};
+      
+        this.DFSUtil(startingNode, visited, walk, 5); 
+
+        return walk;
+    } 
+      
+    // Recursive function which process and explore 
+    // all the adjacent vertex of the vertex with which it is called 
+    DFSUtil(vert, visited, walk, limit) 
+    { 
+        visited[vert] = true; 
+        var visited_size = Object.keys(visited).length;
+ 
+        walk["order"].push(vert);
+      
+        var get_neighbours = this.AdjList.get(vert); 
+
+        // FIXME: This shuffle should be weighted
+        var neighbours = this.shuffleArray(get_neighbours);
+
+        for (var i in neighbours) { 
+            var get_elem = neighbours[i];
+            if (!visited[get_elem] && visited_size < limit)  { // FIXME: This limit doesn't work yet
+                this.DFSUtil(get_elem, visited, walk, limit); 
+            }
+        } 
+    } 
+} 
 

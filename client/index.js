@@ -1,4 +1,26 @@
 
+function graphFromIndex(index) {
+    console.log('fromIndex() ' + index.length );
+    var g = new Graph(index.length);
+
+
+    for (var i = 0; i < index.length; i++) { 
+        g.addNode(i, index[i]); 
+        g.setWeight(i, Number(1)); 
+    } 
+
+
+    for (var i = 0; i < index.length; i++) { 
+        for (var j = 0; i < index.length; i++) { 
+            g.addEdge(i, j);
+        }
+    }
+
+
+    return g;
+}
+
+
 function getRandomInt(min, max) {
     // Generate a pseudo-random integer between min and max
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -6,8 +28,13 @@ function getRandomInt(min, max) {
 
 function nextButton() { 
     console.log('nextButton()');
+    console.log(document.walk.length);
 
     var lang = localStorage.getItem('currentLanguage');
+
+    if(document.walk.length == 0) {
+        nextBatch();
+    }
 
     nextQuestion(lang);
 }
@@ -23,37 +50,45 @@ const displayQuestion = async (question) => {
 
 }
 
-const nextQuestion = async (graph, lang) => {
+const nextQuestion = async (lang) => {
     console.log('nextQuestion() ' + lang);
     // 8	69	6	common_voice_fi_24001101.mp3	fa032123ba94a9aafc037ca10a5eac754ef410288c8dde2b2c666ed5e10222f2	Mysteerimies oli oppinut moraalinsa taruista, elokuvista ja peleistä.	a8f9eb3f56f2048df119a9ad1d210d0b98fda56f3e2a387f14fe2d652241f3ec
     // 8	69	6	fa032123ba94a9aafc037ca10a5eac754ef410288c8dde2b2c666ed5e10222f2	a8f9eb3f56f2048df119a9ad1d210d0b98fda56f3e2a387f14fe2d652241f3ec
 
 
-    var index = document.questionIndex;
-
 //    var current_question = getRandomInt(0, index.length);
 
-    var text_hash = document.graph.getRandomNode();
+    console.log(document.walk);
+
+    var current_question = document.walk.shift();
+
+    var row = document.graph.getNode(current_question);
+
+    var text_hash = row[6];
+
+    var weight = document.graph.getWeight(current_question);
 
     console.log('[current_question] ' + current_question);
 
-    console.log(index[current_question]);
+    document.current_question = current_question;
 
-    var audio_hash = index[current_question][3];
+    console.log('[weight] ' + weight);
 
-    console.log('[audio_hash] ' + audio_hash);
+    console.log(row);
+
+    var audio_hash = row[4];
+
+//    console.log('[audio_hash] ' + audio_hash);
 
     var current_audio = audio_hash.slice(0,2) + '/' + audio_hash.slice(2,6) + '/' + audio_hash + '/audio.mp3';
 
-    console.log('[audio_path] ' + current_audio);
-
-    var text_hash = index[current_question][4];
+//    console.log('[audio_path] ' + current_audio);
     var current_text = text_hash.slice(0,2) + '/' + text_hash.slice(2,6) + '/' + text_hash + '/text';
     var current_tokens = text_hash.slice(0,2) + '/' + text_hash.slice(2,6) + '/' + text_hash + '/tokens';
 
-    console.log('[text_hash] ' + text_hash);
-    console.log('[text_path] ' + current_text);
-    console.log('[tokens_path] ' + current_tokens);
+//    console.log('[text_hash] ' + text_hash);
+//    console.log('[text_path] ' + current_text);
+//    console.log('[tokens_path] ' + current_tokens);
 
     const textPromise = fetch('http://localhost:5001/static/' + lang + '/text/' + current_text);
     const tokensPromise = fetch('http://localhost:5001/static/' + lang + '/text/' + current_tokens);
@@ -78,8 +113,8 @@ const nextQuestion = async (graph, lang) => {
     console.log(source.src);
     player.load();
 
-
     displayQuestion(tokens);
+
 }
 
 const main = async () => {
@@ -92,26 +127,24 @@ const main = async () => {
     var index = await getIndex(lang);
 
     document.questionIndex = index[0]["index"];
-    document.questions = index[0]["index"].slice(0,20);
+    document.questions = index[0]["index"].slice(0,10);
 
     console.log(document.questions);
 
-    var graph = new Graph();
-    document.graph = graph.fromIndex(document.questions);
+    document.graph = graphFromIndex(document.questions);
 
-    nextBatch(lang);
+    nextBatch();
 
+    nextQuestion(lang);
 }
 
-const nextBatch = async (lang) => {
-    start_node = graph.getRandomNode();
-
-    console.log('start_node:');
-    console.log(start_node);
-    console.log('weight:');
-    console.log(document.graph.getWeight(start_node));
-    
-    nextQuestion(lang);
+const nextBatch = async () => {
+    console.log('nextBatch()');
+    var startingNode = getRandomInt(0,document.questions.length - 1);
+    console.log('startingNode: ' + startingNode);
+    var walk = document.graph.dfs(startingNode);
+    console.log(walk["order"]);
+    document.walk = walk["order"];
 }
 
 const getIndex = async (lang) => {
@@ -147,12 +180,12 @@ const getIndexes = async () => {
     
     languageSelector = document.getElementById('languages');
 
-    console.log(allData[0]["indexes"]);
+    console.log(allData[0]);
 
-    for(var language in allData[0]["indexes"]) {
+    for(var language in allData[0]) {
         console.log('[language] '  + language);
             var languageElem = document.createElement("option");
-            var languageText = document.createTextNode(allData[0]["indexes"][language]["display"]); // Display name
+            var languageText = document.createTextNode(allData[0][language]["display"]); // Display name
             if(localStorage.getItem('currentLanguage') == language) {
                 languageElem.setAttribute("selected","");
             }
@@ -194,9 +227,9 @@ function userInput(e, tid) {
  *
  * Used in the gap task to check for the user completing the task 
  */
-    console.log('userInput:', e);
-    console.log('tid:')
-    console.log(tid);
+//    console.log('userInput:', e);
+//    console.log('tid:')
+//    console.log(tid);
 
     if(e.key == 'Enter') {
       checkInput(tid);
@@ -264,7 +297,7 @@ function checkInput(tid) {
     console.log('responses: ');
     console.log(responses);
     localStorage.setItem('responses', responses);
-    endTask();
+    var secs = endTask();
     clearFeedback();
     drawFeedback();
 }
@@ -284,12 +317,28 @@ function startTimer() {
 }
 
 function endTask() {
+    console.log('endTask()');
     stopTimer();
+    var secs =  Number(document.getElementById("seconds").innerHTML) + (Number(document.getElementById("minutes").innerHTML) * 60);
+    console.log('secs: ' + secs);
+    var row = document.graph.getNode(document.current_question);
+    var new_weight = secs/Number(row[2]); 
+    document.graph.setWeight(document.current_question, new_weight);
+    console.log('[new_weight] ' + new_weight);
 }
 
 
 function pad (val) { 
     return val > 9 ? val : "0" + val; 
+}
+
+
+function clearFeedback() {
+    console.log('clearFeedback()');
+    var myNode = document.getElementById("feedback");
+    while (myNode.firstChild) {
+        myNode.removeChild(myNode.firstChild);
+    }
 }
 
 
