@@ -4,6 +4,7 @@ import sys
 import os
 from pathlib import Path
 import languages as codes
+from orthography import alternatives
 
 import json
 
@@ -13,7 +14,7 @@ def collect(cache_dir, static_dir):
 	for language in languages:
 		display_name = codes.language_names[language]
 		lines = len(open(cache_dir + '/' + language).readlines())
-		indexes[language] = {'display': display_name, 'length': lines}
+		indexes[language] = {'display': display_name, 'length': lines, 'accept': alternatives(language)}
 
 	static_fd = open(static_dir + '/' + 'indexes', 'w')
 	json.dump(indexes, static_fd)

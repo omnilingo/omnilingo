@@ -3,12 +3,12 @@ targets=$(foreach l,$(shell cd cv-corpus-6.1-2020-12-11/; ls),static/$(l) cache/
 all: $(targets) static/indexes
 
 
-cv-corpus-6.1-2020-12-11/.d:
-	mkdir -p cv-corpus-6.1-2020-12-11 
-	touch $@
+#v-corpus-6.1-2020-12-11/.d:
+#	mkdir -p cv-corpus-6.1-2020-12-11 
+#	touch $@
 
-cv-corpus-6.1-2020-12-11/fi: cv-corpus-6.1-2020-12-11/.d
-	wget --no-check-certificate http://cl.indiana.edu/~ftyers/cv/cv-corpus-6.1-2020-12-11.tar.gz -O- | tar zxf -
+#cv-corpus-6.1-2020-12-11/fi: cv-corpus-6.1-2020-12-11/.d
+#	wget --no-check-certificate http://cl.indiana.edu/~ftyers/cv/cv-corpus-6.1-2020-12-11.tar.gz -O- | tar zxf -
 
 static/indexes: $(targets)
 	mkdir -p static
