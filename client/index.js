@@ -124,9 +124,9 @@ const nextQuestion = async (lang) => {
 const main = async () => {
     console.log('main()');
 
-    var lang = await getIndexes();
-
-    console.log('[language] ' + lang);
+    var available_languages = await getIndexes();
+    
+    var lang = localStorage.getItem('currentLanguage');
 
     var index = await getIndex(lang);
 
@@ -180,11 +180,12 @@ const getIndexes = async () => {
     const indexesData = indexes.map(response => response.json());
     const allData = await Promise.all(indexesData);
 
+    console.log('allData:');
     console.log(allData);
-    
-    languageSelector = document.getElementById('languages');
-
+    console.log('allData[0]');
     console.log(allData[0]);
+
+    languageSelector = document.getElementById('languages');
 
     for(var language in allData[0]) {
         console.log('[language] '  + language);
@@ -198,7 +199,7 @@ const getIndexes = async () => {
             languageSelector.appendChild(languageElem);
     }
 
-    return language;
+    return allData[0];
 }
 
 function buildTbox(current_text, gap) {
@@ -325,10 +326,11 @@ function endTask() {
     stopTimer();
     var secs =  Number(document.getElementById("seconds").innerHTML) + (Number(document.getElementById("minutes").innerHTML) * 60);
     console.log('secs: ' + secs);
-    //var row = document.graph.getNode(document.current_question);
-    //var new_weight = secs/Number(row[2]); 
+    var row = document.graph.getNode(document.current_question);
+    var orig_length = Number(row[2]); 
+    var ratio = secs/orig_length;
     document.graph.setWeight(document.current_question, secs);
-    console.log('[new_weight] ' + new_weight);
+    console.log('[secs] ' + secs + ' ||| [orig_length] ' + orig_length + ' ||| ' + ratio);
 }
 
 
@@ -343,6 +345,14 @@ function clearFeedback() {
     while (myNode.firstChild) {
         myNode.removeChild(myNode.firstChild);
     }
+}
+
+
+function changeLanguage(elem) {
+   console.log('changeLanguage: ' + elem.value);
+   localStorage.setItem('currentLanguage', elem.value);
+   localStorage.setItem('responses', Array());
+   location.reload(); 
 }
 
 

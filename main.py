@@ -8,6 +8,7 @@ from pathlib import Path
 from flask import Flask, send_from_directory
 
 app = Flask(__name__, static_url_path="")
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0 # For the index
 
 @app.route("/")
 def front():
@@ -23,7 +24,8 @@ def client(path):
 
 @app.route("/indexes")
 def indexes():
-    return send_from_directory("static", "indexes")
+    return open('static/indexes').read()
+#    return send_from_directory("static", "indexes") # FIXME: Stop it caching
 
 @app.route("/index/<path:path>")
 def index(path):
