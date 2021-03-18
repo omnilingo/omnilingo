@@ -100,8 +100,8 @@ const nextQuestion = async (lang) => {
 //    console.log('[text_path] ' + current_text);
 //    console.log('[tokens_path] ' + current_tokens);
 
-    const textPromise = fetch('http://localhost:5001/static/' + lang + '/text/' + current_text);
-    const tokensPromise = fetch('http://localhost:5001/static/' + lang + '/text/' + current_tokens);
+    const textPromise = fetch(BASE_URL + '/static/' + lang + '/text/' + current_text);
+    const tokensPromise = fetch(BASE_URL +'/static/' + lang + '/text/' + current_tokens);
 
     const meta = await Promise.all([textPromise, tokensPromise]);
 
@@ -161,7 +161,7 @@ const nextBatch = async () => {
 const getIndex = async (lang) => {
     console.log('getIndex() ' + lang);
 
-    const indexPromise = fetch('http://localhost:5001/index/' + lang);
+    const indexPromise = fetch(BASE_URL + '/index/' + lang);
     const index = await Promise.all([indexPromise]);
     const indexData = index.map(response => response.json());
 
@@ -182,7 +182,7 @@ const getIndexes = async () => {
     // Creates the language selection dialogue
     console.log('getIndexes()');
 
-    const indexesPromise = fetch('http://localhost:5001/indexes');
+    const indexesPromise = fetch(BASE_URL + '/indexes');
     const indexes = await Promise.all([indexesPromise]);
     const indexesData = indexes.map(response => response.json());
     const allData = await Promise.all(indexesData);
