@@ -7,6 +7,7 @@ import json
 
 from tokenisers import tokenise
 from taggers import tag
+from segments import characters
 
 
 def deploy(dump_dir, cache_file, static_dir):
@@ -27,7 +28,9 @@ def deploy(dump_dir, cache_file, static_dir):
 	while line:
 		row = line.strip().split('\t')
 		index["index"].append(row)
+		fname = row[3]
 		ahash = row[4]
+		text = row[5]
 		thash = row[6]
 
 		if seen_audio.count(ahash) > 0:
@@ -44,6 +47,7 @@ def deploy(dump_dir, cache_file, static_dir):
 
 		tokens = tokenise(row[5], lang=lang_id)
 		tags = tag(tokens, lang=lang_id)
+		chars = [characters(token, lang=lang_id) for token in tokens]
 		audio_dir = static_dir + '/' + lang_id + '/clip/' + ahash[0:2] + '/' + ahash[2:6] + '/' + ahash
 		text_dir = static_dir + '/' + lang_id + '/text/' + thash[0:2] + '/' + thash[2:6] + '/' + thash
 		#print(audio_dir)
@@ -51,13 +55,20 @@ def deploy(dump_dir, cache_file, static_dir):
 		pathlib.Path(text_dir).mkdir(parents=True, exist_ok=True)
 		pathlib.Path(audio_dir).mkdir(parents=True, exist_ok=True)
 		audio_path = audio_dir + '/audio.mp3'
-		os.symlink(clips_dir + '/' + row[3], audio_path)
+		# Symlink the audio file in the clips directory to the audio_path
+		os.symlink(clips_dir + '/' + fname, audio_path)
 		text_fd = open(text_dir + '/text', 'w')
-		tokens_fd = open(text_dir + '/tokens', 'w')
-		print(row[5], file=text_fd)
-		print(' '.join(tokens), file=tokens_fd)
+		print(text, file=text_fd)
+		# Symlink the text metadata file to the audio directory
+		os.symlink(os.path.abspath(text_dir + '/text'), audio_dir + '/text')
+		metadata = {
+			'text': text,
+			'tokens': [[i, j, k] for (i, j, k) in zip(tokens, tags, chars)]
+		}
+		metadata_fd = open(text_dir + '/info', 'w')
+		json.dump(metadata, metadata_fd)
 		text_fd.close()
-		tokens_fd.close()
+		metadata_fd.close()
 		line = cache_fd.readline()
 		i+= 1
 

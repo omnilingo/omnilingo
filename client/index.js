@@ -42,15 +42,21 @@ function nextButton() {
     nextQuestion(lang);
 }
 
-const displayQuestion = async (question) => {
-    console.log('displayQuestion() ' + question);
+const displayQuestion = async (tokens) => {
+    console.log('displayQuestion()');
+    console.log(tokens);
     console.log(document.walk);
 
-    var gap = getRandomInt(0, question.length - 1);
+    var wordforms = [];
+    for(var i = 0; i < tokens.length; i++) {
+        wordforms.push(tokens[i][0]);
+    }
+
+    var gap = getRandomInt(0, wordforms.length - 1);
 
 
     var tbox = document.getElementById('textbox');
-    tbox.innerHTML = buildTbox(question, gap);
+    tbox.innerHTML = buildTbox(wordforms, gap);
 
 }
 
@@ -88,7 +94,7 @@ const nextQuestion = async (lang) => {
 
 //    console.log('[audio_path] ' + current_audio);
     var current_text = text_hash.slice(0,2) + '/' + text_hash.slice(2,6) + '/' + text_hash + '/text';
-    var current_tokens = text_hash.slice(0,2) + '/' + text_hash.slice(2,6) + '/' + text_hash + '/tokens';
+    var current_tokens = text_hash.slice(0,2) + '/' + text_hash.slice(2,6) + '/' + text_hash + '/info';
 
 //    console.log('[text_hash] ' + text_hash);
 //    console.log('[text_path] ' + current_text);
@@ -104,8 +110,9 @@ const nextQuestion = async (lang) => {
     const allData = await Promise.all(metaData);
 
     console.log(allData[0]);
-    var tokens = allData[1].split(' ');
-    console.log(allData[1]);
+    var metadata = JSON.parse(allData[1]);
+    console.log('tokens:');
+    console.log(metadata["tokens"]);
 
     var player = document.getElementById('player');
     player.setAttribute('onPlay', 'startTimer()');
@@ -117,7 +124,7 @@ const nextQuestion = async (lang) => {
     console.log(source.src);
     player.load();
 
-    displayQuestion(tokens);
+    displayQuestion(metadata["tokens"]);
 
 }
 
