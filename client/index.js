@@ -33,6 +33,9 @@ function nextButton() {
     var lang = localStorage.getItem('currentLanguage');
 
     if(document.walk.length == 0) {
+        var score = document.graph.getScore();
+        var total = document.graph.getTotalLength();
+        console.log('[SCORE] ' + score + ' / ' + total);
         nextBatch();
     }
 
@@ -41,8 +44,9 @@ function nextButton() {
 
 const displayQuestion = async (question) => {
     console.log('displayQuestion() ' + question);
+    console.log(document.walk);
 
-    var gap = getRandomInt(0, question.length);
+    var gap = getRandomInt(0, question.length - 1);
 
 
     var tbox = document.getElementById('textbox');
@@ -127,7 +131,7 @@ const main = async () => {
     var index = await getIndex(lang);
 
     document.questionIndex = index[0]["index"];
-    document.questions = index[0]["index"].slice(0,10);
+    document.questions = index[0]["index"].slice(0,5);
 
     console.log(document.questions);
 
@@ -321,9 +325,9 @@ function endTask() {
     stopTimer();
     var secs =  Number(document.getElementById("seconds").innerHTML) + (Number(document.getElementById("minutes").innerHTML) * 60);
     console.log('secs: ' + secs);
-    var row = document.graph.getNode(document.current_question);
-    var new_weight = secs/Number(row[2]); 
-    document.graph.setWeight(document.current_question, new_weight);
+    //var row = document.graph.getNode(document.current_question);
+    //var new_weight = secs/Number(row[2]); 
+    document.graph.setWeight(document.current_question, secs);
     console.log('[new_weight] ' + new_weight);
 }
 

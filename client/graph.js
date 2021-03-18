@@ -8,6 +8,25 @@ class Graph {
         this.AdjList = new Map(); 
     }
 
+    getTotalLength() 
+    {
+        var length = 0.0;
+        for(var i = 0; i < this.noOfNodes; i++) {
+            var node = this.getNode(i);
+            length += Number(node[2]);
+        }
+        return length ;
+    }
+
+    getScore() 
+    {
+        var score = 0.0;
+        for(var i = 0; i < this.noOfNodes; i++) {
+            score += this.getWeight(i);
+        }
+        return score;
+    }
+
     getNode(v) 
     {
         return this.Nodes.get(v);
