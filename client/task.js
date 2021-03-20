@@ -4,7 +4,7 @@ class Task {
 		console.log('Task()');
 
 		this.question = question;
-
+		this.complete = false;
 	}
 	
 	init = async() => {
@@ -46,11 +46,5 @@ class Task {
 			this.tokens.push(this.metadata[i][0]);
 			this.tags.push(this.metadata[i][1]);
 		}
-	}
-
-	score() {
-		console.log('score()');
-
-
 	}
 }

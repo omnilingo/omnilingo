@@ -19,11 +19,20 @@ position:relative;
 	font-size: 150%;
 }
 
+#seconds {
+
+	font-size: 150%;
+	
+}
+
 #timer {
 
-  display: flex;
+/*  display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
+   padding: 11px;
+	border: 1.5px solid black;
+  border-radius: 5px;
 }
 
 .footer{
