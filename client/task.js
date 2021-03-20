@@ -19,7 +19,7 @@ class Task {
 		var source = document.getElementById('audioSource');
 
 		source.type = 'audio/mp3';
-		source.src = '/static/' + this.question.language + '/clip/' + this.currentAudio ;
+		source.src = STATIC_URL + this.question.language + '/clip/' + this.currentAudio ;
 
 		player.setAttribute('onPlay', 'onStartTimer()');
 		player.load();
