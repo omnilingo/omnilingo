@@ -42,10 +42,12 @@ class Task {
 
 		this.tokens = [];
 		this.tags = [];
+		this.chars = [];
 
 		for(var i in this.metadata) {
 			this.tokens.push(this.metadata[i][0]);
 			this.tags.push(this.metadata[i][1]);
+			this.chars.push(this.metadata[i][2]);
 		}
 	}
 }

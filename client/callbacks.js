@@ -86,3 +86,25 @@ function globalKeyDown(e) {
 	}
 }
 
+function onSourceClick(e) {
+/**
+ * When we click on a source tile
+ */
+	console.log('onSourceClick()');
+
+	var task = document.omnilingo.getRunningTask();
+	task.sourceClick(e);
+}
+
+function onTargetClick(e, tid) {
+/**
+ * This is called when we drop the tile on a target
+ */
+	console.log('onTargetClick()');
+
+	var task = document.omnilingo.getRunningTask();
+	task.targetClick(e, tid);
+}
+
+
+

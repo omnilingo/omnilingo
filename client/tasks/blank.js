@@ -3,6 +3,10 @@ class BlankTask extends Task {
 	constructor(question) {
 		super(question);
 	}
+
+	cleanup() {
+		console.log('[BlankTask] cleanup()');
+	}
 	
 	buildTbox(gap) {
 	/**

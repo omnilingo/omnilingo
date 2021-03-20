@@ -97,10 +97,12 @@ class OmniLingo {
 		console.log(this.currentWalk)
 		console.log('--------------');
 
+	 	stopTimer();
 	 	resetTimer();
 
 		if(this.currentTask && !this.currentTask.complete) {
 			console.log('  [incomplete] ' + this.currentTask.question.nodeId);
+			this.currentTask.cleanup();
 			this.currentWalk.push(this.currentTask.question.nodeId);
 		}
 		var currentQuestionId = this.currentWalk.shift();
@@ -112,7 +114,11 @@ class OmniLingo {
 		var currentQuestion = this.graph.getNode(currentQuestionId);
 		var currentTaskType = currentQuestion.getRandomRemainingTask();
 
-		this.currentTask = new BlankTask(currentQuestion);
+		if(getRandomInt(0, 1) == 0) {
+			this.currentTask = new BlankTask(currentQuestion);
+		} else {
+			this.currentTask = new ScrambleTask(currentQuestion);
+		}
 		this.currentTask.run();
 	}
 

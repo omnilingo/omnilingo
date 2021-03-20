@@ -10,10 +10,16 @@ function hashToPath(hash) {
 
 function stopTimer() {
 	clearInterval(localStorage.getItem('refreshIntervalId'));
+	localStorage.removeItem('refreshIntervalId');
 }
 
 function startTimer() {
 	console.log('startTimer()');
+	var interval = localStorage.getItem('refreshIntervalId');
+	console.log('  [interval] ' + interval);
+	if(interval) {
+		return;
+	}
 	var sec = 0;
 	var res = setInterval( function(){
 		document.getElementById("seconds").innerHTML = ++sec;
@@ -25,3 +31,20 @@ function resetTimer() {
 	console.log('resetTimer()');
 	document.getElementById("seconds").innerHTML = "0";
 }
+
+function shuffleArray(array) 
+{
+   let curId = array.length;
+   // There remain elements to shuffle
+   while (0 !== curId) {
+	  // Pick a remaining element
+	  let randId = Math.floor(Math.random() * curId);
+	  curId -= 1;
+	  // Swap it with the current element.
+	  let tmp = array[curId];
+	  array[curId] = array[randId];
+	  array[randId] = tmp;
+   }
+   return array;
+}
+
