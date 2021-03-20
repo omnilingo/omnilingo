@@ -18,7 +18,8 @@ class BlankTask extends Task {
 				line += `<input type="text"
 								onKeyPress="onUserInput(event)"
 								data-focus="true"
-								style="font-size: 110%; border: thin dotted #000; width: ${this.tokens[i].length}ch"
+								class="inputTextBox"
+								style="width: ${this.tokens[i].length}ch"
 								data-value="${this.tokens[i]}"/> `;
 			} else {
 				line += this.tokens[i] + " "
@@ -50,6 +51,7 @@ class BlankTask extends Task {
 			var answerTextNode = document.createTextNode(correctAnswer + " ");
 			answer.appendChild(answerTextNode);
 			inputBox.parentNode.insertBefore(answer, inputBox.nextSibling);
+			this.complete = true;
 		} else {
 			var shouldBe = document.createElement("span");
 			shouldBe.setAttribute("style", "color: green");

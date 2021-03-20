@@ -13,10 +13,32 @@ position:relative;
         height: 100%;
 }
 
+#dumpButton{
+	border: 1.5px solid black;
+  border-radius: 5px;
+	font-size: 150%;
+	padding: 10px;
+	width: 20px;
+	height: 20px;
+}
+
+
+#skipButton{
+	border: 1.5px solid black;
+  border-radius: 5px;
+	font-size: 150%;
+	padding: 10px;
+	width: 20px;
+	height: 20px;
+}
+
 #nextButton{
 	border: 1.5px solid black;
   border-radius: 5px;
 	font-size: 150%;
+	padding: 10px;
+	width: 20px;
+	height: 20px;
 }
 
 #seconds {
@@ -30,20 +52,30 @@ position:relative;
 /*  display: flex;
   justify-content: center;
   align-items: center; */
-   padding: 11px;
+   padding: 10px;
 	border: 1.5px solid black;
   border-radius: 5px;
+	width: 40px;
+	height: 20px;
 }
 
 .footer{
 	font-size:80%;
 	background-color: #cdcdcd;
-	text-align:right;
 	padding: 10px;
 	margin-left: 20px ;
 	margin-right: 20px ;
 	margin-top: 0px ;
 	margin-bottom: 20px;
+	min-height: 22px;
+}
+.footerLeft {
+	float:left;
+	text-align:left ;
+}
+.footerRight {
+	float:right;
+	text-align:right;
 }
 
 
@@ -98,6 +130,7 @@ display:inline-block;
 	font-size: 125%;
   border-radius: 5px;
 	border: 1.5px solid black;
+  height:20px;
 }
 
 
@@ -116,6 +149,11 @@ display:inline-block;
   font-family: monospace;
   font-size: 90%;
 /*box-shadow: 10px 5px 5px #dcdcdc;*/
+}
+
+.inputTextBox {
+font-size: 110%; 
+border: thin dotted #000;
 }
 
 label > input[type="checkbox"] {

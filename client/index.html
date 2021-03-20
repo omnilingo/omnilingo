@@ -4,7 +4,8 @@
 <head>
   <title>OmniLingo</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <link rel="stylesheet" href="./index.css" />
+  <link rel="stylesheet" href="./css/index.css" />
+  <link href="./css/all.css" rel="stylesheet"> 
   <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
 <script type="text/javascript" src="./config.js"></script>
 <script type="text/javascript" src="./util.js"></script>
@@ -46,8 +47,11 @@
       <p/>
       <div>
       <div>
-          <span id="timer"><label id="seconds">0</label></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <!-- FIXME: Do better -->
-         <input id="nextButton" type="button" onClick="onNextButton()" value="⏭"/>
+         <i id="dumpButton" class="fas fa-ban" onClick="onDumpButton()"></i>
+          <span id="timer"><label id="seconds">0</label></span>
+         <i id="skipButton" class="fas fa-angle-double-right" onClick="onSkipButton()"></i>
+         <i id="nextButton" class="fas fa-angle-right" onClick="onNextButton()"></i>
+         <!--<input id="nextButton" type="button" onClick="onNextButton()" value="✔"/>-->
       </div>
       </div>
     </div>
@@ -74,9 +78,15 @@
     </div>
   </div>
   </div>
-  <div class="footer"> <!-- Put the settings cog here -->
+  <div class="footer"> 
+<div class="footerLeft">
+<i class="fas fa-cog"></i>
+
+</div>
+<div class="footerRight"><!-- Put the settings cog here -->
 <a href="https://github.com/omnilingo/omnilingo"> <img src="./assets/github.png" height="20px"/></a> <a href="https://commonvoice.mozilla.org/datasets"><img src="./assets/commonvoice.png" height="23px"/></a>
   </div>
+</div>
 <script type="text/javascript" src="./main.js"></script>
 </body>
 </html>

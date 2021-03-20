@@ -5,6 +5,7 @@ class Task {
 
 		this.question = question;
 		this.complete = false;
+		this.answer = "";
 	}
 	
 	init = async() => {
