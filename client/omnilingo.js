@@ -11,7 +11,7 @@ class OmniLingo {
 
 	setup(url, language) {
 		console.log('setup()');
-		this.baseUrl = url;
+		this.staticUrl = url;
 		this.language = language;
 		this.updateLevel();
 	}
@@ -24,7 +24,7 @@ class OmniLingo {
 	fetchIndex = async () => {
 		console.log('fetchIndex() ' + this.language);
 
-		const indexPromise = fetch(this.baseUrl + '/index/' + this.language);
+		const indexPromise = fetch(this.staticUrl + '/index/' + this.language);
 		const index = await Promise.all([indexPromise]);
 		const indexData = index.map(response => response.json());
 		const allData = await Promise.all(indexData);

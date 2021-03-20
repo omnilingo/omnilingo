@@ -28,7 +28,7 @@ class Task {
 	fetchData = async () => { 
 		console.log('[Task] fetchData()');
 		this.tokensPath = hashToPath(this.question.textHash) + '/info';
-		const tokensPromise = fetch(BASE_URL + '/static/' + this.question.language + '/text/' + this.tokensPath);
+		const tokensPromise = fetch(STATIC_URL + this.question.language + '/text/' + this.tokensPath);
 		const meta = await Promise.all([tokensPromise]);
 		const metaData = meta.map(response => response.text());
 		const allData = await Promise.all(metaData);

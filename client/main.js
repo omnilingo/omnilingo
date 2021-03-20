@@ -47,7 +47,7 @@ const getIndexes = async () => {
 	// Creates the language selection dialogue
 	console.log("getIndexes()");
 
-	const indexesPromise = fetch(BASE_URL + "/indexes");
+	const indexesPromise = fetch(STATIC_URL + "/indexes");
 	const indexes = await Promise.all([indexesPromise]);
 	const indexesData = indexes.map(response => response.json());
 	const allData = await Promise.all(indexesData);
@@ -78,7 +78,7 @@ const runLanguage = async (language) => {
 
 	document.omnilingo = new OmniLingo();
 
-	document.omnilingo.setup(BASE_URL, language);
+	document.omnilingo.setup(STATIC_URL, language);
 
 	await document.omnilingo.fetchIndex();
 
