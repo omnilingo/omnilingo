@@ -48,7 +48,12 @@ function onPlayerFinish() {
  *
  */
 	//console.log('onPlayerFinish()');
-	document.querySelectorAll('[data-focus="true"]')[0].focus();
+	// We check here because sometimes the user answers before the 
+	// clip finishes, which removes the data-focus box
+	var inputBox = document.querySelectorAll('[data-focus="true"]');
+	if(inputBox[0]) {
+		inputBox[0].focus();
+	}
 }
 
 function onUserInput(e) { 
