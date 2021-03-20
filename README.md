@@ -10,18 +10,20 @@ It works by giving you random sentences in the language you're learning and
 asking you to fill in the gaps. The sentences were submitted by contributors
 to [Mozilla Common Voice](https://commonvoice.mozilla.org/) platform.
 
-The sentences are ranked according to difficulty, and you can choose a level
-from 1 to 10 where 1 is the easiest and 10 is the hardest.
-
 The project aims to not require any knowledge of a meta language in order to start
 learning.  If you are interested in a more traditional course creation project,
 check out [LibreLingo](https://github.com/kantord/LibreLingo/).
 
+The game works by ordering the the questions by difficulty, then
+you are given batches of five with a random task for each of the questions. When you
+sucessfully answer a batch of five in less time than the audio takes to play, then
+you advance a level and get given a new batch of five. 
+
 # Tasks
 
 * Fill in the blanks: A cloze-style task
-* Pick the right one: Get two options and choose the right one
 * Drag and drop: Get a set of tiles and click on them to build a word or sentence
+* Pick the right one: Get two options and choose the right one
 * Spot the word: Get set of six tiles and click on the ones that appear in the audio
 
 # Keys
