@@ -22,6 +22,11 @@ position:relative;
 	height: 20px;
 }
 
+.feedbackFill {
+	margin:0pt;
+	padding:0pt;	
+	background-color: #cdcdcd;
+}
 
 #skipButton{
 	border: 1.5px solid black;

@@ -37,13 +37,16 @@ class OmniLingo {
 	}
 
 	updateRemaining() {
+		var completed = this.batchSize - (this.currentWalk.length + 1);
 		var remainingSpan = document.querySelectorAll('[id="remaining"]')[0];
 		remainingSpan.innerHTML = (this.currentWalk.length + 1) + "/" + this.batchSize;
+		var feedbackDiv = document.querySelectorAll('[id="feedback"]')[0];
+		feedbackDiv.innerHTML = '<div style="width: ' + (completed * 20) + '%" class="feedbackFill">&nbsp;</div>';
 	}
 
 	updateScore() {
 		var scoreSpan = document.querySelectorAll('[id="score"]')[0];
-		scoreSpan.innerHTML = this.globalScore;
+		scoreSpan.innerHTML = this.globalScore.toFixed(2);
 	}
 
 
@@ -123,6 +126,9 @@ class OmniLingo {
 		// If the score is high enough we increment it
 		// Then we getCurrentBatch() again
 		if(score <= graphMin) {
+			// This is a simple way to calculate the score, 
+			// but perhaps it should be multiplied by the level so there is 
+			// more reward the higher the level
 			this.globalScore += (graphMin - score);
 			this.level += 1;
 			this.updateLevel();
