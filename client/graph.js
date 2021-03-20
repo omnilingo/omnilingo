@@ -1,107 +1,131 @@
 class Graph { 
 
-    constructor(noOfNodes) 
-    { 
-        this.noOfNodes = noOfNodes; 
-        this.Nodes = new Map(); 
-        this.Weights = new Map(); 
-        this.AdjList = new Map(); 
-    }
+	constructor(nodeCount) 
+	{ 
+		this.nodeCount = nodeCount; 
+		this.Nodes = new Map(); 
+		this.Weights = new Map(); 
+		this.AdjList = new Map(); 
+	}
 
-    getTotalLength() 
-    {
-        var length = 0.0;
-        for(var i = 0; i < this.noOfNodes; i++) {
-            var node = this.getNode(i);
-            length += Number(node[2]);
-        }
-        return length ;
-    }
+	fromIndex(language, index, enabledTasks) {
+		console.log('fromIndex() ' + index.length);
+	
+		for (var i = 0; i < index.length; i++) { 
+			this.addNode(i, new Question(i, language, index[i], enabledTasks)); 
+			this.setWeight(i, Number(index[i][2])); 
+		} 
+	
+		for (var i = 0; i < index.length; i++) { 
+			for (var j = 0; i < index.length; i++) { 
+				this.addEdge(i, j);
+			}
+		}
+	}
 
-    getScore() 
-    {
-        var score = 0.0;
-        for(var i = 0; i < this.noOfNodes; i++) {
-            score += this.getWeight(i);
-        }
-        return score;
-    }
+	getTotalLength() 
+	{
+		var length = 0.0;
+		for(var i = 0; i < this.nodeCount; i++) {
+			var node = this.getNode(i);
+			length += Number(node.audioLength);
+		}
+		return length ;
+	}
 
-    getNode(v) 
-    {
-        return this.Nodes.get(v);
-    }
-    
-    addNode(v, d) 
-    { 
-        this.Nodes.set(v, d);
-        this.AdjList.set(v, []); 
-    } 
+	getScore() 
+	{
+		var score = 0.0;
+		for(var i = 0; i < this.nodeCount; i++) {
+			score += this.getWeight(i);
+		}
+		return score;
+	}
 
-    getWeight(v) 
-    {
-        return this.Weights.get(v);
-    }
+	getNode(v) 
+	{
+		return this.Nodes.get(v);
+	}
+	
+	addNode(v, d) 
+	{ 
+		this.Nodes.set(v, d);
+		this.AdjList.set(v, []); 
+	} 
 
-    setWeight(v, w) 
-    {
-        this.Weights.set(v, w);
-    }
+	getWeight(v) 
+	{
+		return this.Weights.get(v);
+	}
 
-    addEdge(v, w) 
-    { 
-        this.AdjList.get(v).push(w); 
-        this.AdjList.get(w).push(v); 
-    } 
-    
-    shuffleArray(array) 
-    {
-       let curId = array.length;
-       // There remain elements to shuffle
-       while (0 !== curId) {
-          // Pick a remaining element
-          let randId = Math.floor(Math.random() * curId);
-          curId -= 1;
-          // Swap it with the current element.
-          let tmp = array[curId];
-          array[curId] = array[randId];
-          array[randId] = tmp;
-       }
-       return array;
-    }
-    
+	setWeight(v, w) 
+	{
+		this.Weights.set(v, w);
+	}
 
-    // Main DFS method 
-    dfs(startingNode) 
-    { 
-        var visited = {}; 
-        var walk = {order: new Array()};
-      
-        this.DFSUtil(startingNode, visited, walk, 5); 
+	addEdge(v, w) 
+	{ 
+		this.AdjList.get(v).push(w); 
+		this.AdjList.get(w).push(v); 
+	} 
+	
+	shuffleArray(array) 
+	{
+	   let curId = array.length;
+	   // There remain elements to shuffle
+	   while (0 !== curId) {
+		  // Pick a remaining element
+		  let randId = Math.floor(Math.random() * curId);
+		  curId -= 1;
+		  // Swap it with the current element.
+		  let tmp = array[curId];
+		  array[curId] = array[randId];
+		  array[randId] = tmp;
+	   }
+	   return array;
+	}
+	
+	randomWalk() 
+	{
+		console.log('randomWalk()');
+		return this.dfs(getRandomInt(0, this.nodeCount - 1));
+	}
 
-        return walk;
-    } 
-      
-    // Recursive function which process and explore 
-    // all the adjacent vertex of the vertex with which it is called 
-    DFSUtil(vert, visited, walk, limit) 
-    { 
-        visited[vert] = true; 
-        var visited_size = Object.keys(visited).length;
+	// Main DFS method 
+	dfs(startingNode) 
+	{ 
+		console.log('dfs() ' + startingNode);
+		var visited = {}; 
+		var walk = {order: new Array()};
+	  
+		this.DFSUtil(startingNode, visited, walk, 5); 
+		
+		console.log(walk["order"]);
+
+		return walk["order"];
+	} 
+	  
+	// Recursive function which process and explore 
+	// all the adjacent vertex of the vertex with which it is called 
+	DFSUtil(vert, visited, walk, limit) 
+	{ 
+		console.log('DFSUtil()');
+		visited[vert] = true; 
+		var visited_size = Object.keys(visited).length;
  
-        walk["order"].push(vert);
-      
-        var get_neighbours = this.AdjList.get(vert); 
+		walk["order"].push(vert);
+	  
+		var get_neighbours = this.AdjList.get(vert); 
 
-        // FIXME: This shuffle should be weighted
-        var neighbours = this.shuffleArray(get_neighbours);
+		// FIXME: This shuffle should be weighted
+		var neighbours = this.shuffleArray(get_neighbours);
 
-        for (var i in neighbours) { 
-            var get_elem = neighbours[i];
-            if (!visited[get_elem] && visited_size < limit)  { // FIXME: This limit doesn't work yet
-                this.DFSUtil(get_elem, visited, walk, limit); 
-            }
-        } 
-    } 
+		for (var i in neighbours) { 
+			var get_elem = neighbours[i];
+			if (!visited[get_elem] && visited_size < limit)  { // FIXME: This limit doesn't work yet
+				this.DFSUtil(get_elem, visited, walk, limit); 
+			}
+		} 
+	} 
 } 
 

@@ -1,163 +1,27 @@
-
-function changeLanguage(elem) {
-   console.log('changeLanguage: ' + elem.value);
-   localStorage.setItem('currentLanguage', elem.value);
-   localStorage.setItem('responses', Array());
-   location.reload(); 
-}
-
-
-function changeLevel(elem) {
-   console.log('changeLevel: ' + elem.value);
-   localStorage.setItem('currentLevel', elem.value);
-   location.reload(); 
-}
-
 function getRandomInt(min, max) {
-    // Generate a pseudo-random integer between min and max
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+	// Generate a pseudo-random integer between min and max
+	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function clearFeedback() {
-    console.log('clearFeedback()');
-    var myNode = document.getElementById("feedback");
-    while (myNode.firstChild) {
-        myNode.removeChild(myNode.firstChild);
-    }
+function hashToPath(hash) {
+	// Do the part where we make a better directory structure
+	return hash.slice(0,2) + '/' + hash.slice(2,6) + '/' + hash;
 }
 
-
-
-function shuffleArray(array) {
-   let curId = array.length;
-   // There remain elements to shuffle
-   while (0 !== curId) {
-      // Pick a remaining element
-      let randId = Math.floor(Math.random() * curId);
-      curId -= 1;
-      // Swap it with the current element.
-      let tmp = array[curId];
-      array[curId] = array[randId];
-      array[randId] = tmp;
-   }
-   return array;
+function stopTimer() {
+	clearInterval(localStorage.getItem('refreshIntervalId'));
 }
 
-
-function randomSort(a, b) {
-  return Math.random();
+function startTimer() {
+	console.log('startTimer()');
+	var sec = 0;
+	var res = setInterval( function(){
+		document.getElementById("seconds").innerHTML = ++sec;
+	}, 1000);
+	localStorage.setItem('refreshIntervalId', res);
 }
 
-function arrayRemove(arr, value) {
-    return arr.filter(function(ele){
-        return ele != value;
-    });
+function resetTimer() {
+	console.log('resetTimer()');
+	document.getElementById("seconds").innerHTML = "0";
 }
-
-
-function globalKeyDown(e) {
-    console.log('globalKeyDown() ' + e.key);
-
-    if(e.key == 'Tab') {
-      // Play and focus textbox
-      console.log('TAB');
-      var player = document.getElementById('player');
-      player.play();
-    }
-    if(e.key == ' ') {
-      // Next clip
-      location.reload();
-    }
-}
-
-function getIndexes() {
-    // Creates the language selection dialogue
-    console.log('getIndexes()');
-    languageSelector = document.getElementById('languages');
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/indexes');
-    xhr.onload = function() {
-        var res = JSON.parse(xhr.responseText);
-        var indexes = res["indexes"];
-        for(var language in indexes) {
-            var languageElem = document.createElement("option");
-            var languageText = document.createTextNode(indexes[language]["display"]); // Display name
-            if(localStorage.getItem('currentLanguage') == language) {
-                languageElem.setAttribute("selected","");
-            }
-            languageElem.setAttribute("value", language);
-            languageElem.appendChild(languageText);
-            languageSelector.appendChild(languageElem);
-        }
-    };
-    xhr.send();
-}
-
-function drawFeedback() {
-    feedback = document.getElementById('feedback');
-    responses = localStorage.getItem('responses');
-    console.log('drawFeedback() ' + responses);
-    for(var i = 0; i < 10; i++) {
-        span = document.createElement('span');
-        if(responses[i] == '-') {
-            t = document.createTextNode(' ✘ ');
-            span.setAttribute("style", "padding:2px;align:center;color:red; border: 0");
-            span.appendChild(t);
-        } else if(responses[i] == '+') {
-            t = document.createTextNode(' ✔ ');
-            span.setAttribute("style", "padding:2px;align:center;color:green; border: 0");
-            span.appendChild(t);
-        } else {
-            t = document.createTextNode(' ? ');
-            span.setAttribute("style", "padding:2px;align:center;color:white; border: 0");
-            span.appendChild(t);
-        }
-        feedback.appendChild(span);
-        padding = document.createElement('span');
-        padding.setAttribute('style', 'width: 20px');
-        t = document.createTextNode(' ');
-        padding.appendChild(t);
-        feedback.appendChild(padding);
-    }
-}
-
-function endTask() {
-    stopTimer();
-}
-
-function openModal(e) {
-    const openEls = document.querySelectorAll("[data-open]");
-    const isVisible = "is-visible";
-     
-    for(const el of openEls) {
-      el.addEventListener("click", function() {
-        const modalId = this.dataset.open;
-        document.getElementById(modalId).classList.add(isVisible);
-      });
-    }
-}
-
-function closeModal(e) {
-    const closeEls = document.querySelectorAll("[data-close]");
-    const isVisible = "is-visible";
-     
-    for (const el of closeEls) {
-      el.addEventListener("click", function() {
-        this.parentElement.parentElement.parentElement.classList.remove(isVisible);
-      });
-    }
-}
-
-function findGetParameter(parameterName) {
-    console.log('findGetParameter() ' + parameterName);
-    var result = null,
-        tmp = [];
-    var items = location.search.substr(1).split("&");
-    for (var index = 0; index < items.length; index++) {
-        tmp = items[index].split("=");
-        if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-    }
-    return result;
-}
-
-

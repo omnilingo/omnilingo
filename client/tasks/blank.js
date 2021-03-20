@@ -1,133 +1,97 @@
-/** 
- * blank.js: Functions for the blanks task
- */
+class BlankTask extends Task {
 
+	constructor(question) {
+		super(question);
+	}
+	
+	buildTbox(gap) {
+	/**
+	 *  This builds a text entry box for the text-gap task
+	 *  Goes through the text and either writes the input box (at the gap) or writes the text 
+	 *  Wraps it in a paragraph for spacing/layout reasons.
+	 */ 
+		//console.log("[BlankTask] buildTbox()");
+		var line = "";
+		var tbox = document.createElement("p");
+		for (var i = 0; i < this.tokens.length; i++) {
+			if (i == gap) {
+				line += `<input type="text"
+								onKeyPress="onUserInput(event)"
+								data-focus="true"
+								style="font-size: 110%; border: thin dotted #000; width: ${this.tokens[i].length}ch"
+								data-value="${this.tokens[i]}"/> `;
+			} else {
+				line += this.tokens[i] + " "
+			}
+		}
+		line = "<p>" + line + " </p>";
+		return line;
+	}
 
-function onReadyBlank(current_text, gap) {
-    /**
-     * Run the Blank task
-     */
-    console.log('onReadyBlanks()');
-    var tbox = document.getElementById('textbox');
-    tbox.innerHTML = buildTbox(current_text, gap);
+	endTask() {
+		console.log("[BlankTask] endTask()");
+		stopTimer();
+		this.checkInput();
+	}
+
+	checkInput() {
+	/** 
+	 * This code checks to see if the user got the right input value
+	 * It subsequently marks the answer either as correct (in green)
+	 * or as incorrect (in red) and gives the correct answer (in green)
+	 */
+		//console.log("[BlankTask] checkInput()");
+		var inputBox = document.querySelectorAll('[data-focus="true"]')[0];
+		var correctAnswer = inputBox.getAttribute("data-value");
+		var guess = inputBox.value;
+		if (guess.toLowerCase() == correctAnswer.toLowerCase()) {
+			var answer = document.createElement("span");
+			answer.setAttribute("class", "correct");
+			var answerTextNode = document.createTextNode(correctAnswer + " ");
+			answer.appendChild(answerTextNode);
+			inputBox.parentNode.insertBefore(answer, inputBox.nextSibling);
+		} else {
+			var shouldBe = document.createElement("span");
+			shouldBe.setAttribute("style", "color: green");
+			var correctTextNode = document.createTextNode(" [" + correctAnswer + "] ");
+			shouldBe.appendChild(correctTextNode);
+			inputBox.parentNode.insertBefore(shouldBe, inputBox.nextSibling);
+			var incorrectAnswer = document.createElement("span");
+			incorrectAnswer.setAttribute("style", "color: red");
+			var incorrectTextNode = document.createTextNode(guess);
+			incorrectAnswer.appendChild(incorrectTextNode);
+			inputBox.parentNode.insertBefore(incorrectAnswer, inputBox.nextSibling);
+		}
+		inputBox.remove();
+	}
+
+	chooseGap() {
+	/**
+	 *	We need to choose a gap that is not punctuation, so first
+	 *	find all possible non-punctuation tokens and then choose one.
+	 */
+		//console.log("[BlankTask] chooseGap()");
+
+		var wordTokenIds = [];
+		for(var i = 0; i < this.tokens.length; i++) {
+			if(this.tags[i] != "PUNCT") {
+				wordTokenIds.push(i);	
+			}
+		}
+		var gapLocation = getRandomInt(0, wordTokenIds.length -1);
+
+		return wordTokenIds[gapLocation];
+	}
+
+	run = async() => {
+		console.log("[BlankTask] run()");
+
+		await this.init();
+			
+		var gap = this.chooseGap();	
+
+		var tbox = document.getElementById("textbox");
+		tbox.innerHTML = this.buildTbox(gap);
+	}
 }
-
-/*************************************************************************************/
-// Unrefactored functions below here
-/*************************************************************************************/
-
-function userInput(e, tid) {
-/**
- * Checks to see if the user pressed 'Enter' 
- *
- * Used in the gap task to check for the user completing the task 
- */
-    console.log('userInput:', e);
-    console.log('tid:')
-    console.log(tid);
-
-    if(e.key == 'Enter') {
-      checkInput(tid);
-    }
-}
-
-function buildTbox(current_text, gap) {
-/**
- *  This builds a text entry box for the text-gap task
- *  Goes through the text and either writes the input box (at the gap) or writes the text 
- *  Wraps it in a paragraph for spacing/layout reasons.
- */ 
-    line = '';
-    for (var i = 0; i < current_text.length; i++) {
-        if (i == gap) {
-            line += `<input type="text"
-                            onKeyPress="userInput(event, \'t${i}'\)"
-                            id="t${i}"
-                            data-focus="true"
-                            style="font-size: 110%; border: thin dotted #000; width: ${current_text[i].length}ch"
-                            data-value="${current_text[i]}"/> `
-        } else {
-            line += current_text[i] + ' '
-        }
-    }
-    line = '<p>' + line + ' </p>';
-    return line;
-}
-
-function focusGap() {
-/**
- * After the audio finishes playing we can focus the text entry box, so the user doesn't have to click on it 
- *
- */
-    document.querySelectorAll('[data-focus="true"]')[0].focus();
-}
-
-
-function checkInput(tid) {
-/** 
- * This code checks to see if the user got the right input value in the gap task.
- * It subsequently marks the answer either as correct (in green)
- * or as incorrect (in red) and gives the correct answer (in green)
- * It also updates the localstorage responses with if the answer was correct or not.
- */
-    console.log('checkInput() ' + tid);
-    input = document.getElementById(tid);
-    console.log("input: ", input)
-    correct = input.getAttribute("data-value");
-    console.log('input: ')
-    console.log(input);
-    console.log('input.value: ')
-    console.log(input.value);
-    guess = input.value;
-
-    if(guess == '') {
-        span.focus();
-        return;
-    }
-
-    console.log('correct: ' + correct);
-    console.log('guess: ' + guess);
-
-    responses = localStorage.getItem('responses');
-
-    console.log('responses: ');
-    console.log(responses);
-    if (guess.toLowerCase() == correct.toLowerCase()) {
-        var answer = document.createElement("span");
-        answer.setAttribute("class", "correct");
-        var answerTextNode = document.createTextNode(correct + " ");
-        answer.appendChild(answerTextNode);
-        input.parentNode.insertBefore(answer, input.nextSibling);
-        input.remove();
-        responses += "+";
-//        if (span.childNodes.length != 1) {
-//            span.childNodes[1].remove();
-//        }
-    } else {
-        var shouldBe = document.createElement("span");
-        shouldBe.setAttribute("style", "color: green");
-        var correctTextNode = document.createTextNode(" [" + correct + "] ");
-        shouldBe.appendChild(correctTextNode);
-        input.parentNode.insertBefore(shouldBe, input.nextSibling);
-
-        console.log('INCORRECT!');
-        var incorrectAnswer = document.createElement("span");
-        incorrectAnswer.setAttribute("style", "color: red");
-        var incorrectTextNode = document.createTextNode(guess);
-        incorrectAnswer.appendChild(incorrectTextNode);
-        input.parentNode.insertBefore(incorrectAnswer, input.nextSibling);
-
-        input.remove();
-
-        responses += "-";
-    }
-    console.log('responses: ');
-    console.log(responses);
-    localStorage.setItem('responses', responses);
-    endTask();
-    clearFeedback();
-    drawFeedback();
-}
-
-
 
