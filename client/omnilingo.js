@@ -158,6 +158,8 @@ class OmniLingo {
 
 		console.log('  [score] ' + score + ' || ' + graphMin);
 
+		this.currentTask.cleanup();
+
 		// If the score is high enough we increment it
 		// Then we getCurrentBatch() again
 		if(score <= graphMin) {
