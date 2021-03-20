@@ -487,8 +487,8 @@ def tokenise(sentence, lang):
         return fry(sentence)
     if lang in ["ga", "gle"] or lang.startswith("ga-"):
         return gle(sentence)
-    #     if lang in ["ja", "jpn"]:
-    #         return jpn(sentence)
+    if lang in ["ja", "jpn"]:
+        return jpn(sentence)
     if lang in ["kab"]:
         return kab(sentence)
     if lang in ["ka", "kat"]:
