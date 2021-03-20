@@ -13,6 +13,14 @@ const decideDefaultLanguage = async (indexes) => {
 		return currentLanguage;
 	}
 
+	// Is one being passed in the URL?
+	var currentLanguage = findGetParameter("language");
+	if(currentLanguage != false) {
+		if(indexes[currentLanguage]) {
+			return currentLanguage;
+		}
+	}
+
 	// Is one already set and is it in the browser? 
 	var currentLanguage = localStorage.getItem("currentLanguage");
 	if(currentLanguage != false) {
