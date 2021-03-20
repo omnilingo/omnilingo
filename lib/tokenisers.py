@@ -1,7 +1,7 @@
 import re
 import jieba
 import thai_segmenter
-#import nagisa
+import nagisa
 
 def quc(sentence):
     o = sentence
