@@ -10,6 +10,20 @@ class OmniLingo {
 		this.globalScore = 0;
 	}
 
+	normaliseInput(s) {
+		console.log('normaliseInput() ' + s);
+		var normStr = ""
+		for(var i = 0; i < s.length; i++) {
+			var ch = s[i];
+			if(this.equivalentChars.has(ch)) {
+				normStr += this.equivalentChars.get(ch);
+			} else {
+				normStr += ch;
+			}
+		}
+		return normStr;
+	}
+
 	setup(url, language) {
 		console.log('setup()');
 		this.staticUrl = url;
@@ -20,6 +34,17 @@ class OmniLingo {
 	getIndex() {	
 		console.log('getIndex()');
 		return this.index;
+	}
+
+	setEquivalentChars(acceptingChars) { 
+		console.log('setEquivalentChars()');
+		this.equivalentChars = new Map();
+		for(var i in acceptingChars) {
+			for(var j = 0; j < acceptingChars[i].length; j++) {
+				this.equivalentChars.set(acceptingChars[i][j], i);
+			}
+		}
+		console.log(this.equivalentChars);
 	}
 
 	fetchIndex = async () => {

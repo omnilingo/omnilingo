@@ -74,7 +74,7 @@ const populateLanguageSelector = async (indexes, defaultLanguage) => {
 	console.log("  [languages] "  + enabled);
 }
 
-const runLanguage = async (language) => {
+const runLanguage = async (language, acceptingChars) => {
 
 	document.omnilingo = new OmniLingo();
 
@@ -88,6 +88,8 @@ const runLanguage = async (language) => {
 		h.setAttribute('dir', 'ltr');
 	}
 	h.setAttribute('lang', language);
+
+	document.omnilingo.setEquivalentChars(acceptingChars);
 
 	await document.omnilingo.fetchIndex();
 
@@ -108,7 +110,9 @@ const main = async () => {
 
 	window.onkeydown = globalKeyDown;
 
-	runLanguage(defaultLanguage);
+	var acceptingChars = indexes[defaultLanguage]["accept"];
+
+	runLanguage(defaultLanguage, acceptingChars);
 }
 
 window.onload = main;

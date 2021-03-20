@@ -48,7 +48,8 @@ class BlankTask extends Task {
 		//console.log("[BlankTask] checkInput()");
 		var inputBox = document.querySelectorAll('[data-focus="true"]')[0];
 		var correctAnswer = inputBox.getAttribute("data-value");
-		var guess = inputBox.value;
+		var guess = document.omnilingo.normaliseInput(inputBox.value);
+		console.log(' [guess] ' + guess);
 		if (guess.toLowerCase() == correctAnswer.toLowerCase()) {
 			var answer = document.createElement("span");
 			answer.setAttribute("class", "correct");
