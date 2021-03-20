@@ -95,6 +95,15 @@ const main = async () => {
 
 	console.log("  [defaultLanguage] " + defaultLanguage);
 
+	var h = document.documentElement;
+	if(defaultLanguage == "ar" || defaultLanguage == "fa" || defaultLanguage == "dv") { // FIXME: be cleverer here
+		// <html dir="rtl" defaultLanguage="ar">
+		h.setAttribute('dir', 'rtl');
+	} else {
+		h.setAttribute('dir', 'ltr');
+	}
+	h.setAttribute('defaultLanguage', defaultLanguage);
+
 	populateLanguageSelector(indexes, defaultLanguage);
 
 	window.onkeydown = globalKeyDown;
