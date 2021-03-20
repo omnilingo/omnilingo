@@ -80,6 +80,15 @@ const runLanguage = async (language) => {
 
 	document.omnilingo.setup(STATIC_URL, language);
 
+	var h = document.documentElement;
+	if(language == "ar" || language == "fa" || language == "dv") { // FIXME: be cleverer here
+		// <html dir="rtl" language="ar">
+		h.setAttribute('dir', 'rtl');
+	} else {
+		h.setAttribute('dir', 'ltr');
+	}
+	h.setAttribute('lang', language);
+
 	await document.omnilingo.fetchIndex();
 
 	// Get the current level
@@ -94,15 +103,6 @@ const main = async () => {
 	var defaultLanguage = await decideDefaultLanguage(indexes);
 
 	console.log("  [defaultLanguage] " + defaultLanguage);
-
-	var h = document.documentElement;
-	if(defaultLanguage == "ar" || defaultLanguage == "fa" || defaultLanguage == "dv") { // FIXME: be cleverer here
-		// <html dir="rtl" defaultLanguage="ar">
-		h.setAttribute('dir', 'rtl');
-	} else {
-		h.setAttribute('dir', 'ltr');
-	}
-	h.setAttribute('defaultLanguage', defaultLanguage);
 
 	populateLanguageSelector(indexes, defaultLanguage);
 
