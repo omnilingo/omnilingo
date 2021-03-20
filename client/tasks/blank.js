@@ -86,7 +86,7 @@ class BlankTask extends Task {
 	}
 
 	run = async() => {
-		console.log("[BlankTask] run()");
+		//console.log("[BlankTask] run()");
 
 		await this.init();
 			

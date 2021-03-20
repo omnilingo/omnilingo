@@ -93,6 +93,9 @@ class OmniLingo {
 
 	nextTask() {
 		console.log('nextTask()');
+		console.log('  [currentWalk] ' + this.currentWalk.length)
+		console.log(this.currentWalk)
+		console.log('--------------');
 
 	 	resetTimer();
 
@@ -102,7 +105,8 @@ class OmniLingo {
 		}
 		var currentQuestionId = this.currentWalk.shift();
 		this.updateRemaining();
-		if(this.currentWalk.length == 0) {
+		if(this.currentWalk.length < 1) {
+			console.log('  [currentWalk] ' + this.currentWalk.length);
 			this.endBatch();
 		}
 		var currentQuestion = this.graph.getNode(currentQuestionId);

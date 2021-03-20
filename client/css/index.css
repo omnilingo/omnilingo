@@ -22,10 +22,22 @@ position:relative;
 	height: 20px;
 }
 
+
+.feedback {
+  width:300px ;
+display:inline-block;
+	font-size: 125%;
+  border-radius: 5px;
+	border: 1.5px solid black;
+  height:20px;
+}
+
+
 .feedbackFill {
 	margin:0pt;
 	padding:0pt;	
-	background-color: #cdcdcd;
+	background-color: #abcdab;
+	height:20px;
 }
 
 #skipButton{
@@ -129,16 +141,6 @@ box-shadow: 10px 5px 5px #dcdcdc;
 .teksti {
 	font-size: 150%;
 }
-
-.feedback {
-  width:300px ;
-display:inline-block;
-	font-size: 125%;
-  border-radius: 5px;
-	border: 1.5px solid black;
-  height:20px;
-}
-
 
 .correct {
 	color: green;

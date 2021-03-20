@@ -47,12 +47,12 @@ function onPlayerFinish() {
  * After the audio finishes playing we can focus the text entry box, so the user doesn't have to click on it 
  *
  */
-	console.log('onPlayerFinish()');
+	//console.log('onPlayerFinish()');
 	document.querySelectorAll('[data-focus="true"]')[0].focus();
 }
 
 function onUserInput(e) { 
-	console.log('onUserInput()');
+	//console.log('onUserInput()');
 	
 	if(e.key == 'Enter') {
 		document.omnilingo.getRunningTask().endTask();
@@ -61,12 +61,12 @@ function onUserInput(e) {
 }
 
 function onStartTimer() {
-	console.log('onStartTimer()');
+	//console.log('onStartTimer()');
 	startTimer();
 }
 
 function globalKeyDown(e) {
-	console.log('globalKeyDown() ' + e.key);
+	//console.log('globalKeyDown() ' + e.key);
 
 	if(e.key == 'Tab') {
 		// Play and focus textbox
