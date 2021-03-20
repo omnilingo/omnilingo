@@ -17,9 +17,13 @@ def bre(word):
 def quc(word):
 	"""
 	>>> quc("K'iche'")
-	["K'", 'i', 'c', 'h', 'e', "'"]
+	["K'", 'i', 'ch', 'e', "'"]
+	>>> quc("sotz'")
+	['s', 'o', "tz'"]
 	"""
 	input_word = ' '.join([c for c in word])
+	input_word = re.sub(r"(C|c) (H|h)", "\g<1>\g<2>", input_word)
+	input_word = re.sub(r"(T|t) (Z|z)", "\g<1>\g<2>", input_word)
 	input_word = re.sub(r"(B|T|K|Q|TZ|CH|Tz|Ch|b|t|k|q|tz|ch) (['’ʼ])", "\g<1>\g<2>", input_word)
 	input_word = input_word.strip()
 			
