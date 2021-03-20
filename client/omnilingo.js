@@ -68,18 +68,28 @@ class OmniLingo {
 		return this.currentTask;
 	}
 
-	nextTask() {
-		console.log('nextTask()');
 
+	submitTask() {
+		console.log('submitTask()');
 		if(this.currentTask) {
 			var newTime = document.getElementById("seconds").innerHTML;
 			console.log('  [newTime] ' + newTime);
 			// FIXME: this is bad design
 			this.graph.setWeight(this.currentTask.question.nodeId, Number(newTime));
 		}
+		this.nextTask();
 	
+	}
+
+	nextTask() {
+		console.log('nextTask()');
+
 	 	resetTimer();
 
+		if(this.currentTask && !this.currentTask.complete) {
+			console.log('  [incomplete] ' + this.currentTask.question.nodeId);
+			this.currentWalk.push(this.currentTask.question.nodeId);
+		}
 		var currentQuestionId = this.currentWalk.shift();
 		this.updateRemaining();
 		if(this.currentWalk.length == 0) {

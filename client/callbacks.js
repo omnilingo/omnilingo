@@ -11,8 +11,19 @@ function onChangeLanguage(elem) {
 	runLanguage(newLanguage);
 }
 
-function onNextButton() { 
-	console.log('onNextButton()');
+function onSkipButton() { 
+	console.log('onSkipButton()');
+
+	document.omnilingo.nextTask();
+}
+
+
+function onDumpButton() { 
+	console.log('onDumpButton()');
+}
+
+function onSubmitButton() { 
+	console.log('onSubmitButton()');
 
 	// Get the current task
 
@@ -27,7 +38,7 @@ function onNextButton() {
 	// If the task is incomplete or incorrect, 
 	// then treat it as a skip 
 
-	document.omnilingo.nextTask();
+	document.omnilingo.submitTask();
 	
 }
 
