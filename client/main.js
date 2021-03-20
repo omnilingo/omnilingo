@@ -97,8 +97,9 @@ const main = async () => {
 
 	populateLanguageSelector(indexes, defaultLanguage);
 
+	window.onkeydown = globalKeyDown;
+
 	runLanguage(defaultLanguage);
 }
 
-
-window.onload = main
+window.onload = main;

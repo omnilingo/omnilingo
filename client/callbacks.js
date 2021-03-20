@@ -64,3 +64,20 @@ function onStartTimer() {
 	console.log('onStartTimer()');
 	startTimer();
 }
+
+function globalKeyDown(e) {
+	console.log('globalKeyDown() ' + e.key);
+
+	if(e.key == 'Tab') {
+		// Play and focus textbox
+		console.log('  [TAB]');
+		var player = document.getElementById('player');
+		player.play();
+	}
+	if(e.key == ' ') {
+		// Next clip
+		console.log('  [SPACE]')
+		document.omnilingo.submitTask();
+	}
+}
+
