@@ -7,10 +7,10 @@ from pathlib import Path
 
 from flask import Flask, send_from_directory
 
-app = Flask(__name__, static_url_path="")
+app = Flask(__name__, static_url_path="/client")
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0 # For the index
 
-@app.route("/")
+@app.route("/index.html")
 def front():
     return send_from_directory("client", "index.html")
 
@@ -18,7 +18,7 @@ def front():
 def favicon():
     return send_from_directory("client", "favicon.ico")
 
-@app.route("/client/<path:path>")
+@app.route("/<path:path>")
 def client(path):
     return send_from_directory("client", path)
 
