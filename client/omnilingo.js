@@ -7,6 +7,7 @@ class OmniLingo {
 		this.graph = new Graph(this.batchSize);
 //		this.state = new State();
 		this.enabledTasks = ["blank", "scramble"];
+		this.globalScore = 0;
 	}
 
 	setup(url, language) {
@@ -39,6 +40,12 @@ class OmniLingo {
 		var remainingSpan = document.querySelectorAll('[id="remaining"]')[0];
 		remainingSpan.innerHTML = (this.currentWalk.length + 1) + "/" + this.batchSize;
 	}
+
+	updateScore() {
+		var scoreSpan = document.querySelectorAll('[id="score"]')[0];
+		scoreSpan.innerHTML = this.globalScore;
+	}
+
 
 	updateLevel() {
 		var levelSpan = document.querySelectorAll('[id="level"]')[0];
@@ -116,8 +123,10 @@ class OmniLingo {
 		// If the score is high enough we increment it
 		// Then we getCurrentBatch() again
 		if(score <= graphMin) {
+			this.globalScore += (graphMin - score);
 			this.level += 1;
 			this.updateLevel();
+			this.updateScore();
 			var batch = this.getCurrentBatch();
 			this.graph.fromIndex(this.language, batch, this.enabledTasks);
 			console.log('  [new level] ' + this.level);
