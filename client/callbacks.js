@@ -62,7 +62,6 @@ function onUserInput(e) {
 	if(e.key == 'Enter') {
 		document.omnilingo.getRunningTask().endTask();
 	}
-
 }
 
 function onStartTimer() {
@@ -76,13 +75,23 @@ function globalKeyDown(e) {
 	if(e.key == 'Tab') {
 		// Play and focus textbox
 		console.log('  [TAB]');
-		var player = document.getElementById('player');
-		player.play();
 	}
 	if(e.key == ' ') {
 		// Next clip
 		console.log('  [SPACE]')
-		document.omnilingo.submitTask();
+		var player = document.getElementById('player');
+		player.play();
+		//document.omnilingo.submitTask();
+	}
+	if(e.key == 'Enter') {
+		var inputBox = document.querySelectorAll('[data-focus="true"]')[0];
+		if(!inputBox) {
+			document.omnilingo.submitTask();
+			return;
+		}
+
+		var task = document.omnilingo.getRunningTask();
+		task.endTask();
 	}
 }
 
