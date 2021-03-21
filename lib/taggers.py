@@ -25,7 +25,7 @@ def default(sentence):
     tags = []
     first = True
     for token in sentence:
-        if re.match('^[^\w+]+$', token):
+        if re.match(r'^\W+$', token):
             tags.append('PUNCT')
         elif token[0] == token[0].upper() and not first:
             tags.append('PROPN')

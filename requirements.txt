@@ -5,3 +5,4 @@ mutagen
 levenshtein
 thai-segmenter
 nagisa
+panphon

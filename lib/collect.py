@@ -9,7 +9,7 @@ from orthography import alternatives
 import json
 
 def collect(cache_dir, static_dir): 
-	languages = [p.name for p in Path(cache_dir).glob('*')]
+	languages = [p.name for p in Path(cache_dir).glob('*') if p.name.count('.voc') == 0]
 	indexes = {} 
 	for language in languages:
 		display_name = codes.language_names[language]
