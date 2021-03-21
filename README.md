@@ -28,9 +28,10 @@ you advance a level and get given a new batch of five.
 
 # Keys
 
-* `Tab`: Play the recording
-* `Enter`: Submit and check if you got it right
-* `Space`: Next sentence
+* `Space`: Play the recording
+* `Enter`: 
+  1. Submit and check if you got it right 
+  2. If already submitted, move to the next recording
 
 # Data
 
