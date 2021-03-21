@@ -111,6 +111,7 @@ class OmniLingo {
 			console.log('  [newTime] ' + newTime);
 			// FIXME: this is bad design
 			this.graph.setWeight(this.currentTask.question.nodeId, Number(newTime));
+			this.currentTask.cleanup();
 		}
 		this.nextTask();
 	
