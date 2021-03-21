@@ -123,8 +123,9 @@ class ScrambleTask extends Task {
 		for(var i = 0; i < this.tokens.length; i++) {
 		    // FIXME: do this properly
 			if(i == gap) {	
+				tb += "&nbsp;"
 				for(var j = 0; j < this.chars[gap].length; j++) {
-					tb += '<span id="dz'+j+'" class="targetBox" onClick="onTargetClick(event,\'dz'+j+'\')" data-target="'+this.chars[gap][j]+'"> ? </span>';
+					tb += '<span id="dz'+j+'" class="targetBox" onClick="onTargetClick(event,\'dz'+j+'\')" data-target="'+this.chars[gap][j]+'"> ? </span>&thinsp;';
 				}
 			} else {
 				tb += '&nbsp;<span>' + this.tokens[i] + '</span>&nbsp;';

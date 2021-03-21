@@ -22,7 +22,7 @@ class Task {
 		source.type = 'audio/mp3';
 		source.src = STATIC_URL + this.question.language + '/clip/' + this.currentAudio ;
 
-		player.setAttribute('onPlay', 'onStartTimer()');
+		//player.setAttribute('onPlay', 'onStartTimer()');
 		player.load();
 	}
 

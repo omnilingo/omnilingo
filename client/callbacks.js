@@ -54,6 +54,7 @@ function onPlayerFinish() {
 	if(inputBox[0]) {
 		inputBox[0].focus();
 	}
+	startTimer();
 }
 
 function onUserInput(e) { 
@@ -64,10 +65,10 @@ function onUserInput(e) {
 	}
 }
 
-function onStartTimer() {
+//function onStartTimer() {
 	//console.log('onStartTimer()');
-	startTimer();
-}
+//	startTimer();
+//}
 
 function globalKeyDown(e) {
 	//console.log('globalKeyDown() ' + e.key);
