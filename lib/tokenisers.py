@@ -147,9 +147,11 @@ def eng(sentence):
     """
         >>> tokenise("O'Brien's protege and eventual successor in Hollywood was Ray Harryhausen.", lang="eng")
         ["O'Brien", "'s", 'protege', 'and', 'eventual', 'successor', 'in', 'Hollywood', 'was', 'Ray', 'Harryhausen', '.']
+	>>> tokenise("oh!", lang="eng")
+	['oh', '!']
     """
     o = sentence
-    o = re.sub(r'(["&()+,./:;<>?–—‘’“”-]+)', " \g<1> ", o)
+    o = re.sub(r'(["&()+,./:;<>?–—‘’“”!-]+)', " \g<1> ", o)
     o = o.replace("'ve ", " 've ")
     o = o.replace("'s ", " 's ")
     o = o.replace("I'm ", "I 'm ")
