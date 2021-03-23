@@ -13,6 +13,12 @@ position:relative;
         height: 100%;
 }
 
+.choiceBox {
+
+	border: thin dotted #000;
+	border-radius: 5px;
+}
+
 .row {
 display: flex;
 text-align:center;

@@ -9,6 +9,25 @@ from tokenisers import tokenise
 from taggers import tag
 from segments import characters
 
+import pybktree
+from panphon import distance
+
+def get_multitree(voc_fd):
+	dst = distance.Distance()
+	distractors = {}
+	for line in voc_fd.readlines():
+		(f, w) = line.strip('\n').split('\t')
+		first_letter = w[0].lower()
+		if first_letter not in distractors:
+			distractors[first_letter] = []
+		distractors[first_letter].append(w)
+
+	distractors_tree = {}
+	for letter in distractors:
+		distractors_tree[letter] = pybktree.BKTree(dst.weighted_feature_edit_distance, distractors[letter])
+
+	return distractors_tree
+	
 
 def deploy(dump_dir, cache_file, static_dir):
 	#8       69      6       common_voice_fi_24001101.mp3    fa032123ba94a9aafc037ca10a5eac754ef410288c8dde2b2c666ed5e10222f2        Mysteerimies oli oppinut moraalinsa taruista, elokuvista ja peleistä.   a8f9eb3f56f2048df119a9ad1d210d0b98fda56f3e2a387f14fe2d652241f3ec
@@ -18,6 +37,8 @@ def deploy(dump_dir, cache_file, static_dir):
 
 	index_dir = static_dir + '/index/'
 	cache_fd = open(cache_file, 'r')
+	voc_fd = open(cache_file + '.voc', 'r')
+	distractors_tree = get_multitree(voc_fd)
 	clips_dir = dump_dir + '/clips/'
 	lang_id = cache_file.split('/')[-1]
 	pathlib.Path(index_dir).mkdir(parents=True, exist_ok=True)
@@ -25,6 +46,7 @@ def deploy(dump_dir, cache_file, static_dir):
 	index = {"index": []}
 	line = cache_fd.readline()
 	i = 0
+	distractors = {}
 	while line:
 		row = line.strip().split('\t')
 		index["index"].append(row)
@@ -46,8 +68,17 @@ def deploy(dump_dir, cache_file, static_dir):
 			seen_text.append(thash)
 
 		tokens = tokenise(row[5], lang=lang_id)
-		tags = tag(tokens, lang=lang_id)
+		labels = tag(tokens, lang=lang_id)
 		chars = [characters(token, lang=lang_id) for token in tokens]
+		distractors_sentence = {}
+		for (token, label) in zip(tokens, labels):
+			if label == 'PUNCT' or label == 'PROPN':
+				continue
+			first_letter = token[0].lower()
+			if token not in distractors:
+				distractors[token] = [d for d in distractors_tree[first_letter].find(token, 4) if d[0] > 0]
+			distractors_sentence[token] = distractors[token]	
+
 		audio_dir = static_dir + '/' + lang_id + '/clip/' + ahash[0:2] + '/' + ahash[2:6] + '/' + ahash
 		text_dir = static_dir + '/' + lang_id + '/text/' + thash[0:2] + '/' + thash[2:6] + '/' + thash
 		#print(audio_dir)
@@ -63,7 +94,8 @@ def deploy(dump_dir, cache_file, static_dir):
 		os.symlink(os.path.abspath(text_dir + '/text'), audio_dir + '/text')
 		metadata = {
 			'text': text,
-			'tokens': [[i, j, k] for (i, j, k) in zip(tokens, tags, chars)]
+			'tokens': [[i, j, k] for (i, j, k) in zip(tokens, labels, chars)],
+			'distractors': distractors_sentence
 		}
 		metadata_fd = open(text_dir + '/info', 'w')
 		json.dump(metadata, metadata_fd)
@@ -75,11 +107,11 @@ def deploy(dump_dir, cache_file, static_dir):
 	json.dump(index, index_fd)
 	index_fd.close()
 
-	return i
+	return (i, len([d for d in distractors.keys() if len(distractors[d]) > 1]), len(distractors.keys())) 
 
 
 if __name__ == "__main__":
-	n_lines = deploy(os.path.abspath(sys.argv[1]), sys.argv[2], 'static/')
+	(n_lines, n_distractors, n_tokens) = deploy(os.path.abspath(sys.argv[1]), sys.argv[2], 'static/')
 
-	print(n_lines,'deployed.')
+	print(n_lines,'deployed. %d/%d words with distractors.' % (n_distractors, n_tokens))
 

@@ -23,6 +23,11 @@ class Question {
 		this.setCompletedTask(task);
 	}
 
+	setCompletedTask(task) 
+	{
+		this.remainingTasks = arrayRemove(this.remainingTasks, task);
+	}
+
 	getRandomRemainingTask() 
 	{
 		if(getRandomInt(0, 1)) {

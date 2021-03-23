@@ -4,14 +4,8 @@ class ScrambleTask extends Task {
 		super(question);
 	}
 
-	cleanup() {
-		var cbox = document.getElementById('clues');
-		cbox.innerHTML = "";
-	}
-
 	endTask() {
 		console.log("[ScrambleTask] endTask()");
-		this.cleanup();
 		stopTimer();
 	}
 

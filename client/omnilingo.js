@@ -6,7 +6,7 @@ class OmniLingo {
 		this.batchSize = 5;
 		this.graph = new Graph(this.batchSize);
 //		this.state = new State();
-		this.enabledTasks = ["blank", "scramble"];
+		this.enabledTasks = ["blank", "scramble", "choice"];
 		this.globalScore = 0;
 	}
 
@@ -75,9 +75,23 @@ class OmniLingo {
 	}
 
 
+	removeLevelHighlight() {
+		var levelSpan = document.querySelectorAll('[id="level"]')[0];
+		levelSpan.removeAttribute('data-highlighted');
+		levelSpan.removeAttribute('style');
+	}
+
+
+	setLevelHighlight() {
+		var levelSpan = document.querySelectorAll('[id="level"]')[0];
+		levelSpan.setAttribute('style', 'border: 2px solid green; border-radius: 5px');
+		levelSpan.setAttribute('data-highlighted', 'true');
+	}
+
 	updateLevel() {
 		var levelSpan = document.querySelectorAll('[id="level"]')[0];
 		levelSpan.innerHTML = this.level;
+		this.setLevelHighlight();
 	}
 
 	getLevel() {
@@ -103,6 +117,10 @@ class OmniLingo {
 		return this.currentTask;
 	}
 
+	cleanup() {
+		var cbox = document.getElementById('clues');
+		cbox.innerHTML = "";
+	}
 
 	submitTask() {
 		console.log('submitTask()');
@@ -111,8 +129,9 @@ class OmniLingo {
 			console.log('  [newTime] ' + newTime);
 			// FIXME: this is bad design
 			this.graph.setWeight(this.currentTask.question.nodeId, Number(newTime));
-			this.currentTask.cleanup();
+			this.cleanup();
 		}
+		this.removeLevelHighlight();
 		this.nextTask();
 	
 	}
@@ -128,7 +147,7 @@ class OmniLingo {
 
 		if(this.currentTask && !this.currentTask.complete) {
 			console.log('  [incomplete] ' + this.currentTask.question.nodeId);
-			this.currentTask.cleanup();
+			this.cleanup();
 			this.currentWalk.push(this.currentTask.question.nodeId);
 		}
 		var currentQuestionId = this.currentWalk.shift();
@@ -140,8 +159,12 @@ class OmniLingo {
 		var currentQuestion = this.graph.getNode(currentQuestionId);
 		var currentTaskType = currentQuestion.getRandomRemainingTask();
 
-		if(getRandomInt(0, 1) == 0) {
+		// FIXME: Do this nicer
+		var randInt = getRandomInt(0, 2);
+		if(randInt == 0) {
 			this.currentTask = new BlankTask(currentQuestion);
+		} else if(randInt == 1) {
+			this.currentTask = new ChoiceTask(currentQuestion);
 		} else {
 			this.currentTask = new ScrambleTask(currentQuestion);
 		}
@@ -159,7 +182,7 @@ class OmniLingo {
 
 		console.log('  [score] ' + score + ' || ' + graphMin);
 
-		this.currentTask.cleanup();
+		this.cleanup();
 
 		// If the score is high enough we increment it
 		// Then we getCurrentBatch() again

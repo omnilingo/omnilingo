@@ -25,6 +25,21 @@ class Task {
 		//player.setAttribute('onPlay', 'onStartTimer()');
 		player.load();
 	}
+	
+	validateTasks() {
+
+		var foundDistractor = false;
+		for(var token in this.distractors) {
+			if(this.distractors[token].length > 0) {
+				foundDistractor = true;
+			}
+		}
+		if(foundDistractor) {
+			return;
+		}
+
+		this.question.setCompletedTask("choice");
+	}
 
 	fetchData = async () => { 
 		//console.log('[Task] fetchData()');
@@ -49,5 +64,9 @@ class Task {
 			this.tags.push(this.metadata[i][1]);
 			this.chars.push(this.metadata[i][2]);
 		}
+
+		this.distractors = metadata["distractors"];
+
+		this.validateTasks();
 	}
 }

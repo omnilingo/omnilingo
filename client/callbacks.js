@@ -116,5 +116,14 @@ function onTargetClick(e, tid) {
 	task.targetClick(e, tid);
 }
 
+function onUserInputChoice(e, corr, tid) {
+/**
+ * This is called when we drop the tile on a target
+ */
+	console.log('onUserInputChoice()');
+
+	var task = document.omnilingo.getRunningTask();
+	task.checkInput(e, corr, tid);
+}
 
 
