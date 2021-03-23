@@ -13,6 +13,8 @@ import pybktree
 from panphon import distance
 
 def get_multitree(voc_fd):
+	# Get a dict() where each key is a letter and each value
+	# is a BK tree of the words that start with that letter
 	dst = distance.Distance()
 	distractors = {}
 	for line in voc_fd.readlines():
@@ -30,23 +32,34 @@ def get_multitree(voc_fd):
 	
 
 def deploy(dump_dir, cache_file, static_dir):
+	#0	1	2	3				4									5									6
 	#8       69      6       common_voice_fi_24001101.mp3    fa032123ba94a9aafc037ca10a5eac754ef410288c8dde2b2c666ed5e10222f2        Mysteerimies oli oppinut moraalinsa taruista, elokuvista ja peleistä.   a8f9eb3f56f2048df119a9ad1d210d0b98fda56f3e2a387f14fe2d652241f3ec
 
+	# Keep track of which audio we've seen (in case there are multiple 
+	# files with the same hash) and which text we've seen (we only want
+	# two files per transcript
 	seen_audio = []
 	seen_text = []
 
+	lang_id = cache_file.split('/')[-1]
+
 	index_dir = static_dir + '/index/'
+	clips_dir = dump_dir + '/clips/'
+
+	pathlib.Path(index_dir).mkdir(parents=True, exist_ok=True)
+
 	cache_fd = open(cache_file, 'r')
 	voc_fd = open(cache_file + '.voc', 'r')
-	distractors_tree = get_multitree(voc_fd)
-	clips_dir = dump_dir + '/clips/'
-	lang_id = cache_file.split('/')[-1]
-	pathlib.Path(index_dir).mkdir(parents=True, exist_ok=True)
 	index_fd = open(index_dir + '/' + lang_id, 'w')
-	index = {"index": []}
-	line = cache_fd.readline()
-	i = 0
+
+	distractors_tree = get_multitree(voc_fd)
 	distractors = {}
+
+	# Datastructure for the index
+	index = {"index": []}
+
+	i = 0
+	line = cache_fd.readline()
 	while line:
 		row = line.strip().split('\t')
 		index["index"].append(row)
