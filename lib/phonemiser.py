@@ -103,6 +103,8 @@ def phonemise(token, lang):
 	if lang in iso_3to2:
 		lang = iso_3to2[lang]
 		return lookup_tables[lang].transliterate(token)
+	if lang in ["ab", "abk"]:
+		return maxphon(lookup_tables["ab"], token)
 	if lang in ["as", "asm"]:
 		return maxphon(lookup_tables["as"], token)
 	if lang in ["br", "bre"]:
