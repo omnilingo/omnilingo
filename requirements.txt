@@ -7,3 +7,4 @@ thai-segmenter
 nagisa
 panphon
 pybktree
+epitran
