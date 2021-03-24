@@ -66,7 +66,7 @@ class OmniLingo {
 		var remainingSpan = document.querySelectorAll('[id="remaining"]')[0];
 		remainingSpan.innerHTML = (this.currentWalk.length + 1) + "/" + this.batchSize;
 		var feedbackDiv = document.querySelectorAll('[id="feedback"]')[0];
-		feedbackDiv.innerHTML = '<div style="width: ' + (completed * 20) + '%" class="feedbackFill">&nbsp;</div>';
+		feedbackDiv.innerHTML = '<div style="width: ' + (completed * 25) + '%" class="feedbackFill">&nbsp;</div>';
 	}
 
 	updateScore() {
@@ -84,7 +84,7 @@ class OmniLingo {
 
 	setLevelHighlight() {
 		var levelSpan = document.querySelectorAll('[id="level"]')[0];
-		levelSpan.setAttribute('style', 'border: 2px solid green; border-radius: 5px');
+		levelSpan.setAttribute('style', 'border: 2px solid green; border-radius: 5px; background-color: #abcdab;');
 		levelSpan.setAttribute('data-highlighted', 'true');
 	}
 

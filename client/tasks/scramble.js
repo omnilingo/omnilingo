@@ -40,12 +40,15 @@ class ScrambleTask extends Task {
 		if(src_val.toLowerCase() == trg_val.toLowerCase()) {
 			console.log('  [correct] ' + src_val);
 			this.correctClick(dz, trg_val);
+		} else {
+			this.incorrectClick(dz);
 		}
 		// FIXME: Do something with incorrect clicks here?
 		src.removeAttribute('data-clicked');
 		src.setAttribute('style', 'background-color:#bababa');
 
 	}
+
 
 	fancyBox(targetIds, targetToken) {
 		console.log('[ScrambleTask] fancyBox()');
@@ -90,6 +93,20 @@ class ScrambleTask extends Task {
 			this.endTask();
 		}
 	}	
+
+	// FIXME: This code doesn't work, the idea is to do some animation when the user gets it wrong
+	incorrectClick(dz) { 
+		console.log('[ScrambleTask] incorrectClick()');	
+		console.log(dz);
+		dz.setAttribute('style', 'background-color: red; color: red');
+		setTimeout(this.toggleIncorrect(dz), 3000);
+	}
+	
+	toggleIncorrect(dz) {
+		console.log('[ScrambleTask] toggleIncorrect()');	
+		console.log(dz);
+		dz.setAttribute('style', 'background-color: white');
+	}
 
 	buildTiles(gap) {
 		
