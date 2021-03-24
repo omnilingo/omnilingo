@@ -34,6 +34,7 @@ iso_2to3 = {
 	'sw':'swa-Latn',
 	'sv-SE':'swe-Latn',
 	'ta':'tam-Taml',
+	'te':'tel-Telu',
 	'th':'tha-Thai',
 	'uk':'ukr-Cyrl',
 	'uz':'uzb-Latn',
@@ -92,6 +93,8 @@ def phonemise(token, lang):
 		'ɬəvrɡɛɬ'
 		>>> phonemise('为什么', lang='zh-CN')
 		'weiʂenme'
+		>>> phonemiser.phonemise('αβαλσάμωτος', lang='el')
+		'abalsmɔːtos'
 	"""
 	if lang in iso_2to3:
 		return lookup_tables[lang].transliterate(token)
@@ -102,18 +105,26 @@ def phonemise(token, lang):
 		return maxphon(lookup_tables["br"], token)
 	if lang in ["cv", "chv"]:
 		return maxphon(lookup_tables["cv"], token)
-	if lang in ["fi", "fin"]:
-		return maxphon(lookup_tables["fi"], token)
-	if lang in ["quc"]:
-		return maxphon(lookup_tables["quc"], token)
 	if lang in ["cy", "cym"]:
 		return maxphon(lookup_tables["cy"], token)
+	if lang in ["dv"]:
+		return maxphon(lookup_tables["dv"], token)
+	if lang in ["el", "ell"]:
+		return maxphon(lookup_tables["el"], token)
+	if lang in ["fi", "fin"]:
+		return maxphon(lookup_tables["fi"], token)
+	if lang in ["mn", "mon"]:
+		return maxphon(lookup_tables["mn"], token)
+	if lang in ["quc"]:
+		return maxphon(lookup_tables["quc"], token)
 	if lang in ["tr", "tur"]:
 		return maxphon(lookup_tables["tr"], token)
 	if lang in ["tt", "tat"]:
 		return maxphon(lookup_tables["tt"], token)
 	if lang in ["sah"]:
 		return maxphon(lookup_tables["sah"], token)
+	if lang in ["ur", "urd"]:
+		return maxphon(lookup_tables["ur"], token)
 	if lang.startswith("zh-"):
 		return lookup_tables[lang].transliterate(token)
 
@@ -134,14 +145,18 @@ def init():
 	for language in languages:
 		if language == 'zh':
 			continue
+		lines = open('data/phon/'+language).readlines()
+		if len(lines) == 0:
+			continue
 		lookup_tables[language] = {}
-		for line in open('data/phon/'+language).readlines():
+		for line in lines:
 			if line.strip() == '': continue
 			kv = line.strip().split('\t')
 			if len(kv) != 2:
 				print('!', kv, file=sys.stderr)
 				continue
-			(k, v) = kv
+			k = kv[0].strip()
+			v = kv[1].strip()
 			if k not in lookup_tables[language]:
 				lookup_tables[language][k] = []
 			lookup_tables[language][k].append(v)
