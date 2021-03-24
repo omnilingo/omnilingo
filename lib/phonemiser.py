@@ -7,7 +7,7 @@ import sys
 import pathlib
 import epitran
 
-codes = {
+iso_2to3 = {
 	'am':'amh-Ethi',
 	'ar':'ara-Arab',
 	'az':'aze-Latn',
@@ -37,8 +37,10 @@ codes = {
 	'th':'tha-Thai',
 	'uk':'ukr-Cyrl',
 	'uz':'uzb-Latn',
-	'vi':'vie-Latn',
+	'vi':'vie-Latn'
 }
+
+iso_3to2 = {y.split('-')[0]: x for (x, y) in iso_2to3.items()}
 
 def maxmatch(dictionary, line):
 	line += ' '
@@ -83,36 +85,51 @@ def phonemise(token, lang):
 		'tʃʰikʰopʰ'
 		>>> phonemise('Schnur', lang='deu')
 		'ʃnuə'
+		>>> phonemise('llyfrgell', lang='cy')
+		'ɬəvrɡɛɬ'
 	"""
+	if lang in iso_2to3:
+		return lookup_tables[lang].transliterate(token)
+	if lang in iso_3to2:
+		lang = iso_3to2[lang]
+		return lookup_tables[lang].transliterate(token)
 	if lang in ["br", "bre"]:
 		return maxphon(lookup_tables["br"], token)
-	if lang in ["de", "deu"]:
-		return lookup_tables['de'].transliterate(token)
+	if lang in ["cv", "chv"]:
+		return maxphon(lookup_tables["cv"], token)
 	if lang in ["fi", "fin"]:
 		return maxphon(lookup_tables["fi"], token)
 	if lang in ["quc"]:
 		return maxphon(lookup_tables["quc"], token)
+	if lang in ["cy", "cym"]:
+		return maxphon(lookup_tables["cy"], token)
 	if lang in ["tr", "tur"]:
 		return maxphon(lookup_tables["tr"], token)
+	if lang in ["tt", "tat"]:
+		return maxphon(lookup_tables["tt"], token)
+	if lang in ["sah"]:
+		return maxphon(lookup_tables["sah"], token)
 
 	return token
 
 def init():
 	languages = [p.name for p in pathlib.Path('data/phon/').glob('*')]
 	lookup_tables = {}
+
+	# If we have Epitran
+	for language in iso_2to3:
+		lookup_tables[language] = epitran.Epitran(iso_2to3[language])
+
+	# Otherwise fallback to TSV-style
 	for language in languages:
 		lookup_tables[language] = {}
-		if language in codes:
-			lookup_tables[language] = epitran.Epitran(codes[language])
-		else:
-			for line in open('data/phon/'+language).readlines():
-				if line.strip() == '': continue
-				(k, v) = line.strip().split('\t')
-				if k not in lookup_tables[language]:
-					lookup_tables[language][k] = []
-				lookup_tables[language][k].append(v)
-		sys.stderr.write('.')
-		sys.stderr.flush()
+		for line in open('data/phon/'+language).readlines():
+			if line.strip() == '': continue
+			(k, v) = line.strip().split('\t')
+			if k not in lookup_tables[language]:
+				lookup_tables[language][k] = []
+			lookup_tables[language][k].append(v)
+
 	return lookup_tables
 
 lookup_tables = init()	
