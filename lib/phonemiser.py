@@ -37,7 +37,10 @@ iso_2to3 = {
 	'th':'tha-Thai',
 	'uk':'ukr-Cyrl',
 	'uz':'uzb-Latn',
-	'vi':'vie-Latn'
+	'vi':'vie-Latn',
+	'zh-CN':'cmn-Hans',
+	'zh-TW':'cmn-Hant',
+	'zh-HK':'cmn-Hans'
 }
 
 iso_3to2 = {y.split('-')[0]: x for (x, y) in iso_2to3.items()}
@@ -87,6 +90,8 @@ def phonemise(token, lang):
 		'ʃnuə'
 		>>> phonemise('llyfrgell', lang='cy')
 		'ɬəvrɡɛɬ'
+		>>> phonemise('为什么', lang='zh-CN')
+		'weiʂenme'
 	"""
 	if lang in iso_2to3:
 		return lookup_tables[lang].transliterate(token)
@@ -109,6 +114,8 @@ def phonemise(token, lang):
 		return maxphon(lookup_tables["tt"], token)
 	if lang in ["sah"]:
 		return maxphon(lookup_tables["sah"], token)
+	if lang.startswith("zh-"):
+		return lookup_tables[lang].transliterate(token)
 
 	return token
 
@@ -118,14 +125,23 @@ def init():
 
 	# If we have Epitran
 	for language in iso_2to3:
-		lookup_tables[language] = epitran.Epitran(iso_2to3[language])
+		if language.startswith('zh-'):
+			lookup_tables[language] = epitran.Epitran(iso_2to3[language], cedict_file="./data/phon/zh")
+		else:
+			lookup_tables[language] = epitran.Epitran(iso_2to3[language])
 
 	# Otherwise fallback to TSV-style
 	for language in languages:
+		if language == 'zh':
+			continue
 		lookup_tables[language] = {}
 		for line in open('data/phon/'+language).readlines():
 			if line.strip() == '': continue
-			(k, v) = line.strip().split('\t')
+			kv = line.strip().split('\t')
+			if len(kv) != 2:
+				print('!', kv, file=sys.stderr)
+				continue
+			(k, v) = kv
 			if k not in lookup_tables[language]:
 				lookup_tables[language][k] = []
 			lookup_tables[language][k].append(v)
