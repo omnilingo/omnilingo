@@ -93,14 +93,18 @@ def phonemise(token, lang):
 		'ɬəvrɡɛɬ'
 		>>> phonemise('为什么', lang='zh-CN')
 		'weiʂenme'
-		>>> phonemiser.phonemise('αβαλσάμωτος', lang='el')
+		>>> phonemise('αβαλσάμωτος', lang='el')
 		'abalsmɔːtos'
+		>>> phonemise('আক্ৰমণ', lang='as')
+		'akrmn'
 	"""
 	if lang in iso_2to3:
 		return lookup_tables[lang].transliterate(token)
 	if lang in iso_3to2:
 		lang = iso_3to2[lang]
 		return lookup_tables[lang].transliterate(token)
+	if lang in ["as", "asm"]:
+		return maxphon(lookup_tables["as"], token)
 	if lang in ["br", "bre"]:
 		return maxphon(lookup_tables["br"], token)
 	if lang in ["cv", "chv"]:
@@ -115,6 +119,8 @@ def phonemise(token, lang):
 		return maxphon(lookup_tables["fi"], token)
 	if lang in ["mn", "mon"]:
 		return maxphon(lookup_tables["mn"], token)
+	if lang in ["or", "ori"]:
+		return maxphon(lookup_tables["or"], token)
 	if lang in ["quc"]:
 		return maxphon(lookup_tables["quc"], token)
 	if lang in ["tr", "tur"]:
