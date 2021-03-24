@@ -4,6 +4,7 @@
 # do not appear are discarded.
 
 import sys 
+import pathlib
 
 def maxmatch(dictionary, line):
 	line += ' '
@@ -32,7 +33,7 @@ def maxphon(lkp, token):
 			op += lkp[seg][0]
 	return op
 
-def bre(token):
+def phonemise(token, lang):
 	"""
 		>>> phonemise('Breizh', lang="bre")
 		'breiz'
@@ -40,173 +41,42 @@ def bre(token):
 		'ɡʷelut'
 		>>> phonemise("deoc'h", lang="bre")
 		'deoɣ'
-	"""
-	lkp = { 'i':['i'], 
-		'u':['y'], 
-		'ou':['u'], 
-		'e':['e', 'ɛ'], 
-		'eu':['ø', 'œ'],
-		'a':['a','ɑ'], 
-		'o':['o','ɔ'], 
-		'm':['m'], 
-		'n':['n'], 
-		'gn':['ɲ'], 
-		'b':['b'], 
-		'd':['d'], 
-		'g':['g'], 
-		'gw':['ɡʷ'], 
-		'gou':['ɡʷ'], 
-		'p':['p'], 
-		't':['t'], 
-		'k':['k'], 
-		'kw':['kʷ'], 
-		'kou':['kʷ'], 
-		'v':['v'], 
-		'zh':['z'], 
-		'j':['ʒ'], 
-		"c'h":['ɣ', 'x'], 
-		'f':['f'], 
-		's':['s'], 
-		'ch':['ʃ'], 
-		'h':['h'], 
-		'r':['r'], 
-		'y':['j'], 
-		'w':['w'], 
-		'l':['l'], 
-		'lh':['ʎ']}
-
-	return maxphon(lkp, token)
-
-def fin(token): 
-	"""
 		>>> phonemise('anekdootti', lang='fin')
 		'ɑnekdoːtti'
-	"""
-	lkp = { 'i': ['i'],
-		'y': ['y'],
-		'u': ['u'],
-		'e': ['e'],
-		'ö': ['ø'],
-		'o': ['o'],
-		'ä': ['æ'],
-		'a': ['ɑ'],
-		'ii': ['iː'],
-		'yy': ['yː'],
-		'uu': ['uː'],
-		'ee': ['eː'],
-		'öö': ['øː'],
-		'oo': ['oː'],
-		'ää': ['æː'],
-		'aa': ['ɑː'],
-		'm':['m'],
-		'n':['n'],
-		'ng':['ŋ'],
-		'p':['p'],
-		'b':['b'],
-		't':['t'],
-		'd':['d'],
-		'k':['k'],
-		'ɡ':['ɡ'],
-		'f':['f'],
-		's':['s'],
-		'š':['ʃ'],
-		'h':['h'],
-		'v':['ʋ'],
-		'l':['l'],
-		'j':['j'],
-		'r':['r'] }
-
-	return maxphon(lkp, token)
-
-def tur(token):
-	"""
 		>>> phonemise('arabasında', lang='tur')
 		'aɾabasɯnda'
-	"""
-	lkp = { 'i':['i'],
-		'ı':['ɯ'],
-		'ü':['y'],
-		'u':['u'],
-		'ö':['œ'],
-		'o':['o'],
-		'e':['e'],
-		'a':['a'],
-		'm':['m'],
-		'n':['n'],
-		'p':['p'],
-		't':['t'],
-		'ç':['t͡ʃ'],
-		'k':['k'],
-		'b':['b'],
-		'd':['d'],
-		'c':['d͡ʒ'],
-		'ɡ':['ɡ'],
-		'f':['f'],
-		's':['s'],
-		'ʃ':['ʃ'],
-		'h':['h'],
-		'v':['v'],
-		'z':['z'],
-		'j':['ʒ'],
-		'l':['l'],
-		'y':['j'],
-		'r':['ɾ']}
-		
-	return maxphon(lkp, token)
-
-def quc(token):
-	"""
 		>>> phonemise('chikop', lang='quc')
 		'tʃʰikʰopʰ'
 	"""
-	lkp = { 'm':['m'],
-		'bʼ':['ɓ'],
-		'p':['pʰ'],
-		'w':['ʋ'],
-		'n':['n'],
-		'tʼ':['tʼ'],
-		't':['tʰ'],
-		'tzʼ':['tsʼ'],
-		'tz':['tsʰ'],
-		'x':['ʃ'],
-		'r':['ɻ'],
-		'chʼ':['tʃʼ'],
-		'ch':['tʃʰ'],
-		'j':['χ'],
-		'kʼ':['kʼ'],
-		'k':['kʰ'],
-		'qʼ':['qʼ'],
-		'q':['qʰ'],
-		'ʼ':['ʔ'],
-		'h':['h'],
-		's':['s'],
-		'l':['l'],
-		'a':['a'],
-		'e':['e'],
-		'i':['i'],
-		'o':['o'],
-		'u':['u'],
-		'd':['d'],
-		'y':['j']}
-		
-	return maxphon(lkp, token)
+	if lang in ["br", "bre"]:
+		return maxphon(lookup_tables["br"], token)
+	if lang in ["fi", "fin"]:
+		return maxphon(lookup_tables["fi"], token)
+	if lang in ["quc"]:
+		return maxphon(lookup_tables["quc"], token)
+	if lang in ["tr", "tur"]:
+		return maxphon(lookup_tables["tr"], token)
 
-def default(token):
-    return token
+	return token
 
-def phonemise(token, lang):
-    if lang in ["br", "bre"]:
-        return bre(token)
-    if lang in ["fi", "fin"]:
-        return fin(token)
-    if lang in ["quc"]:
-        return quc(token)
-    if lang in ["tr", "tur"]:
-        return tur(token)
+def init():
+	languages = [p.name for p in pathlib.Path('data/phon/').glob('*')]
+	lookup_tables = {}
+	for language in languages:
+		lookup_tables[language] = {}
+		for line in open('data/phon/'+language).readlines():
+			if line.strip() == '': continue
+			(k, v) = line.strip().split('\t')
+			if k not in lookup_tables[language]:
+				lookup_tables[language][k] = []
+			lookup_tables[language][k].append(v)
 
-    return default(token)
+	print(lookup_tables)
+	return lookup_tables
+
+lookup_tables = init()	
 
 if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+	import doctest
+	doctest.testmod()
 
