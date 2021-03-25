@@ -23,7 +23,7 @@
 ## 0.5.0
 
 * Better tokenisation and tagging, 
-  * e.g. to distinguish `PROPN/`NOUN` in `de`
+  * e.g. to distinguish `PROPN`/`NOUN` in `de`
 
 ## 0.6.0
 
