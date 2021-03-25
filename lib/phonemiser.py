@@ -100,8 +100,9 @@ def jpn(token):
 	for seg in segs:
 		tipus = scripts.script_types(seg)
 		if 3 in tipus:
-			if seg in kjd:
-				op += kjd[seg].on_readings[0]
+			for ch in seg:
+				if ch in kjd:
+					op += kjd[ch].on_readings[0]
 		else:
 			op += seg
 
