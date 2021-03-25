@@ -75,6 +75,41 @@ def maxphon(lkp, token):
 
 def jpn(token):
 	from cjktools import scripts
+	from cjktools.resources import kanjidic
+	lkp = {}
+	for fn in ['lib/data/phon/jp-Hira', 'lib/data/phon/jp-Kata']:
+		lines = open(fn).readlines()		
+		if len(lines) == 0:
+			continue
+		for line in lines:
+			if line.strip() == '': continue
+			kv = line.strip().split('\t')
+			if len(kv) != 2:
+				print('!', kv, file=sys.stderr)
+				continue
+			k = kv[0].strip()
+			v = kv[1].strip()
+			if k not in lkp:
+				lkp[k] = []
+			lkp[k].append(v)
+
+	kjd = kanjidic.Kanjidic(kanjidic_files=['lib/data/dict/jp'])
+	op = ''
+	missing = ''
+	segs = scripts.script_boundaries(token)
+	for seg in segs:
+		tipus = scripts.script_types(seg)
+		if 3 in tipus:
+			if seg in kjd:
+				op += kjd[seg].on_readings[0]
+		else:
+			op += seg
+
+	res = maxphon(lkp, op)
+	if res == '':
+		return '?'	
+	return res
+
 
 def phonemise(token, lang):
 	"""
@@ -122,6 +157,8 @@ def phonemise(token, lang):
 		return maxphon(lookup_tables["el"], token)
 	if lang in ["fi", "fin"]:
 		return maxphon(lookup_tables["fi"], token)
+	if lang in ["jp", "jpn"]:
+		return jpn(token)
 	if lang in ["mn", "mon"]:
 		return maxphon(lookup_tables["mn"], token)
 	if lang in ["or", "ori"]:
@@ -136,8 +173,6 @@ def phonemise(token, lang):
 		return maxphon(lookup_tables["sah"], token)
 	if lang in ["ur", "urd"]:
 		return maxphon(lookup_tables["ur"], token)
-	if lang in ["jp", "jpn"]:
-		return jpn(token)
 	if lang.startswith("zh-"):
 		return lookup_tables[lang].transliterate(token)
 
@@ -150,13 +185,15 @@ def init():
 	# If we have Epitran
 	for language in iso_2to3:
 		if language.startswith('zh-'):
-			lookup_tables[language] = epitran.Epitran(iso_2to3[language], cedict_file="lib/data/phon/zh")
+			lookup_tables[language] = epitran.Epitran(iso_2to3[language], cedict_file="lib/data/dict/zh")
 		else:
 			lookup_tables[language] = epitran.Epitran(iso_2to3[language])
 
 	# Otherwise fallback to TSV-style
 	for language in languages:
 		if language == 'zh':
+			continue
+		if language.startswith('jp-'):
 			continue
 		lines = open('lib/data/phon/'+language).readlines()
 		if len(lines) == 0:
