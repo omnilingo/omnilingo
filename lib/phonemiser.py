@@ -139,13 +139,13 @@ def phonemise(token, lang):
 	return token
 
 def init():
-	languages = [p.name for p in pathlib.Path('data/phon/').glob('*')]
+	languages = [p.name for p in pathlib.Path('lib/data/phon/').glob('*') if not p.name == 'README.md']
 	lookup_tables = {}
 
 	# If we have Epitran
 	for language in iso_2to3:
 		if language.startswith('zh-'):
-			lookup_tables[language] = epitran.Epitran(iso_2to3[language], cedict_file="./data/phon/zh")
+			lookup_tables[language] = epitran.Epitran(iso_2to3[language], cedict_file="lib/data/phon/zh")
 		else:
 			lookup_tables[language] = epitran.Epitran(iso_2to3[language])
 
@@ -153,7 +153,7 @@ def init():
 	for language in languages:
 		if language == 'zh':
 			continue
-		lines = open('data/phon/'+language).readlines()
+		lines = open('lib/data/phon/'+language).readlines()
 		if len(lines) == 0:
 			continue
 		lookup_tables[language] = {}
