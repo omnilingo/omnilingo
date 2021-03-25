@@ -11,6 +11,7 @@
 * Implement a graph-based structure for task selection
 * Generate distractors using panphon
 * Phonemisers for every non-Latin based language
+* Blacklist tracks functionality
 
 ## 0.3.0
 
