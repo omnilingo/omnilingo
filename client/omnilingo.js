@@ -6,7 +6,7 @@ class OmniLingo {
 		this.batchSize = 5;
 		this.graph = new Graph(this.batchSize);
 //		this.state = new State();
-		this.enabledTasks = ["blank", "scramble", "choice"];
+		this.enabledTasks = ["blank", "scramble", "choice", "search"];
 		this.globalScore = 0;
 	}
 
@@ -120,6 +120,8 @@ class OmniLingo {
 	cleanup() {
 		var cbox = document.getElementById('clues');
 		cbox.innerHTML = "";
+		var tbox = document.getElementById('textbox');
+		tbox.innerHTML = "";
 	}
 
 	submitTask() {
@@ -160,13 +162,15 @@ class OmniLingo {
 		var currentTaskType = currentQuestion.getRandomRemainingTask();
 
 		// FIXME: Do this nicer
-		var randInt = getRandomInt(0, 2);
+		var randInt = getRandomInt(0, 3);
 		if(randInt == 0) {
-			this.currentTask = new BlankTask(currentQuestion);
+			this.currentTask = new ScrambleTask(currentQuestion);
 		} else if(randInt == 1) {
 			this.currentTask = new ChoiceTask(currentQuestion);
+		} else if(randInt == 2) {
+			this.currentTask = new SearchTask(currentQuestion);
 		} else {
-			this.currentTask = new ScrambleTask(currentQuestion);
+			this.currentTask = new BlankTask(currentQuestion);
 		}
 		this.currentTask.run();
 	}

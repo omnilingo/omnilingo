@@ -225,6 +225,7 @@ label > input[type="checkbox"] {
   border-radius: 5px;
   font-family: monospace;
 box-shadow: 10px 5px 5px #dcdcdc;
+	font-size: 150%;
 }
 
 
@@ -236,6 +237,7 @@ box-shadow: 10px 5px 5px #dcdcdc;
   border-radius: 5px;
   font-family: monospace;
 box-shadow: 10px 5px 5px #dcdcdc;
+	font-size: 150%;
 }
 
 .wordGuess{
@@ -245,6 +247,7 @@ box-shadow: 10px 5px 5px #dcdcdc;
   border-radius: 5px;
   font-family: monospace;
 box-shadow: 10px 5px 5px #dcdcdc;
+	font-size: 150%;
 }
 
 .targetBox {

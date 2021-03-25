@@ -126,4 +126,10 @@ function onUserInputChoice(e, corr, tid) {
 	task.checkInput(e, corr, tid);
 }
 
+function onCheckInputSearch(e) {
 
+	console.log('onCheckInputSearch()');
+
+	var task = document.omnilingo.getRunningTask();
+	task.checkInput(e);
+}
