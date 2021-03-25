@@ -88,6 +88,8 @@ const runLanguage = async (language, acceptingChars) => {
 
 	document.omnilingo.setup(STATIC_URL, language);
 
+	document.omnilingo.cleanup();
+
 	var h = document.documentElement;
 	if(language == "ar" || language == "fa" || language == "dv") { // FIXME: be cleverer here
 		// <html dir="rtl" language="ar">
