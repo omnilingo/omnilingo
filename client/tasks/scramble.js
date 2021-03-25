@@ -11,7 +11,7 @@ class ScrambleTask extends Task {
 	}
 
 	sourceClick(e) {
-		console.log('sourceClick()');
+		console.log('[ScrambleTask] sourceClick()');
 	        var clicked = e.target.getAttribute('data-clicked');
 	        if(clicked) {
 	                e.target.removeAttribute('data-clicked');

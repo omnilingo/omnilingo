@@ -49,7 +49,7 @@ class ChoiceTask extends Task {
 	}
 
 
-	buildTbox(gap) {
+	buildChoiceTbox(gap) {
 		var distractor = this.chooseDistractor(this.tokens[gap]);
 		distractor = this.matchCase(this.tokens[gap], distractor);
 		var line = "";
@@ -128,7 +128,7 @@ class ChoiceTask extends Task {
 		var gap = this.chooseGap();	
 
 		var tbox = document.getElementById("textbox");
-		tbox.innerHTML = this.buildTbox(gap);
+		tbox.innerHTML = this.buildChoiceTbox(gap);
 
 		this.setRunning(true);
 	}
