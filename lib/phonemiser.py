@@ -136,6 +136,8 @@ def phonemise(token, lang):
 		'abalsmɔːtos'
 		>>> phonemise('আক্ৰমণ', lang='as')
 		'akrmn'
+		>>> phonemise('আটাইতকৈ', lang='as')
+		'ataitkɔɪ'
 	"""
 	if lang in iso_2to3:
 		return lookup_tables[lang].transliterate(token)

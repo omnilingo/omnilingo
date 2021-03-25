@@ -41,6 +41,19 @@ class Task {
 		this.question.setCompletedTask("choice");
 	}
 
+	fetchDistractors = async () => {
+		this.tokensPath = hashToPath(this.question.textHash) + '/dist';
+		const tokensPromise = fetch(STATIC_URL + this.question.language + '/text/' + this.tokensPath);
+		const meta = await Promise.all([tokensPromise]);
+		const metaData = meta.map(response => response.text());
+		const allData = await Promise.all(metaData);
+
+		var metadata = JSON.parse(allData[0]);
+
+		this.distractors = metadata["distractors"];
+
+	}
+
 	fetchData = async () => { 
 		//console.log('[Task] fetchData()');
 		this.tokensPath = hashToPath(this.question.textHash) + '/info';
@@ -50,8 +63,6 @@ class Task {
 		const allData = await Promise.all(metaData);
 
 		var metadata = JSON.parse(allData[0]);
-		//console.log('tokens:');
-		//console.log(metadata["tokens"]);
 
 		this.metadata = metadata["tokens"];
 
@@ -65,7 +76,7 @@ class Task {
 			this.chars.push(this.metadata[i][2]);
 		}
 
-		this.distractors = metadata["distractors"];
+		await this.fetchDistractors();
 
 		this.validateTasks();
 	}
