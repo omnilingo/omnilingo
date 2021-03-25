@@ -73,6 +73,9 @@ def maxphon(lkp, token):
 			op += lkp[seg][0]
 	return op
 
+def jpn(token):
+	from cjktools import scripts
+
 def phonemise(token, lang):
 	"""
 		>>> phonemise('Breizh', lang="bre")
@@ -133,6 +136,8 @@ def phonemise(token, lang):
 		return maxphon(lookup_tables["sah"], token)
 	if lang in ["ur", "urd"]:
 		return maxphon(lookup_tables["ur"], token)
+	if lang in ["jp", "jpn"]:
+		return jpn(token)
 	if lang.startswith("zh-"):
 		return lookup_tables[lang].transliterate(token)
 

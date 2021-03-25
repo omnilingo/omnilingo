@@ -16,6 +16,21 @@ def deu(sentence):
 
     return tags
 
+def jpn(sentence):
+    """
+    """
+    tags = []
+    first = True
+    for token in sentence:
+        if re.match('^[^\w+]+$', token):
+            tags.append('PUNCT')
+        else:
+            tags.append('X')
+        first = False
+
+    return tags
+
+
 
 def default(sentence):
     """
@@ -39,6 +54,8 @@ def default(sentence):
 def tag(sentence, lang):
     if lang in ["de", "deu"]:
         return deu(sentence)
+    if lang in ["jp", "jpn"]:
+        return jpn(sentence)
 
     return default(sentence)
 

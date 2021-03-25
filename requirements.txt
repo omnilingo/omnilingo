@@ -8,3 +8,5 @@ nagisa
 panphon
 pybktree
 epitran
+cjktools
+cjktools-data
