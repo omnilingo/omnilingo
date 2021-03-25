@@ -9,22 +9,31 @@ function hashToPath(hash) {
 }
 
 function stopTimer() {
-	clearInterval(localStorage.getItem('refreshIntervalId'));
+	console.log('stopTimer()');
+	var interval = localStorage.getItem('refreshIntervalId');
+	console.log('  [interval] ' + interval);
+	clearInterval(interval);
 	localStorage.removeItem('refreshIntervalId');
 }
 
 function startTimer() {
 	console.log('startTimer()');
 	var interval = localStorage.getItem('refreshIntervalId');
-	console.log('  [interval] ' + interval);
+	console.log('  [interval] ← ' + interval);
 	if(interval) {
-		return;
+		clearInterval(interval);
+		localStorage.removeItem('refreshIntervalId');
 	}
-	var sec = 0;
-	var res = setInterval( function(){
-		document.getElementById("seconds").innerHTML = ++sec;
-	}, 1000);
-	localStorage.setItem('refreshIntervalId', res);
+	var task = document.omnilingo.getRunningTask();
+	console.log('  [task] ' + task.isRunning());
+	if(task.isRunning()) {
+		var sec = 0;
+		var res = setInterval( function(){
+			document.getElementById("seconds").innerHTML = ++sec;
+		}, 1000);
+		localStorage.setItem('refreshIntervalId', res);
+		console.log('  [interval] → ' + res);
+	}
 }
 
 function resetTimer() {

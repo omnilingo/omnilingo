@@ -84,6 +84,7 @@ class ChoiceTask extends Task {
 
 	endTask() {
 		console.log("[ChoiceTask] endTask()");
+		this.setRunning(false);
 		stopTimer();
 	}
 
@@ -128,6 +129,8 @@ class ChoiceTask extends Task {
 
 		var tbox = document.getElementById("textbox");
 		tbox.innerHTML = this.buildTbox(gap);
+
+		this.setRunning(true);
 	}
 }
 

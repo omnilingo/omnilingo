@@ -35,6 +35,7 @@ class BlankTask extends Task {
 
 	endTask() {
 		console.log("[BlankTask] endTask()");
+		this.setRunning(false);
 		stopTimer();
 		this.checkInput();
 	}
@@ -99,6 +100,8 @@ class BlankTask extends Task {
 
 		var tbox = document.getElementById("textbox");
 		tbox.innerHTML = this.buildTbox(gap);
+	
+		this.setRunning(true);
 	}
 }
 

@@ -6,6 +6,7 @@ class ScrambleTask extends Task {
 
 	endTask() {
 		console.log("[ScrambleTask] endTask()");
+		this.setRunning(false);
 		stopTimer();
 	}
 
@@ -175,6 +176,8 @@ class ScrambleTask extends Task {
 
 		var tbox = document.getElementById("textbox");
 		tbox.innerHTML = this.buildTargets(gap);
+
+		this.setRunning(true);
 	}
 }
 

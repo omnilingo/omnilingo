@@ -6,11 +6,20 @@ class Task {
 		this.question = question;
 		this.complete = false;
 		this.answer = "";
+		this.running = false;
 	}
 	
 	init = async() => {
 		this.setupAudio();
 		await this.fetchData();
+	}
+
+	setRunning(b) {
+		this.running = b;
+	}
+
+	isRunning() {
+		return this.running;
 	}
 
 	setupAudio() {
