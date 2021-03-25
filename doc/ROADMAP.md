@@ -27,3 +27,8 @@
 ## 0.6.0
 
 * More beautiful end-user UI (CSS etc.)
+
+## 0.7.0 
+
+* Better distractor generation
+  * Should perhaps be tunable with features like embedding similiarity, POS, etc. in addition to surface form
