@@ -17,10 +17,14 @@ class SearchTask extends Task {
 		for(var i = 0; i < validGaps.length; i++) { 
 			var token = this.tokens[i];
 			boxes.push([token, true]);
-			var distractorId = getRandomInt(0, this.distractors[token].length - 1);
-			console.log('  [distractorId] ' + distractorId);
-			var distractor = this.distractors[token][distractorId][1];
-			boxes.push([distractor, false]);
+			if(token in this.distractors && this.distractors[token].length > 0) {
+				var distractorId = getRandomInt(0, this.distractors[token].length - 1);
+				console.log('  [distractorId] ' + distractorId);
+				var distractor = this.distractors[token][distractorId][1];
+				boxes.push([distractor, false]);
+			} else { 
+				console.log('  [invalidDistractor] ' + i);
+			}
 		}
 		var buttons = shuffleArray(boxes);
 
@@ -49,7 +53,7 @@ class SearchTask extends Task {
 	}
 
 	checkInput(e) {
-		console.log("[SearchTask] checkInput()");
+		console.log("[SearchTask] checkInput() " + this.totalClicks);
 
 		var res = e.target.getAttribute('data-value');
 		if(res == "false") {
