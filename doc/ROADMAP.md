@@ -20,7 +20,8 @@
 ## 0.4.0
 
 * Better modelling of difficulty (perplexity/sec)
-
+* Better distractors for English and German
+  * Take into account frequency and do something more clever with capitalisation (truecasing)
 ## 0.5.0
 
 * Better tokenisation and tagging, 
