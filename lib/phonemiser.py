@@ -102,7 +102,8 @@ def jpn(token):
 		if 3 in tipus:
 			for ch in seg:
 				if ch in kjd:
-					op += kjd[ch].on_readings[0]
+					if len(kjd[ch].on_readings) > 0:
+						op += kjd[ch].on_readings[0]
 		else:
 			op += seg
 
