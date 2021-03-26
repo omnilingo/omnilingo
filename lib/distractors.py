@@ -81,10 +81,11 @@ def generate_distractors(cache_file, static_dir):
 			first_letter = token[0].lower()
 			if token not in distractors:
 				found = []
-				for k in range(1, 6):
-					found = [d for d in distractors_tree[first_letter].find(token, k) if d[0] > 0]
-					if len(found) > 0:
-						break
+				if first_letter in distractors_tree:
+					for k in range(1, 6):
+						found = [d for d in distractors_tree[first_letter].find(token, k) if d[0] > 0]
+						if len(found) > 0:
+							break
 				distractors[token] = found	
 			if len(distractors[token]) == 0:
 				missing += 1

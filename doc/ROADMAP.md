@@ -20,8 +20,10 @@
 ## 0.4.0
 
 * Better modelling of difficulty (perplexity/sec)
-* Better distractors for English and German
+* Better distractors for English, German, Japanese and Chinese
   * Take into account frequency and do something more clever with capitalisation (truecasing)
+  * Do something sensible with CJK characters when building the tree (e.g. not 400 trees) 
+
 ## 0.5.0
 
 * Better tokenisation and tagging, 
