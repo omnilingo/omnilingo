@@ -77,7 +77,7 @@ def jpn(token):
 	from cjktools import scripts
 	from cjktools.resources import kanjidic
 	lkp = {}
-	for fn in ['lib/data/phon/jp-Hira', 'lib/data/phon/jp-Kata']:
+	for fn in ['lib/data/phon/ja-Hira', 'lib/data/phon/ja-Kata']:
 		lines = open(fn).readlines()		
 		if len(lines) == 0:
 			continue
@@ -93,7 +93,7 @@ def jpn(token):
 				lkp[k] = []
 			lkp[k].append(v)
 
-	kjd = kanjidic.Kanjidic(kanjidic_files=['lib/data/dict/jp'])
+	kjd = kanjidic.Kanjidic(kanjidic_files=['lib/data/dict/ja'])
 	op = ''
 	missing = ''
 	segs = scripts.script_boundaries(token)
@@ -160,7 +160,7 @@ def phonemise(token, lang):
 		return maxphon(lookup_tables["el"], token)
 	if lang in ["fi", "fin"]:
 		return maxphon(lookup_tables["fi"], token)
-	if lang in ["jp", "jpn"]:
+	if lang in ["ja", "jpn"]:
 		return jpn(token)
 	if lang in ["mn", "mon"]:
 		return maxphon(lookup_tables["mn"], token)
@@ -196,7 +196,7 @@ def init():
 	for language in languages:
 		if language == 'zh':
 			continue
-		if language.startswith('jp-'):
+		if language.startswith('ja-'):
 			continue
 		lines = open('lib/data/phon/'+language).readlines()
 		if len(lines) == 0:

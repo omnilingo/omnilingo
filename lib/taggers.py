@@ -18,6 +18,8 @@ def deu(sentence):
 
 def jpn(sentence):
     """
+	>>> jpn(['切手', 'を', '十', '枚', 'と', 'はがき', 'を', '三', '枚', '買い', 'ます', '。'])
+	['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'PUNCT']
     """
     tags = []
     first = True
@@ -54,7 +56,7 @@ def default(sentence):
 def tag(sentence, lang):
     if lang in ["de", "deu"]:
         return deu(sentence)
-    if lang in ["jp", "jpn"]:
+    if lang in ["ja", "jpn"]:
         return jpn(sentence)
 
     return default(sentence)
