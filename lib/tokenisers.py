@@ -10,6 +10,23 @@ def quc(sentence):
 
     return [i for i in re.split("(\\w+)", o) if not i.strip() == "" ]
 
+def azz(sentence):
+    # !"'()*,./:;<>?[]¡´¿꞉$24aAábBcCdDeEéÉfFgGhHiIíjJkKlLmMnNñoOópPqQrRsStTuUúÚvVwWxXyYzZ
+    """
+        >>> tokenise('mayejyeualtik tepitsin saj. *Bueno** amo mapijpitsakueyak, *sino que** mamej..., mayejyeualtik uaukilit.', lang='azz')
+        ['mayejyeualtik', 'tepitsin', 'saj', '.', '*', 'Bueno', '**', 'amo', 'mapijpitsakueyak', ',', '*', 'sino', 'que', '**', 'mamej', '...,', 'mayejyeualtik', 'uaukilit', '.']
+    """
+    o = sentence
+    o = re.sub(r"([!'*,./:;<>?¡´¿]+)", " \g<1> ", o)
+    o = o.replace('[', ' [ ')
+    o = o.replace('"', ' " ')
+    o = o.replace(']', ' ] ')
+    o = o.replace('(', ' ( ')
+    o = o.replace(')', ' ) ')
+    o = re.sub(r"  *", " ", o)
+    o = o.strip()
+    return [i.strip() for i in o.split(" ") if not i.strip() == ""]
+
 def ita(sentence):
     """
 	>>> tokenise('L’Olivetti sopravvisse mentre l’Olimpia, il suo competitor più grande, chiuse.', lang='ita')
@@ -471,6 +488,8 @@ def default(sentence):
 def tokenise(sentence, lang):
     if lang in ["as", "asm"]:
         return asm(sentence)
+    if lang in ["azz"]:
+        return azz(sentence)
     if lang in ["br", "bre"]:
         return bre(sentence)
     if lang in ["ca", "cat"]:
