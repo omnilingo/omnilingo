@@ -98,8 +98,6 @@ For those who prefer to install their dependencies through their package manager
 following dependencies are available there:
 ```
 python3-mutagen - audio metadata editing library (Python 3)
-python3-mediafile - read and write audio files' tags in Python
-python3-tqdm - fast, extensible progress bar for Python 3 and CLI tool
 python3-jieba - Jieba Chinese text segmenter (Python 3)
 python3-flask - micro web framework based on Werkzeug and Jinja2 - Python 3.x
 ```
