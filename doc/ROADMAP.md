@@ -19,6 +19,7 @@
 * Settings modal
 * Better internal datastructures/data management
   * It might be worth each question having a single index id, e.g. the hash
+* Implement some kind of testing framework
 
 ## 0.4.0
 

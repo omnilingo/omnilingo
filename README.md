@@ -85,7 +85,7 @@ make
 ./main.py
 ```
 
-The project should be accessible through http://localhost:5001/
+The project should be accessible through http://localhost:5001/index.html
 
 To add more languages, download a dataset from [Common Voice](https://commonvoice.mozilla.org/datasets) and 
 put it in `cv-corpus-6.1-2020-12-11/`.
