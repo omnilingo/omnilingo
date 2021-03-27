@@ -2,7 +2,6 @@ flask
 tqdm
 jieba
 mutagen
-levenshtein
 thai-segmenter
 nagisa
 panphon
