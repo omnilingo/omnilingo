@@ -73,6 +73,8 @@ in the meantime, you can check out the [format guidelines](docs/FORMAT.md).
 # Releases 
 
 * [0.1.0](https://github.com/omnilingo/omnilingo/tree/v0.1.0) Functional proof of concept
+* [0.2.0](https://github.com/omnilingo/omnilingo/tree/v0.2.0) Partial prototype with level progression
+
 
 # Deployment
 
