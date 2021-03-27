@@ -7,11 +7,11 @@
 
 ## 0.2.0 
 
-* Rewrite using more maintainable design
-* Implement a graph-based structure for task selection
-* Generate distractors using panphon
-* Phonemisers for every non-Latin based language
-* Blacklist tracks functionality
+* ~~Rewrite using more maintainable design~~
+* ~~Implement a graph-based structure for task selection~~
+* ~~Generate distractors using panphon~~
+* ~~Phonemisers for every non-Latin based language~~
+* ~~Blacklist tracks functionality~~
 
 ## 0.3.0
 
@@ -23,7 +23,9 @@
 ## 0.4.0
 
 * Better modelling of difficulty (perplexity/sec)
+* Better phonemisers for Latin-based languages (e.g. Irish)
 * Better distractors for English, German, Japanese and Chinese
+  * Implement phonemisation for English
   * Take into account frequency and do something more clever with capitalisation (truecasing)
   * Do something sensible with CJK characters when building the tree (e.g. not 400 trees) 
 
