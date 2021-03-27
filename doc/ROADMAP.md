@@ -16,6 +16,8 @@
 ## 0.3.0
 
 * User data storage, remote storage optional
+* Better internal datastructures/data management
+  * It might be worth each question having a single index id, e.g. the hash
 
 ## 0.4.0
 
