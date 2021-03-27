@@ -51,8 +51,21 @@ const decideDefaultLanguage = async (indexes) => {
 	}
 }
 
+const getLanguageMeta = async (language) => {
+	
+	console.log("getLanguageMeta()");
+
+	const metaPromise = fetch(STATIC_URL + "/" + language + "/meta");
+	const meta = await Promise.all([metaPromise]);
+	const metaData = meta.map(response => response.json());
+	const allData = await Promise.all(metaData);
+
+	return allData[0];
+}
+
+
 const getIndexes = async () => {
-	// Creates the language selection dialogue
+	// Pulls down the list of indexes (e.g. languages)
 	console.log("getIndexes()");
 
 	const indexesPromise = fetch(STATIC_URL + "/indexes");
@@ -118,9 +131,14 @@ const main = async () => {
 
 	populateLanguageSelector(indexes, defaultLanguage);
 
+	var metaData = await getLanguageMeta(defaultLanguage);
+
 	window.onkeydown = globalKeyDown;
 
-	var acceptingChars = indexes[defaultLanguage]["accept"];
+	var acceptingChars = metaData["accept"];
+
+	console.log('  [acceptingChars]');
+	console.log(acceptingChars);
 
 	runLanguage(defaultLanguage, acceptingChars);
 }

@@ -27,8 +27,8 @@ def alternatives(lang):
 		return bre()
 	if lang in ["quc"]:
 		return quc()
-	if lang in ["tur"]:
-		return quc()
+	if lang in ["tr", "tur"]:
+		return tur()
 
 	return default()
 

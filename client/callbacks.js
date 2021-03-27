@@ -4,11 +4,13 @@
  *	these should be prefixed with 'on'.
  */ 
 
-function onChangeLanguage(elem) {
+const onChangeLanguage = async (elem) => {
 	console.log('onChangeLanguage() ' + elem.value);
 	var newLanguage = elem.value ;
 	localStorage.setItem('currentLanguage', newLanguage);
-	runLanguage(newLanguage);
+	var metaData = await getLanguageMeta(newLanguage);
+	var acceptingChars = metaData["accept"];
+	runLanguage(newLanguage, acceptingChars);
 }
 
 function onSkipButton() { 
