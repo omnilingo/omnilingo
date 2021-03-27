@@ -1,5 +1,7 @@
 # Roadmap
 
+This is a roadmap for development of OmniLingo. Additional proposals are always welcome. 
+
 ## 0.1.0
 
 * ~~Functional proof of concept~~
@@ -25,7 +27,7 @@
 
 * Better modelling of difficulty (perplexity/sec)
 * Better phonemisers for Latin-based languages (e.g. Irish)
-* Better distractors for English, German, Japanese and Chinese
+* Better distractors for English, Japanese and Chinese
   * Implement phonemisation for English
   * Take into account frequency and do something more clever with capitalisation (truecasing)
   * Do something sensible with CJK characters when building the tree (e.g. not 400 trees) 
@@ -34,6 +36,7 @@
 
 * Better tokenisation and tagging, 
   * e.g. to distinguish `PROPN`/`NOUN` in `de`
+* Better distractors for German
 
 ## 0.6.0
 
