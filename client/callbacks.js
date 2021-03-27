@@ -20,6 +20,10 @@ function onSkipButton() {
 
 function onDumpButton() { 
 	console.log('onDumpButton()');
+	
+	var currentQuestion = document.omnilingo.getRunningTask().question;
+	document.omnilingo.deactivateQuestion(currentQuestion);
+	document.omnilingo.submitTask();
 }
 
 function onSubmitButton() { 

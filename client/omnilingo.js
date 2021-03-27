@@ -8,6 +8,7 @@ class OmniLingo {
 //		this.state = new State();
 		this.enabledTasks = ["blank", "scramble", "choice", "search"];
 		this.globalScore = 0;
+		this.deactivatedQuestions = new Set();
 	}
 
 	normaliseInput(s) {
@@ -34,6 +35,12 @@ class OmniLingo {
 	getIndex() {	
 		console.log('getIndex()');
 		return this.index;
+	}
+
+	deactivateQuestion(question) {
+		console.log('deactiveQuestion() ' + question.nodeId + ' ||| global: ' + question.getGlobalIndexPos());
+		this.deactivatedQuestions.add(question.getGlobalIndexPos());
+		this.currentWalk = arrayRemove(this.currentWalk, question.nodeId);
 	}
 
 	setEquivalentChars(acceptingChars) { 
@@ -106,10 +113,30 @@ class OmniLingo {
 	getCurrentBatch() {
 		// get the batch
 		console.log('getCurrentBatch()');
+
+		// FIXME: Should we start with the last ID of the previous question?
 		var start = (this.level * this.batchSize) - this.batchSize;
-		var end = this.level * this.batchSize;
-		var batch = this.index.slice(start, end);
-		console.log('  [range] ' + start + ':' +  end + ' -> ' + batch.length);
+		//var end = this.level * this.batchSize;
+		//var batch = this.index.slice(start, end);
+
+		console.log('  [deactivedQuestions] ' + this.deactivatedQuestions.size);
+
+		var batch = [];
+		var totalInBatch = 0;
+		var totalDeactivatedQuestionsFound = 0; 
+		for(var i = start; i < this.index.length; i++) {
+			if(this.deactivatedQuestions.has(i)) {
+				totalDeactivatedQuestionsFound++;
+				continue;
+			}
+			batch.push([this.index[i], i]);
+			if(totalInBatch == this.batchSize - 1) {
+				break;
+			}
+			totalInBatch++;
+		} 
+
+		console.log('  [start] ' + start + ' / [deactivatedQuestionsFound] ' + totalDeactivatedQuestionsFound + ' / [end] ' + i);
 		return batch;
 	}
 

@@ -8,16 +8,17 @@ class Graph {
 		this.AdjList = new Map(); 
 	}
 
-	fromIndex(language, index, enabledTasks) {
-		console.log('fromIndex() ' + index.length);
+	fromIndex(language, indexBatch, enabledTasks) {
+		console.log('fromIndex() ' + indexBatch.length);
 	
-		for (var i = 0; i < index.length; i++) { 
-			this.addNode(i, new Question(i, language, index[i], enabledTasks)); 
-			this.setWeight(i, Number(index[i][2])); 
+		for (var i = 0; i < indexBatch.length; i++) { 
+			var question = new Question(i, language, indexBatch[i][1], indexBatch[i][0], enabledTasks);
+			this.addNode(i, question);
+			this.setWeight(i, Number(indexBatch[i][0][2])); 
 		} 
 	
-		for (var i = 0; i < index.length; i++) { 
-			for (var j = 0; i < index.length; i++) { 
+		for (var i = 0; i < indexBatch.length; i++) { 
+			for (var j = 0; i < indexBatch.length; i++) { 
 				this.addEdge(i, j);
 			}
 		}
