@@ -152,6 +152,7 @@ text-decoration: none;
 }
 
 .clue {
+	cursor: pointer;
 	font-size: 175%;
 	border: 1.5px solid black;
 	background-color: #bababa;
@@ -170,9 +171,9 @@ box-shadow: 10px 5px 5px #dcdcdc;
 	color: green;
 }
 
-.incorrect {
+/* .incorrect {
 	color: red;
-}
+} */
 
 .cb{
 	border: 1.5px solid black;
@@ -251,11 +252,34 @@ box-shadow: 10px 5px 5px #dcdcdc;
 }
 
 .targetBox {
+	cursor: pointer;
 padding: 2px; 
 text-align:center; 
 border: 2px solid black;
   border-radius: 5px;
 
+}
+
+.incorrect-dz {
+	background-color: white;
+	animation-name: incorrect-pulse;
+	animation-duration: 1s;
+	animation-iteration-count: 1;
+}
+
+@keyframes incorrect-pulse {
+  0% {
+    background-color: white;
+	 color:red;
+  }
+  50% {
+    background-color: red;
+	 color:white;
+  }
+  100 {
+    background-color: white;
+	 color:red;
+  }
 }
 
 /*********************/
