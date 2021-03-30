@@ -73,7 +73,7 @@ class ChoiceTask extends Task {
 				} else {
 					line += incorrect + "," + correct;
 				}
-				line += "}";
+				line += "} ";
 			} else {
 				line += this.tokens[i] + ' '
 			}
