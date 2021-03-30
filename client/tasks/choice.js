@@ -89,7 +89,7 @@ class ChoiceTask extends Task {
 	}
 
 	chooseDistractor(token) {
-		console.log("[ChoiceTask] chooseDistractor()");
+		console.log("[ChoiceTask] chooseDistractor() " + token);
 		
 		var distractorLocation = getRandomInt(0, this.distractors[token].length - 1);
 
