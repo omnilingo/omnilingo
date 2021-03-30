@@ -25,6 +25,7 @@ def deploy(dump_dir, cache_file, static_dir):
 	clips_dir = dump_dir + '/clips/'
 
 	pathlib.Path(index_dir).mkdir(parents=True, exist_ok=True)
+	pathlib.Path(static_dir + '/' + lang_id).mkdir(parents=True, exist_ok=True)
 
 	cache_fd = open(cache_file, 'r')
 	voc_fd = open(cache_file + '.voc', 'r')
