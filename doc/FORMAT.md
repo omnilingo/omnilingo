@@ -32,5 +32,5 @@ _	01_01_9.mp3	Rajawaxik ri akʼalabʼ kikinimaj kitzij le kinan, kitat.	_	_	_	_	
 _	03_15_14.mp3	kawaj kimbʼe pa tinamit	_	_	_	_	_	quc	_
 ```
 
-The only colums currently relevant are the `path`, `sentence` and `locale`. The other columns can be left blank.
+The only columns currently relevant are the `path`, `sentence` and `locale`. The other columns can be left blank.
 
