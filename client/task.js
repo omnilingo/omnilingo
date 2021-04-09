@@ -57,9 +57,15 @@ class Task {
 		const metaData = meta.map(response => response.text());
 		const allData = await Promise.all(metaData);
 
-		var metadata = JSON.parse(allData[0]);
+		if(allData[0].match('Not Found') == 'Not Found') {
+			this.distractors = {};
+			this.question.setCompletedTask("choice");
+			this.question.setCompletedTask("search");
+		} else {
+			var metadata = JSON.parse(allData[0]);
 
-		this.distractors = metadata["distractors"];
+			this.distractors = metadata["distractors"];
+		}
 
 	}
 

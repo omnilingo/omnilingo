@@ -31,9 +31,9 @@ def deploy(dump_dir, cache_file, static_dir):
 	voc_fd = open(cache_file + '.voc', 'r')
 	index_fd = open(index_dir + '/' + lang_id, 'w')
 
-	meta_fd = open(static_dir + '/' + lang_id + '/meta', 'w')
+	#meta_fd = open(static_dir + '/' + lang_id + '/meta', 'w')
 	
-	meta_fd.close()
+	#meta_fd.close()
 
 	# Datastructure for the index
 	index = {"index": []}
