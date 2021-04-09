@@ -1,10 +1,10 @@
+cjktools
+cjktools-data
+epitran
 flask
 jieba
 mutagen
-thai-segmenter
 nagisa
 panphon
 pybktree
-epitran
-cjktools
-cjktools-data
+thai-segmenter

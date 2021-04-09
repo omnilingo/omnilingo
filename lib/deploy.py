@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-import sys
-import pathlib
-import os 
 import json
+import os
+import pathlib
+import sys
 
-from tokenisers import tokenise
-from taggers import tag
 from segments import characters
+from taggers import tag
+from tokenisers import tokenise
+
 
 def deploy(dump_dir, cache_file, static_dir):
 	#0	1	2	3				4									5									6
@@ -95,7 +96,6 @@ def deploy(dump_dir, cache_file, static_dir):
 
 
 if __name__ == "__main__":
-	n_lines = deploy(os.path.abspath(sys.argv[1]), sys.argv[2], 'static/')
+    n_lines = deploy(os.path.abspath(sys.argv[1]), sys.argv[2], "static/")
 
-	print(n_lines,'deployed.', file=sys.stderr)
-
+    print(n_lines, "deployed.", file=sys.stderr)

@@ -83,4 +83,3 @@ Envisioned stories:
 - ambidextrous learner: multiple clients connect simultaneously to
   userdata; what happens? should be able to easily transfer keys
   between clients, or save them for future use
-

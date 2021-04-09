@@ -41,7 +41,7 @@ function resetTimer() {
 	document.getElementById("seconds").innerHTML = "0";
 }
 
-function shuffleArray(array) 
+function shuffleArray(array)
 {
    let curId = array.length;
    // There remain elements to shuffle
@@ -76,4 +76,3 @@ function arrayRemove(arr, value) {
 		return ele != value;
 	});
 }
-

@@ -1,40 +1,47 @@
+"""Tokenisers."""
 import re
 
+
 def quc(sentence):
+    """Tokeniser for quc."""
     o = sentence
     o = re.sub("'", "ʼ", o)
     o = re.sub("’", "ʼ", o)
 
-    return [i for i in re.split("(\\w+)", o) if not i.strip() == "" ]
+    return [i for i in re.split("(\\w+)", o) if not i.strip() == ""]
+
 
 def azz(sentence):
+    """Tokeniser for azz.
+
+    >>> tokenise('mayejyeualtik tepitsin saj. *Bueno** amo mapijpitsakueyak, *sino que** mamej..., mayejyeualtik uaukilit.', lang='azz')
+    ['mayejyeualtik', 'tepitsin', 'saj', '.', '*', 'Bueno', '**', 'amo', 'mapijpitsakueyak', ',', '*', 'sino', 'que', '**', 'mamej', '...,', 'mayejyeualtik', 'uaukilit', '.']
+    """
     # !"'()*,./:;<>?[]¡´¿꞉$24aAábBcCdDeEéÉfFgGhHiIíjJkKlLmMnNñoOópPqQrRsStTuUúÚvVwWxXyYzZ
-    """
-        >>> tokenise('mayejyeualtik tepitsin saj. *Bueno** amo mapijpitsakueyak, *sino que** mamej..., mayejyeualtik uaukilit.', lang='azz')
-        ['mayejyeualtik', 'tepitsin', 'saj', '.', '*', 'Bueno', '**', 'amo', 'mapijpitsakueyak', ',', '*', 'sino', 'que', '**', 'mamej', '...,', 'mayejyeualtik', 'uaukilit', '.']
-    """
     o = sentence
-    o = re.sub(r"([!'*,./:;<>?¡´¿]+)", " \g<1> ", o)
-    o = o.replace('[', ' [ ')
+    o = re.sub(r"([!'*,./:;<>?¡´¿]+)", r" \g<1> ", o)
+    o = o.replace("[", " [ ")
     o = o.replace('"', ' " ')
-    o = o.replace(']', ' ] ')
-    o = o.replace('(', ' ( ')
-    o = o.replace(')', ' ) ')
+    o = o.replace("]", " ] ")
+    o = o.replace("(", " ( ")
+    o = o.replace(")", " ) ")
     o = re.sub(r"  *", " ", o)
     o = o.strip()
     return [i.strip() for i in o.split(" ") if not i.strip() == ""]
 
+
 def ita(sentence):
-    """
-	>>> tokenise('L’Olivetti sopravvisse mentre l’Olimpia, il suo competitor più grande, chiuse.', lang='ita')
-	['L’', 'Olivetti', 'sopravvisse', 'mentre', 'l’', 'Olimpia', ',', 'il', 'suo', 'competitor', 'più', 'grande', ',', 'chiuse', '.']
+    """Tokeniser for ita.
+
+    >>> tokenise('L’Olivetti sopravvisse mentre l’Olimpia, il suo competitor più grande, chiuse.', lang='ita')
+    ['L’', 'Olivetti', 'sopravvisse', 'mentre', 'l’', 'Olimpia', ',', 'il', 'suo', 'competitor', 'più', 'grande', ',', 'chiuse', '.']
     """
     o = sentence
-    o = re.sub(r"([!\"#$+,./:;<=>?~¡«°»–‘“”„…]+)", " \g<1> ", o)
-    o = o.replace('[', ' [ ')
-    o = o.replace(']', ' ] ')
-    o = o.replace('(', ' ( ')
-    o = o.replace(')', ' ) ')
+    o = re.sub(r"([!\"#$+,./:;<=>?~¡«°»–‘“”„…]+)", r" \g<1> ", o)
+    o = o.replace("[", " [ ")
+    o = o.replace("]", " ] ")
+    o = o.replace("(", " ( ")
+    o = o.replace(")", " ) ")
     o = o.replace("L'", " L' ")
     contractions = [
         "l",
@@ -55,7 +62,7 @@ def ita(sentence):
         "vent",
         "trent",
         "de",
-        "sant"
+        "sant",
     ]
     for tok in contractions:
         o = o.replace(tok.title() + "'", tok.title() + "' ")
@@ -68,104 +75,116 @@ def ita(sentence):
 
 
 def tam(sentence):
-    """
-	>>> tokenise("கோலத்தினைக் கொய்வ துண்டோ? - \\"பெண்கள்", lang="tam")
-	['கோலத்தினைக்', 'கொய்வ', 'துண்டோ', '?', '-', '"', 'பெண்கள்']
+    r"""Tokeniser for tam.
+
+    >>> tokenise("கோலத்தினைக் கொய்வ துண்டோ? - \\"பெண்கள்", lang="tam")
+    ['கோலத்தினைக்', 'கொய்வ', 'துண்டோ', '?', '-', '"', 'பெண்கள்']
     """
     o = sentence
-    o = re.sub(r"([!\"',.:;?·–—‘’• ½¾-]+)", " \g<1> ", o)
+    o = re.sub(r"([!\"',.:;?·–—‘’• ½¾-]+)", r" \g<1> ", o)
     o = re.sub(r"  *", " ", o)
     return [i.strip() for i in o.split(" ") if not i.strip() == ""]
+
 
 def pan(sentence):
-    """
-	>>> tokenise("ਮੇਰਾ ਸਭਾਵ ਦ੍ਰਸ਼ਟਾ ਦਾ ਹੈ; ਮੈਂ ਤਿੰਨਾਂ ਤੋਂ ਪਾਰ ਚੌਥੇ ਨੂੰ ਪਛਾਣ ਲਿਆ ਹੈ", lang="pan")
-	['ਮੇਰਾ', 'ਸਭਾਵ', 'ਦ੍ਰਸ਼ਟਾ', 'ਦਾ', 'ਹੈ', ';', 'ਮੈਂ', 'ਤਿੰਨਾਂ', 'ਤੋਂ', 'ਪਾਰ', 'ਚੌਥੇ', 'ਨੂੰ', 'ਪਛਾਣ', 'ਲਿਆ', 'ਹੈ']
+    """Tokeniser for pan.
+
+    >>> tokenise("ਮੇਰਾ ਸਭਾਵ ਦ੍ਰਸ਼ਟਾ ਦਾ ਹੈ; ਮੈਂ ਤਿੰਨਾਂ ਤੋਂ ਪਾਰ ਚੌਥੇ ਨੂੰ ਪਛਾਣ ਲਿਆ ਹੈ", lang="pan")
+    ['ਮੇਰਾ', 'ਸਭਾਵ', 'ਦ੍ਰਸ਼ਟਾ', 'ਦਾ', 'ਹੈ', ';', 'ਮੈਂ', 'ਤਿੰਨਾਂ', 'ਤੋਂ', 'ਪਾਰ', 'ਚੌਥੇ', 'ਨੂੰ', 'ਪਛਾਣ', 'ਲਿਆ', 'ਹੈ']
     """
     o = sentence
-    o = re.sub(r"([.;¦×॥–’¤]+)", " \g<1> ", o)
+    o = re.sub(r"([.;¦×॥–’¤]+)", r" \g<1> ", o)
     o = re.sub(r"  *", " ", o)
     return [i.strip() for i in o.split(" ") if not i.strip() == ""]
+
 
 def por(sentence):
-    """
-	>>> tokenise("Tu comestes 'bem? se tu vieres sozinho disse dos infortúnios", lang="por")
-	['Tu', 'comestes', "'bem", '?', 'se', 'tu', 'vieres', 'sozinho', 'disse', 'dos', 'infortúnios']
+    """Tokeniser for por.
+
+    >>> tokenise("Tu comestes 'bem? se tu vieres sozinho disse dos infortúnios", lang="por")
+    ['Tu', 'comestes', "'bem", '?', 'se', 'tu', 'vieres', 'sozinho', 'disse', 'dos', 'infortúnios']
     """
     o = sentence
-    o = re.sub(r"([!\",./:;?’]+)", " \g<1> ", o)
+    o = re.sub(r"([!\",./:;?’]+)", r" \g<1> ", o)
     o = o.replace(" d'", " d' ")
     o = re.sub(r"  *", " ", o)
-    
+
     return [i.strip() for i in o.split(" ") if not i.strip() == ""]
 
+
 def lug(sentence):
-    """
-	>>> tokenise("Kika kya nnyimba ki ky'osinga okwagala?", lang="lug")
-	['Kika', 'kya', 'nnyimba', 'ki', "ky'osinga", 'okwagala', '?']
+    """Tokeniser for lug.
+
+    >>> tokenise("Kika kya nnyimba ki ky'osinga okwagala?", lang="lug")
+    ['Kika', 'kya', 'nnyimba', 'ki', "ky'osinga", 'okwagala', '?']
     """
     o = sentence
-    o = re.sub(r"([!\",./:;?’-]+)", " \g<1> ", o)
+    o = re.sub(r"([!\",./:;?’-]+)", r" \g<1> ", o)
     o = re.sub(r"  *", " ", o)
-    
+
     return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == ""]
 
 
 def cym(sentence):
-    """
-	>>> tokenise("Ond meddylia mae ’na ddoethuriaeth i'w sgwennu.", lang="cym")
-	['Ond', 'meddylia', 'mae', "'na", 'ddoethuriaeth', "i'w", 'sgwennu', '.']
+    """Tokeniser for cym.
+
+    >>> tokenise("Ond meddylia mae ’na ddoethuriaeth i'w sgwennu.", lang="cym")
+    ['Ond', 'meddylia', 'mae', "'na", 'ddoethuriaeth', "i'w", 'sgwennu', '.']
     """
     o = sentence
-    o = re.sub(r"([!,.:;?¬–—‘-]+)", " \g<1> ", o)
+    o = re.sub(r"([!,.:;?¬–—‘-]+)", r" \g<1> ", o)
     o = re.sub(r"['’]", "ʼ", o)
     o = re.sub(r"  *", " ", o)
 
     return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == ""]
 
+
 def fry(sentence):
-    """
-	>>> tokenise("Wêr't er ek nei harket, dy muzyk is allegearre like hurd.", lang="fry")
-	["Wêr't", 'er', 'ek', 'nei', 'harket', ',', 'dy', 'muzyk', 'is', 'allegearre', 'like', 'hurd', '.']
+    """Tokeniser for fry.
+
+    >>> tokenise("Wêr't er ek nei harket, dy muzyk is allegearre like hurd.", lang="fry")
+    ["Wêr't", 'er', 'ek', 'nei', 'harket', ',', 'dy', 'muzyk', 'is', 'allegearre', 'like', 'hurd', '.']
     """
     o = sentence
-    o = re.sub(r"([!,\"\.:;?‘-]+)", " \g<1> ", o)
+    o = re.sub(r"([!,\"\.:;?‘-]+)", r" \g<1> ", o)
     o = re.sub(r"  *", " ", o)
     return [i for i in o.split(" ") if not i.strip() == ""]
 
-def cat(sentence):
-    """
-        >>> tokenise("L'eslògan \\"that\\'d be great\\" (\\"això seria genial\\") de Lumbergh també s'ha transformat en un popular mem d'internet.", lang="cat")
-	["L'", 'eslògan', '"', "that'd", 'be', 'great', '"', '("', 'això', 'seria', 'genial', '")', 'de', 'Lumbergh', 'també', "s'", 'ha', 'transformat', 'en', 'un', 'popular', 'mem', "d'", 'internet', '.']
 
+def cat(sentence):
+    r"""Tokeniser for cat.
+
+    >>> tokenise("L'eslògan \\"that\\'d be great\\" (\\"això seria genial\\") de Lumbergh també s'ha transformat en un popular mem d'internet.", lang="cat")
+    ["L'", 'eslògan', '"', "that'd", 'be', 'great', '"', '("', 'això', 'seria', 'genial', '")', 'de', 'Lumbergh', 'també', "s'", 'ha', 'transformat', 'en', 'un', 'popular', 'mem', "d'", 'internet', '.']
     """
     o = sentence
-    o = re.sub(r"([!\"()*+,./:;?@|~¡«°·»¿–—―’“”…]+)", " \g<1> ", o)
-    o = re.sub(r"([DLSM]['’])", "\g<1> ", o)
-    o = re.sub(r"( [dlsm]['’])", " \g<1> ", o)
+    o = re.sub(r"([!\"()*+,./:;?@|~¡«°·»¿–—―’“”…]+)", r" \g<1> ", o)
+    o = re.sub(r"([DLSM]['’])", r"\g<1> ", o)
+    o = re.sub(r"( [dlsm]['’])", r" \g<1> ", o)
     o = re.sub(r"  *", " ", o)
     return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == ""]
 
+
 def fra(sentence):
-    """
-    """
+    """Tokeniser for fra."""
     o = sentence
-    o = re.sub(r"([!*+,./:;?@|~¡«°·»¿–—―’“”…]+)", " \g<1> ", o)
-    o = re.sub(r"([JDLSM]['’])", "\g<1> ", o)
-    o = re.sub(r"( [jdlsm]['’])", " \g<1> ", o)
+    o = re.sub(r"([!*+,./:;?@|~¡«°·»¿–—―’“”…]+)", r" \g<1> ", o)
+    o = re.sub(r"([JDLSM]['’])", r"\g<1> ", o)
+    o = re.sub(r"( [jdlsm]['’])", r" \g<1> ", o)
     o = re.sub(r"  *", " ", o)
     return [i.replace("ʼ", "'") for i in o.split(" ") if not i.strip() == ""]
 
 
 def eng(sentence):
-    """
-        >>> tokenise("O'Brien's protege and eventual successor in Hollywood was Ray Harryhausen.", lang="eng")
-        ["O'Brien", "'s", 'protege', 'and', 'eventual', 'successor', 'in', 'Hollywood', 'was', 'Ray', 'Harryhausen', '.']
-	>>> tokenise("oh!", lang="eng")
-	['oh', '!']
+    """Tokeniser for eng.
+
+    >>> tokenise("O'Brien's protege and eventual successor in Hollywood was Ray Harryhausen.", lang="eng")
+    ["O'Brien", "'s", 'protege', 'and', 'eventual', 'successor', 'in', 'Hollywood', 'was', 'Ray', 'Harryhausen', '.']
+    >>> tokenise("oh!", lang="eng")
+    ['oh', '!']
     """
     o = sentence
-    o = re.sub(r'(["&()+,./:;<>?–—‘’“”!-]+)', " \g<1> ", o)
+    o = re.sub(r'(["&()+,./:;<>?–—‘’“”!-]+)', r" \g<1> ", o)
     o = o.replace("'ve ", " 've ")
     o = o.replace("'s ", " 's ")
     o = o.replace("I'm ", "I 'm ")
@@ -174,15 +193,16 @@ def eng(sentence):
 
 
 def bre(sentence):
-    """
-        >>> tokenise("Tennañ a rit da'm c'hoar.", lang="bre")
-        ['Tennañ', 'a', 'rit', 'da', "'m", "c'hoar", '.']
+    """Tokeniser for bre.
+
+    >>> tokenise("Tennañ a rit da'm c'hoar.", lang="bre")
+    ['Tennañ', 'a', 'rit', 'da', "'m", "c'hoar", '.']
     """
     o = sentence
     o = o.replace(r"c'h", "cʼh")
     o = o.replace(r"C'h", "Cʼh")
     o = o.replace(r"C'H", "CʼH")
-    o = re.sub(r"([!%()*+,\./:;=>?«»–‘’“”…€½]+)", " \g<1> ", o)
+    o = re.sub(r"([!%()*+,\./:;=>?«»–‘’“”…€½]+)", r" \g<1> ", o)
     o = re.sub(r"'", " '", o)
     o = re.sub(r"  *", " ", o)
 
@@ -190,40 +210,35 @@ def bre(sentence):
 
 
 def ukr(sentence):
-    """
-        >>> tokenise("— А далій не вб'єш, — проказав коваль.", lang="ukr")
-        ['— ', 'А', 'далій', 'не', "вб'єш", ', — ', 'проказав', 'коваль', '.']
+    """Tokeniser for ukr.
+
+    >>> tokenise("— А далій не вб'єш, — проказав коваль.", lang="ukr")
+    ['— ', 'А', 'далій', 'не', "вб'єш", ', — ', 'проказав', 'коваль', '.']
     """
     o = re.sub("'", "ʼ", sentence)
 
-    return [
-        i.replace("ʼ", "'")
-        for i in re.split("(\\w+)", o)
-        if not i.strip() == ""
-    ]
+    return [i.replace("ʼ", "'") for i in re.split("(\\w+)", o) if not i.strip() == ""]
 
 
 def tur(sentence):
-    """
-        >>> tokenise("İlk Balkan Schengen'i mi?", lang="tur")
-        ['İlk', 'Balkan', "Schengen'i", 'mi', '?']
+    """Tokeniser for tur.
+
+    >>> tokenise("İlk Balkan Schengen'i mi?", lang="tur")
+    ['İlk', 'Balkan', "Schengen'i", 'mi', '?']
     """
     o = re.sub("'", "ʼ", sentence)
 
-    return [
-        i.replace("ʼ", "'")
-        for i in re.split("(\\w+)", o)
-        if not i.strip() == ""
-    ]
+    return [i.replace("ʼ", "'") for i in re.split("(\\w+)", o) if not i.strip() == ""]
 
 
 def hin(sentence):
-    """
-        >>> tokenise("हिट एंड रन केस: भाग्यश्री के खिलाफ भी सलमान खान जैसी शिकायत!", lang="hin")
-        ['हिट', 'एंड', 'रन', 'केस', ':', 'भाग्यश्री', 'के', 'खिलाफ', 'भी', 'सलमान', 'खान', 'जैसी', 'शिकायत', '!']
+    """Tokeniser for hin.
+
+    >>> tokenise("हिट एंड रन केस: भाग्यश्री के खिलाफ भी सलमान खान जैसी शिकायत!", lang="hin")
+    ['हिट', 'एंड', 'रन', 'केस', ':', 'भाग्यश्री', 'के', 'खिलाफ', 'भी', 'सलमान', 'खान', 'जैसी', 'शिकायत', '!']
     """
     o = sentence
-    o = re.sub(r"([!&,.:?|।‘-]+)", " \g<1> ", o)
+    o = re.sub(r"([!&,.:?|।‘-]+)", r" \g<1> ", o)
     o = re.sub(r'"', ' " ', o)
     o = re.sub(r"'", " ' ", o)
     o = re.sub(r"  *", " ", o)
@@ -232,12 +247,13 @@ def hin(sentence):
 
 
 def asm(sentence):
-    """
-        >>> tokenise("“অ’ গৰখীয়া, অ’ গৰখীয়া গৰু নাৰাখ কিয়?”", lang="asm")
-	['“', 'অ’', 'গৰখীয়া', ',', 'অ’', 'গৰখীয়া', 'গৰু', 'নাৰাখ', 'কিয়', '?', '”']
+    """Tokeniser for asm.
+
+    >>> tokenise("“অ’ গৰখীয়া, অ’ গৰখীয়া গৰু নাৰাখ কিয়?”", lang="asm")
+    ['“', 'অ’', 'গৰখীয়া', ',', 'অ’', 'গৰখীয়া', 'গৰু', 'নাৰাখ', 'কিয়', '?', '”']
     """
     o = sentence
-    o = re.sub(r"([!',.:;°।৷৹‘“-]+)", " \g<1> ", o)
+    o = re.sub(r"([!',.:;°।৷৹‘“-]+)", r" \g<1> ", o)
     o = re.sub(r'"', ' " ', o)
     o = o.replace("?", " ? ")
     o = re.sub(r"  *", " ", o)
@@ -246,42 +262,45 @@ def asm(sentence):
 
 
 def jpn(nagisa, sentence):
-    """
-        >>> tokenise("自然消滅することは目に見えてるじゃん。", lang="jpn")
-        ['自然', '消滅', 'する', 'こと', 'は', '目', 'に', '見え', 'てる', 'じゃん', '。']
+    """Tokeniser for jpn.
+
+    >>> tokenise("自然消滅することは目に見えてるじゃん。", lang="jpn")
+    ['自然', '消滅', 'する', 'こと', 'は', '目', 'に', '見え', 'てる', 'じゃん', '。']
     """
     return nagisa.tagging(sentence).words
 
 
 def kab(sentence):
-    """
-        >>> tokenise("Leqbayel ttemḥaddin lawan-nni m'ara mmlaqan deg leswaq n Waεraben, leǧwayeh n Sṭif.", lang="kab")
-        ['Leqbayel', 'ttemḥaddin', 'lawan-nni', "m'ara", 'mmlaqan', 'deg', 'leswaq', 'n', 'Waεraben', ',', 'leǧwayeh', 'n', 'Sṭif', '.']
-    """
+    """Tokeniser for kab.
 
+    >>> tokenise("Leqbayel ttemḥaddin lawan-nni m'ara mmlaqan deg leswaq n Waεraben, leǧwayeh n Sṭif.", lang="kab")
+    ['Leqbayel', 'ttemḥaddin', 'lawan-nni', "m'ara", 'mmlaqan', 'deg', 'leswaq', 'n', 'Waεraben', ',', 'leǧwayeh', 'n', 'Sṭif', '.']
+    """
     o = sentence
-    o = re.sub(r"([!&(),./:;?«»–‘’“”‟…↓̣$€]+)", " \g<1> ", o)
+    o = re.sub(r"([!&(),./:;?«»–‘’“”‟…↓̣$€]+)", r" \g<1> ", o)
     o = re.sub(r"  *", " ", o)
 
     return [x for x in re.split(" ", o) if not x.strip() == ""]
 
 
 def kat(sentence):
-    """
-        >>> tokenise("გიორგიმ შენზე თქვა, წერა-კითხვა არ იცისო, მართალია?", lang="kat")
-        ['გიორგიმ', 'შენზე', 'თქვა', ',', 'წერა-კითხვა', 'არ', 'იცისო', ',', 'მართალია', '?']
+    """Tokeniser for kat.
+
+    >>> tokenise("გიორგიმ შენზე თქვა, წერა-კითხვა არ იცისო, მართალია?", lang="kat")
+    ['გიორგიმ', 'შენზე', 'თქვა', ',', 'წერა-კითხვა', 'არ', 'იცისო', ',', 'მართალია', '?']
     """
     o = sentence
-    o = re.sub(r"([!,.:;?–—“„]+)", " \g<1> ", o)
+    o = re.sub(r"([!,.:;?–—“„]+)", r" \g<1> ", o)
     o = re.sub(r"  *", " ", o)
 
     return [x for x in re.split(" ", o) if not x.strip() == ""]
 
 
 def mlt(sentence):
-    """
-        >>> tokenise("Ħadd ma weġġa' f'dan l-inċident.", lang="mlt")
-        ['Ħadd', 'ma', "weġġa'", "f'", 'dan', 'l-', 'inċident', '.']
+    """Tokeniser for mlt.
+
+    >>> tokenise("Ħadd ma weġġa' f'dan l-inċident.", lang="mlt")
+    ['Ħadd', 'ma', "weġġa'", "f'", 'dan', 'l-', 'inċident', '.']
     """
     o = sentence
     for tok in [
@@ -392,7 +411,7 @@ def mlt(sentence):
         o = o.replace(" " + tok, " " + tok + " ")
     for tok in ["b'", "f'", "m'", "s'", "t'", "x'"]:
         o = o.replace(" " + tok, " " + tok + " ")
-    o = re.sub(r"([!,.:;`’]+)", " \g<1> ", o)
+    o = re.sub(r"([!,.:;`’]+)", r" \g<1> ", o)
     o = o.replace('"', ' " ')
     o = o.replace("?", " ? ")
     o = re.sub(r"  *", " ", o)
@@ -401,20 +420,22 @@ def mlt(sentence):
 
 
 def ori(sentence):
+    """Tokeniser for ori."""
     o = sentence
-    o = re.sub(r"([!',.:;?|°।–—‘’“-]+)", " \g<1> ", o)
+    o = re.sub(r"([!',.:;?|°।–—‘’“-]+)", r" \g<1> ", o)
     o = o.replace('"', ' " ')
     o = re.sub(r"  *", " ", o)
     return [x for x in re.split(" ", o) if not x.strip() == ""]
 
 
 def roh(sentence):
-    """
-        >>> tokenise("L'unic chi güda forsa, es ün chic sco effet da placebo.", lang="roh")
-        ["L'", 'unic', 'chi', 'güda', 'forsa', ',', 'es', 'ün', 'chic', 'sco', 'effet', 'da', 'placebo', '.']
+    """Tokeniser for roh.
+
+    >>> tokenise("L'unic chi güda forsa, es ün chic sco effet da placebo.", lang="roh")
+    ["L'", 'unic', 'chi', 'güda', 'forsa', ',', 'es', 'ün', 'chic', 'sco', 'effet', 'da', 'placebo', '.']
     """
     o = sentence
-    o = re.sub(r"([!,.:;?«»–‘“„…‹›-]+)", " \g<1> ", o)
+    o = re.sub(r"([!,.:;?«»–‘“„…‹›-]+)", r" \g<1> ", o)
     for tok in [
         "l'",
         "d'",
@@ -428,46 +449,49 @@ def roh(sentence):
         "süll’",
     ]:
         o = o.replace(" " + tok, " " + tok + " ")
-    o = re.sub("([LSD][’']|Ün[’'])", " \g<1> ", o)
+    o = re.sub("([LSD][’']|Ün[’'])", r" \g<1> ", o)
     o = re.sub(r"  *", " ", o)
     return [x.strip() for x in re.split(" ", o) if not x.strip() == ""]
 
 
 def div(sentence):
-    """
-        >>> tokenise("ތީ ޝަބާބޭ! ތިހެންވީއިރު ޓްވިންސެއް ހުރޭތަ؟ ރީޙާން ޙައިރާންވި", lang="div")
-        ['ތީ', 'ޝަބާބޭ', '!', 'ތިހެންވީއިރު', 'ޓްވިންސެއް', 'ހުރޭތަ', '؟', 'ރީޙާން', 'ޙައިރާންވި']
+    """Tokeniser for div.
+
+    >>> tokenise("ތީ ޝަބާބޭ! ތިހެންވީއިރު ޓްވިންސެއް ހުރޭތަ؟ ރީޙާން ޙައިރާންވި", lang="div")
+    ['ތީ', 'ޝަބާބޭ', '!', 'ތިހެންވީއިރު', 'ޓްވިންސެއް', 'ހުރޭތަ', '؟', 'ރީޙާން', 'ޙައިރާންވި']
     """
     o = sentence
-    o = re.sub(r"([!.:;،؟–‘’]+)", " \g<1> ", o)
+    o = re.sub(r"([!.:;،؟–‘’]+)", r" \g<1> ", o)
     o = o.replace("-", " - ")
     o = re.sub(r"  *", " ", o)
     return [x.strip() for x in re.split(" ", o) if not x.strip() == ""]
 
 
 def gle(sentence):
-    """
-        >>> tokenise("A sheansailéir, a leas-sheansailéir, a mhic léinn, a dhaoine uaisle", lang="gle")
-        ['A', 'sheansailéir', ',', 'a', 'leas-sheansailéir', ',', 'a', 'mhic', 'léinn', ',', 'a', 'dhaoine', 'uaisle']
+    """Tokeniser for gle.
+
+    >>> tokenise("A sheansailéir, a leas-sheansailéir, a mhic léinn, a dhaoine uaisle", lang="gle")
+    ['A', 'sheansailéir', ',', 'a', 'leas-sheansailéir', ',', 'a', 'mhic', 'léinn', ',', 'a', 'dhaoine', 'uaisle']
     """
     o = sentence
-    o = re.sub(r"([!(),.:;?–‘’]+)", " \g<1> ", o)
+    o = re.sub(r"([!(),.:;?–‘’]+)", r" \g<1> ", o)
     o = o.replace('"', ' " ')
     for tok in ["an-", "n-", "t-"]:
         o = o.replace(" " + tok, " " + tok + " ")
-    o = re.sub(r"([DB]['’])", "\g<1> ", o)
-    o = re.sub(r"( [db]['’])", " \g<1> ", o)
+    o = re.sub(r"([DB]['’])", r"\g<1> ", o)
+    o = re.sub(r"( [db]['’])", r" \g<1> ", o)
     o = re.sub(r"  *", " ", o)
     return [x.strip() for x in re.split(" ", o) if not x.strip() == ""]
 
 
 def pes(sentence):
-    """
-        >>> tokenise("اوه خدا، چه بهم ریختگی!", lang="pes")
-        ['اوه', 'خدا', '،', 'چه', 'بهم', 'ریختگی', '!']
+    """Tokeniser for pes.
+
+    >>> tokenise("اوه خدا، چه بهم ریختگی!", lang="pes")
+    ['اوه', 'خدا', '،', 'چه', 'بهم', 'ریختگی', '!']
     """
     o = sentence
-    o = re.sub(r"([!#%&,./:;«»،؛؟٪٫٬–…]+)", " \g<1> ", o)
+    o = re.sub(r"([!#%&,./:;«»،؛؟٪٫٬–…]+)", r" \g<1> ", o)
     o = o.replace('"', ' " ')
     o = o.replace("(", " ( ")
     o = o.replace(")", " ) ")
@@ -479,10 +503,12 @@ def pes(sentence):
 
 
 def default(sentence):
+    """Break sentence into words."""
     return [x for x in re.split("(\\w+)", sentence) if x.strip()]
 
 
 def tokenise(sentence, lang):
+    """Break sentence into tokens according to language."""
     if lang in ["as", "asm"]:
         return asm(sentence)
     if lang in ["azz"]:
@@ -507,6 +533,7 @@ def tokenise(sentence, lang):
         return gle(sentence)
     if lang in ["ja", "jpn"]:
         import nagisa
+
         return jpn(nagisa, sentence)
     if lang in ["kab"]:
         return kab(sentence)
@@ -532,6 +559,7 @@ def tokenise(sentence, lang):
         return tam(sentence)
     if lang in ["th", "tha"]:
         import thai_segmenter
+
         return thai_segmenter.tokenize(sentence)
     if lang in ["tr", "tur"]:
         return tur(sentence)
@@ -539,6 +567,7 @@ def tokenise(sentence, lang):
         return ukr(sentence)
     if lang in ["zh", "zho"] or lang.startswith("zh-"):
         import jieba
+
         return jieba.lcut(sentence)
 
     return default(sentence)
@@ -546,4 +575,5 @@ def tokenise(sentence, lang):
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

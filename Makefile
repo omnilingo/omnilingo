@@ -6,7 +6,7 @@ lib/data/dict/zh:
 	wget -O - https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz | zcat > $@
 
 #v-corpus-6.1-2020-12-11/.d:
-#	mkdir -p cv-corpus-6.1-2020-12-11 
+#	mkdir -p cv-corpus-6.1-2020-12-11
 #	touch $@
 
 #cv-corpus-6.1-2020-12-11/fi: cv-corpus-6.1-2020-12-11/.d

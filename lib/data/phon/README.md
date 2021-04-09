@@ -1,6 +1,6 @@
-# Grapheme to phoneme 
+# Grapheme to phoneme
 
-This directory contains grapheme to phoneme lookup tables for languages in Common Voice 
+This directory contains grapheme to phoneme lookup tables for languages in Common Voice
 that are not in [Epitran](https://github.com/dmort27/epitran). These are used
 for calculating the phonetic edit distance using [Panphon](https://github.com/dmort27/panphon).
 
