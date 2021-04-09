@@ -1,6 +1,6 @@
 class Task {
 
-	constructor(question) { 
+	constructor(question) {
 		console.log('Task()');
 
 		this.question = question;
@@ -8,7 +8,7 @@ class Task {
 		this.answer = "";
 		this.running = false;
 	}
-	
+
 	init = async() => {
 		this.setupAudio();
 		await this.fetchData();
@@ -34,7 +34,7 @@ class Task {
 		//player.setAttribute('onPlay', 'onStartTimer()');
 		player.load();
 	}
-	
+
 	validateTasks() {
 
 		var foundDistractor = false;
@@ -69,7 +69,7 @@ class Task {
 
 	}
 
-	fetchData = async () => { 
+	fetchData = async () => {
 		//console.log('[Task] fetchData()');
 		this.tokensPath = hashToPath(this.question.textHash) + '/info';
 		const tokensPromise = fetch(STATIC_URL + this.question.language + '/text/' + this.tokensPath);

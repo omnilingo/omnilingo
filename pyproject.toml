@@ -796,12 +796,8 @@ flask = "^1.1.2"
 jieba = "^0.42.1"
 mutagen = "^1.45.1"
 thai-segmenter = "^0.4.1"
-#nagisa = "^0.2.7"
-#panphon = "^0.17"
 pybktree = "^1.1"
-#epitran = "^1.9"
 cjktools = "^1.7.0"
-#cjktools-data = "^0.2.1"
 
 [tool.poetry.scripts]
 

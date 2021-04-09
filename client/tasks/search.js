@@ -14,7 +14,7 @@ class SearchTask extends Task {
 		console.log("[SearchTask] buildClues()");
 
 		var boxes = [];
-		for(var i = 0; i < validGaps.length; i++) { 
+		for(var i = 0; i < validGaps.length; i++) {
 			var token = this.tokens[i];
 			boxes.push([token, true]);
 			if(token in this.distractors && this.distractors[token].length > 0) {
@@ -22,7 +22,7 @@ class SearchTask extends Task {
 				console.log('  [distractorId] ' + distractorId);
 				var distractor = this.distractors[token][distractorId][1];
 				boxes.push([distractor, false]);
-			} else { 
+			} else {
 				console.log('  [invalidDistractor] ' + i);
 			}
 		}
@@ -76,7 +76,7 @@ class SearchTask extends Task {
 					remaining -= 1;
 				}
 			}
-			
+
 			console.log('  [remaining] ' + remaining);
 			if(remaining == 0) {
 				console.log('  [completed]');
@@ -104,7 +104,7 @@ class SearchTask extends Task {
 				wordTokenIds.push(i);
 			}
 		}
-		
+
 		return wordTokenIds;
 	}
 
@@ -112,8 +112,8 @@ class SearchTask extends Task {
 		//console.log("[SearchTask] run()");
 
 		await this.init();
-			
-		var gaps = this.chooseGaps();	
+
+		var gaps = this.chooseGaps();
 
 		var cbox = document.getElementById('clues');
 		cbox.innerHTML = this.buildClues(gaps) + '<br/><br/>';

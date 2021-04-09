@@ -32,7 +32,7 @@ class OmniLingo {
 		this.updateLevel();
 	}
 
-	getIndex() {	
+	getIndex() {
 		console.log('getIndex()');
 		return this.index;
 	}
@@ -43,7 +43,7 @@ class OmniLingo {
 		this.currentWalk = arrayRemove(this.currentWalk, question.nodeId);
 	}
 
-	setEquivalentChars(acceptingChars) { 
+	setEquivalentChars(acceptingChars) {
 		console.log('setEquivalentChars()');
 		this.equivalentChars = new Map();
 		for(var i in acceptingChars) {
@@ -123,7 +123,7 @@ class OmniLingo {
 
 		var batch = [];
 		var totalInBatch = 0;
-		var totalDeactivatedQuestionsFound = 0; 
+		var totalDeactivatedQuestionsFound = 0;
 		for(var i = start; i < this.index.length; i++) {
 			if(this.deactivatedQuestions.has(i)) {
 				totalDeactivatedQuestionsFound++;
@@ -134,7 +134,7 @@ class OmniLingo {
 				break;
 			}
 			totalInBatch++;
-		} 
+		}
 
 		console.log('  [start] ' + start + ' / [deactivatedQuestionsFound] ' + totalDeactivatedQuestionsFound + ' / [end] ' + i);
 		return batch;
@@ -162,7 +162,7 @@ class OmniLingo {
 		}
 		this.removeLevelHighlight();
 		this.nextTask();
-	
+
 	}
 
 	nextTask() {
@@ -202,7 +202,7 @@ class OmniLingo {
 		this.currentTask.run();
 	}
 
-	endBatch() { 
+	endBatch() {
 		console.log('=======================================================================');
 		console.log('endBatch()');
 
@@ -218,8 +218,8 @@ class OmniLingo {
 		// If the score is high enough we increment it
 		// Then we getCurrentBatch() again
 		if(score <= graphMin) {
-			// This is a simple way to calculate the score, 
-			// but perhaps it should be multiplied by the level so there is 
+			// This is a simple way to calculate the score,
+			// but perhaps it should be multiplied by the level so there is
 			// more reward the higher the level
 			this.globalScore += (graphMin - score);
 			this.level += 1;

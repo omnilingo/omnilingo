@@ -35,6 +35,7 @@ repos:
           - id: mypy
             additional_dependencies:
                 - hypothesis
+                - typing_extensions
     - repo: https://github.com/pre-commit/pygrep-hooks
       rev: v1.8.0
       hooks:
@@ -116,10 +117,11 @@ repos:
       hooks:
           - id: isort
             args: [-m3, --tc, -l 120]
-    - repo: https://github.com/codespell-project/codespell
-      rev: v2.0.0
-      hooks:
-          - id: codespell
+    # - repo: https://github.com/codespell-project/codespell
+    #   rev: v2.0.0
+    #   hooks:
+    #       - id: codespell
+    #         exclude: ^lib/data/.*$
     - repo: https://github.com/myint/docformatter
       rev: v1.4
       hooks:
@@ -129,10 +131,10 @@ repos:
       rev: v1.4
       hooks:
           - id: autoflake
-    - repo: https://github.com/twu/skjold
-      rev: v0.2.1
-      hooks:
-          - id: skjold
+    # - repo: https://github.com/twu/skjold
+    #   rev: v0.2.1
+    #   hooks:
+    #       - id: skjold
     - repo: https://github.com/pappasam/toml-sort
       rev: v0.18.0
       hooks:

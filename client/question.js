@@ -1,8 +1,8 @@
-class Question { 
+class Question {
 
 
-	constructor(nodeId, language, indexPos, content, enabledTasks) 
-	{	
+	constructor(nodeId, language, indexPos, content, enabledTasks)
+	{
 		// ["3", "15", "2.14", "common_voice_fi_23997037.mp3", "bf2690ae993709439fa21cdc400bb48662d509ef78caceb246a7172e8357c785", "Siit\u00e4 se tulee.", "5f60020b96d36cf3fc78eb00c3fb7b1740f7a01f687dd5e5afea2e828f9943b5"]
 		console.log('Question()');
 		this.language = language;
@@ -28,12 +28,12 @@ class Question {
 		this.setCompletedTask(task);
 	}
 
-	setCompletedTask(task) 
+	setCompletedTask(task)
 	{
 		this.remainingTasks = arrayRemove(this.remainingTasks, task);
 	}
 
-	getRandomRemainingTask() 
+	getRandomRemainingTask()
 	{
 		if(getRandomInt(0, 1)) {
 			return this.remainingTasks.shift();
@@ -41,10 +41,9 @@ class Question {
 		return this.remainingTasks.pop();
 	}
 
-	getRemainingTasks() 
+	getRemainingTasks()
 	{
 		return this.remainingTasks;
 	}
-	
-}
 
+}

@@ -7,13 +7,13 @@ class BlankTask extends Task {
 	cleanup() {
 		console.log('[BlankTask] cleanup()');
 	}
-	
+
 	buildTbox(gap) {
 	/**
 	 *  This builds a text entry box for the text-gap task
-	 *  Goes through the text and either writes the input box (at the gap) or writes the text 
+	 *  Goes through the text and either writes the input box (at the gap) or writes the text
 	 *  Wraps it in a paragraph for spacing/layout reasons.
-	 */ 
+	 */
 		//console.log("[BlankTask] buildTbox()");
 		var line = "";
 		var tbox = document.createElement("p");
@@ -41,7 +41,7 @@ class BlankTask extends Task {
 	}
 
 	checkInput() {
-	/** 
+	/**
 	 * This code checks to see if the user got the right input value
 	 * It subsequently marks the answer either as correct (in green)
 	 * or as incorrect (in red) and gives the correct answer (in green)
@@ -83,7 +83,7 @@ class BlankTask extends Task {
 		var wordTokenIds = [];
 		for(var i = 0; i < this.tokens.length; i++) {
 			if(this.tags[i] != "PUNCT") {
-				wordTokenIds.push(i);	
+				wordTokenIds.push(i);
 			}
 		}
 		var gapLocation = getRandomInt(0, wordTokenIds.length -1);
@@ -95,13 +95,12 @@ class BlankTask extends Task {
 		//console.log("[BlankTask] run()");
 
 		await this.init();
-			
-		var gap = this.chooseGap();	
+
+		var gap = this.chooseGap();
 
 		var tbox = document.getElementById("textbox");
 		tbox.innerHTML = this.buildTbox(gap);
-	
+
 		this.setRunning(true);
 	}
 }
-

@@ -1,12 +1,12 @@
 const decideDefaultLanguage = async (indexes) => {
-	/** 
+	/**
 	 *	Takes the returned list of language indexes
 	 *	and chooses a default language based on user preferences
-	 */ 
+	 */
 	console.log("decideDefaultLanguage()");
 
 	var enabledLanguages = Object.keys(indexes);
-	// Is there only one? 
+	// Is there only one?
 	if (enabledLanguages.length == 1) {
 		var currentLanguage = enabledLanguages[0];
 		localStorage.setItem("currentLanguage", currentLanguage);
@@ -21,7 +21,7 @@ const decideDefaultLanguage = async (indexes) => {
 		}
 	}
 
-	// Is one already set and is it in the browser? 
+	// Is one already set and is it in the browser?
 	var currentLanguage = localStorage.getItem("currentLanguage");
 	if(currentLanguage != false) {
 		if(indexes[currentLanguage]) {
@@ -33,7 +33,7 @@ const decideDefaultLanguage = async (indexes) => {
 	const intersectionLanguages = enabledLanguages.filter(
 		value => window.navigator.languages.includes(value)
 	);
-	
+
 	// Take the intersection with what languages we have and
 	// return one at random
 	if(intersectionLanguages.length > 0) {
@@ -52,7 +52,7 @@ const decideDefaultLanguage = async (indexes) => {
 }
 
 const getLanguageMeta = async (language) => {
-	
+
 	console.log("getLanguageMeta()");
 
 	const metaPromise = fetch(STATIC_URL + "/" + language + "/meta");
@@ -118,7 +118,7 @@ const runLanguage = async (language, acceptingChars) => {
 
 	// Get the current level
 
-	document.omnilingo.run();	
+	document.omnilingo.run();
 }
 
 const main = async () => {

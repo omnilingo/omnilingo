@@ -29,15 +29,15 @@ class ScrambleTask extends Task {
 	 * - This also merges those drop squares when the whole word is complete and sets the border to green
 	 * - It should also check to see if the whole response is right and update the responses as necessary
 	 */
-	
+
 		var trg = e.target;
 		var trg_val = trg.getAttribute('data-target');
 		var dz = document.getElementById(tid);
 		var src = document.querySelectorAll('[data-clicked="tile"]')[0];
 		var src_val = src.getAttribute('data-value');
-	
+
 		console.log(' [src_val] ' + src_val + ' || [trg_val] ' + trg_val);
-		
+
 		if(src_val.toLowerCase() == trg_val.toLowerCase()) {
 			console.log('  [correct] ' + src_val);
 			this.correctClick(dz, trg_val);
@@ -84,7 +84,7 @@ class ScrambleTask extends Task {
 			currentToken += tbox.children[i].textContent;
 			targetIds.push(tbox.children[i].getAttribute('id'));
 		}
-		
+
 		console.log('  [targetToken] ' + targetToken + ' || [currentToken] ' + currentToken);
 
 		if(targetToken.toLowerCase() == currentToken.toLowerCase()) {
@@ -92,16 +92,16 @@ class ScrambleTask extends Task {
 			this.complete = true;
 			this.endTask();
 		}
-	}	
+	}
 
-	incorrectClick(dz) { 
-		console.log('[ScrambleTask] incorrectClick()');	
+	incorrectClick(dz) {
+		console.log('[ScrambleTask] incorrectClick()');
 		dz.classList.add("incorrect-dz")
 		setTimeout(function(){dz.classList.remove("incorrect-dz")}, 1200);
 	}
 
 	buildTiles(gap) {
-		
+
 		var set1 = new Set(this.chars[gap]);
 		var arr1 = Array.from(set1);
 		arr1 = shuffleArray(arr1);
@@ -125,15 +125,15 @@ class ScrambleTask extends Task {
 		var tb = "";
 		for(var i = 0; i < this.tokens.length; i++) {
 		    // FIXME: do this properly
-			if(i == gap) {	
+			if(i == gap) {
 				tb += "&nbsp;"
 				for(var j = 0; j < this.chars[gap].length; j++) {
 					tb += '<span id="dz'+j+'" class="targetBox" onClick="onTargetClick(event,\'dz'+j+'\')" data-target="'+this.chars[gap][j]+'"> ? </span>&thinsp;';
 				}
 			} else {
 				tb += '&nbsp;<span>' + this.tokens[i] + '</span>&nbsp;';
-			} 
-		} 
+			}
+		}
 		return tb;
 	}
 
@@ -147,7 +147,7 @@ class ScrambleTask extends Task {
 		var wordTokenIds = [];
 		for(var i = 0; i < this.tokens.length; i++) {
 			if(this.tags[i] != "PUNCT") {
-				wordTokenIds.push(i);	
+				wordTokenIds.push(i);
 			}
 		}
 		var gapLocation = getRandomInt(0, wordTokenIds.length -1);
@@ -159,8 +159,8 @@ class ScrambleTask extends Task {
 		//console.log("[ScrambleTask] run()");
 
 		await this.init();
-			
-		var gap = this.chooseGap();	
+
+		var gap = this.chooseGap();
 
 		var cbox = document.getElementById('clues');
 		cbox.innerHTML = this.buildTiles(gap) + '<br/><br/>';
@@ -171,4 +171,3 @@ class ScrambleTask extends Task {
 		this.setRunning(true);
 	}
 }
-
