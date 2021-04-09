@@ -25,7 +25,7 @@ Storage:
   * files hosted on an http server, with no config requirements on the
     server
   * files hosted locally to the client
-- ideally, exploit content-based addressing
+- exploit content-based addressing, and ipfs (optionally)
 
 Userdata:
 - backend
