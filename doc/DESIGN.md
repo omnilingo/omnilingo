@@ -20,7 +20,7 @@ Storage:
 - backend
 - essentially a static data store
 - serves audio clips, transcriptions, indexes of these, and some
-  pregenerated useful metadata as a substitute for a real database
+  pregenerated useful metadata (e.g. metrics useful for calculating difficulty) as a substitute for a real database
 - pregenerated and static-only so that we can have:
   * files hosted on an http server, with no config requirements on the
     server
