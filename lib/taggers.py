@@ -2,7 +2,7 @@
 import re
 
 
-def deu(sentence):
+def _deu(sentence):
     """Convert deu sentences to tags.
 
     >>> deu(['Ich', 'habe', 'schlechte', 'Nachrichten', 'für', 'ihn', '.'])
@@ -18,7 +18,7 @@ def deu(sentence):
     return tags
 
 
-def jpn(sentence):
+def _jpn(sentence):
     """Convert jpn sentences to tags.
 
     >>> jpn(['切手', 'を', '十', '枚', 'と', 'はがき', 'を', '三', '枚', '買い', 'ます', '。'])
@@ -34,7 +34,7 @@ def jpn(sentence):
     return tags
 
 
-def default(sentence):
+def _default(sentence):
     """Defaut tags for sentences.
 
     >>> default(['This', 'is', 'not', 'Crewe', '.'])
@@ -57,11 +57,11 @@ def default(sentence):
 def tag(sentence, lang):
     """Grammatical tags for sentence components."""
     if lang in ["de", "deu"]:
-        return deu(sentence)
+        return _deu(sentence)
     if lang in ["ja", "jpn"]:
-        return jpn(sentence)
+        return _jpn(sentence)
 
-    return default(sentence)
+    return _default(sentence)
 
 
 if __name__ == "__main__":
