@@ -1,5 +1,6 @@
 cjktools
 cjktools-data
+commonvoice-utils
 epitran
 flask
 jieba
