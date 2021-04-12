@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""Distractors."""
+
+# flake8: noqa
 
 import json
 import os
@@ -11,18 +14,23 @@ from phonemiser import phonemise
 
 
 class EditDistanceWrapper:
+    """Wrapper around edit distance."""
+
     def __init__(self, lang_id, dst, phonemise):
+        """Construct an EditDistanceWrapper."""
         self.lang_id = lang_id
         self.dst = dst
         self.phonemise = phonemise
 
     def edit_distance(self, a, b):
+        """Calculate edit distance between strings."""
         pa = self.phonemise(a, lang=self.lang_id)
         pb = self.phonemise(b, lang=self.lang_id)
         return self.dst.weighted_feature_edit_distance(pa, pb)
 
 
 def get_multitree(voc_fd, lang_id):
+    """Get a multitree for the given language."""
     # Get a dict() where each key is a letter and each value
     # is a BK tree of the words that start with that letter
     dst = distance.Distance()
@@ -46,6 +54,7 @@ def get_multitree(voc_fd, lang_id):
 
 
 def generate_distractors(cache_file, static_dir):
+    """Generate distractors."""
     # 0	1	2	3				4									5									6
     # 8       69      6       common_voice_fi_24001101.mp3    fa032123ba94a9aafc037ca10a5eac754ef410288c8dde2b2c666ed5e10222f2        Mysteerimies oli oppinut moraalinsa taruista, elokuvista ja peleistä.   a8f9eb3f56f2048df119a9ad1d210d0b98fda56f3e2a387f14fe2d652241f3ec
 
