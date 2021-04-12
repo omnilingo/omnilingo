@@ -44,17 +44,19 @@ jobs:
 
             - name: pre-commit
               run: pre-commit run --all-files
-            - name: vulture
-              run: poetry run vulture --min-confidence=61 --exclude=main.py --ignore-names=main  # yamllint disable-line
-            - name: main.py --help
-              run: poetry run main.py --help
-            - name: pytest
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: |
-                  poetry run pytest
-                  #poetry run coveralls
-            - name: poetry build
-              run: |
-                  poetry build
-                  tar -zvtf dist/omnilingo-*.tar.gz | grep omnilingo
+              # - name: vulture
+              #   run: |
+              #     poetry run vulture --min-confidence=61 --exclude=main.py \
+              #     --ignore-names=main
+              # - name: main.py --help
+              #   run: poetry run main.py --help
+              # - name: pytest
+              #   env:
+              #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              #   run: |
+              #       poetry run pytest
+              #       #poetry run coveralls
+              # - name: poetry build
+              #   run: |
+              #       poetry build
+              #       tar -zvtf dist/omnilingo-*.tar.gz | grep omnilingo
