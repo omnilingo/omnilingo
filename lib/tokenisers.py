@@ -173,7 +173,7 @@ def _cat(sentence):
 def _fra(sentence):
     """Tokeniser for fra."""
     o = sentence
-    o = re.sub(r"([!*+,./:;?@|~¡«°·»¿–—―’“”…]+)", r" \g<1> ", o)
+    o = re.sub(r"([!*+,./\":;?@|~¡«°·»¿–—―’“”…]+)", r" \g<1> ", o)
     o = re.sub(r"([JDLSM]['’])", r"\g<1> ", o)
     o = re.sub(r"( [jdlsm]['’])", r" \g<1> ", o)
     o = re.sub(r"  *", " ", o)
