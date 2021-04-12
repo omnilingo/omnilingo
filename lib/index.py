@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Docstring."""
+"""Index a language by collecting clips in buckets of difficulty."""
 import hashlib
 import re
 import sys

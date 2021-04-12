@@ -1,4 +1,4 @@
-"""Docstring for this."""
+"""Implement alternative characters for some languages."""
 
 
 def _bre():

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""This is a docstring."""
+"""Find all what languages have been deployed and make an index."""
 import json
 import os
 import sys
