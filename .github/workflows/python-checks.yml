@@ -1,0 +1,62 @@
+---
+name: python checks
+on: [push, pull_request] # yamllint disable-line
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                python-version:
+                    - '3.7'  # EOL 2023-06-27
+                    - '3.8'  # EOL 2024-10
+                    - '3.9'  # EOL 2025-10
+                    - 3.x
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: setup python-${{ matrix.python-version }}
+              uses: actions/setup-python@v2
+              with:
+                  python-version: ${{ matrix.python-version }}
+
+            - name: cache pre-commit
+              uses: actions/cache@v2
+              with:
+                  path: ~/.cache/pre-commit
+                  key: ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}  # yamllint disable-line
+                  restore-keys: |
+                      ${{ runner.os }}-pre-commit-
+            - name: cache poetry
+              uses: actions/cache@v2
+              with:
+                  path: ~/.cache/poetry
+                  key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}  # yamllint disable-line
+                  restore-keys: |
+                      ${{ runner.os }}-poetry-
+
+            - name: install dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install pre-commit
+                  pre-commit install-hooks
+                  pip install poetry
+                  poetry install -v
+
+            - name: pre-commit
+              run: pre-commit run --all-files
+              # - name: vulture
+              #   run: |
+              #     poetry run vulture --min-confidence=61 --exclude=main.py \
+              #     --ignore-names=main
+              # - name: main.py --help
+              #   run: poetry run main.py --help
+              # - name: pytest
+              #   env:
+              #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              #   run: |
+              #       poetry run pytest
+              #       #poetry run coveralls
+              # - name: poetry build
+              #   run: |
+              #       poetry build
+              #       tar -zvtf dist/omnilingo-*.tar.gz | grep omnilingo

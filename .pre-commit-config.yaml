@@ -80,10 +80,10 @@ repos:
       hooks:
           - id: rst-linter
             additional_dependencies: [webencodings]
-    - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-      rev: v1.2.1
-      hooks:
-          - id: python-safety-dependencies-check
+    # - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    #   rev: v1.2.1
+    #   hooks:
+    #       - id: python-safety-dependencies-check
     - repo: git://github.com/detailyang/pre-commit-shell
       rev: 1.0.5
       hooks:

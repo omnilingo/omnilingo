@@ -24,11 +24,13 @@ def favicon():
 
 @app.route("/<path:path>")
 def client(path):
+    """Serve Javascript Client."""
     return send_from_directory("client", path)
 
 
 @app.route("/indexes")
 def indexes():
+    """Serve language indexes."""
     return open("static/indexes").read()
 
 
@@ -37,6 +39,7 @@ def indexes():
 
 @app.route("/index/<path:path>")
 def index(path):
+    """Index of static files."""
     return send_from_directory("static/index/", path)
 
 
