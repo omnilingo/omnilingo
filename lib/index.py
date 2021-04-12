@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+"""Index a language by collecting clips in buckets of difficulty."""
 import hashlib
 import re
 import sys
@@ -14,7 +14,7 @@ MAX_AUDIO_LENGTH = 10  # in seconds
 MAX_PER_BUCKET = 1000  # in clips
 
 
-def index(input_path, output_file):
+def _index(input_path, output_file):
     """Index a validated.tsv file."""
     # FIXME: The buckets should contain only the text hashes, having one
     # example per text should be enough for a first version.
@@ -138,7 +138,7 @@ def index(input_path, output_file):
 
 
 if __name__ == "__main__":
-    (n_total, n_lines, n_skipped, n_voc) = index(
+    (n_total, n_lines, n_skipped, n_voc) = _index(
         sys.argv[1],
         "cache/" + sys.argv[1].split("/")[-1],
     )

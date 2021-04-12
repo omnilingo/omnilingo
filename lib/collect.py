@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+"""Find all what languages have been deployed and make an index."""
 import json
 import os
 import sys
@@ -9,7 +9,7 @@ import languages as codes
 from orthography import alternatives
 
 
-def collect(cache_dir, static_dir):
+def _collect(cache_dir, static_dir):
     languages = [
         p.name
         for p in Path(cache_dir).glob(
@@ -35,6 +35,6 @@ def collect(cache_dir, static_dir):
 
 
 if __name__ == "__main__":
-    indexed = collect(os.path.abspath(sys.argv[1]), "static/")
+    indexed = _collect(os.path.abspath(sys.argv[1]), "static/")
 
     print("Indexed:", " ".join(indexed), file=sys.stderr)

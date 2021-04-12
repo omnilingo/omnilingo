@@ -2,7 +2,7 @@
 import re
 
 
-def bre(word):
+def _bre(word):
     """Split words into characters using bre.
 
     >>> bre("arc'hant")
@@ -22,7 +22,7 @@ def bre(word):
     return input_word.split(" ")
 
 
-def quc(word):
+def _quc(word):
     """Split words into characters using quc.
 
     >>> quc("K'iche'")
@@ -43,7 +43,7 @@ def quc(word):
     return input_word.split(" ")
 
 
-def default(word):
+def _default(word):
     """Split words into characters using native encoding.
 
     >>> default('Crewe')
@@ -58,11 +58,11 @@ def characters(sentence, lang):
     Special casing for bre and quc languages.
     """
     if lang in ["br", "bre"]:
-        return bre(sentence)
+        return _bre(sentence)
     if lang in ["quc"]:
-        return quc(sentence)
+        return _quc(sentence)
 
-    return default(sentence)
+    return _default(sentence)
 
 
 if __name__ == "__main__":

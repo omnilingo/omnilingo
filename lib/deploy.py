@@ -13,7 +13,7 @@ from taggers import tag
 from tokenisers import tokenise
 
 
-def deploy(dump_dir, cache_file, static_dir):
+def _deploy(dump_dir, cache_file, static_dir):
     """May clips be deployed with their transcripts to a static directory.
 
     @dump_dir = Where is the Common Voice dump?
@@ -100,6 +100,6 @@ def deploy(dump_dir, cache_file, static_dir):
 
 
 if __name__ == "__main__":
-    n_lines = deploy(os.path.abspath(sys.argv[1]), sys.argv[2], "static/")
+    n_lines = _deploy(os.path.abspath(sys.argv[1]), sys.argv[2], "static/")
 
     print(n_lines, "deployed.", file=sys.stderr)

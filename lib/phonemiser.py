@@ -1,7 +1,9 @@
-# Functions for doing grapheme to phoneme for supported languages
-# The default functions first do LRLM segmentation of the orthography
-# and then lookup the segments in a lookup table. Any symbols which
-# do not appear are discarded.
+"""Functions for doing grapheme to phoneme for supported languages.
+
+The default functions first do left-to-right longest-match (LRLM)
+segmentation of the orthography and then lookup the segments in a lookup
+table. Any symbols which do not appear are discarded.
+"""
 
 import pathlib
 import sys
@@ -48,7 +50,7 @@ iso_2to3 = {
 iso_3to2 = {y.split("-")[0]: x for (x, y) in iso_2to3.items()}
 
 
-def maxmatch(dictionary, line):
+def _maxmatch(dictionary, line):
     line += " "
 
     if line.strip() == "":
@@ -58,18 +60,18 @@ def maxmatch(dictionary, line):
         firstWord = line[0:-i]
         remainder = line[-i:]
         if firstWord in dictionary:
-            return [firstWord] + maxmatch(dictionary, remainder)
+            return [firstWord] + _maxmatch(dictionary, remainder)
 
     firstWord = line[0]
     remainder = line[1:]
 
-    return [firstWord] + maxmatch(dictionary, remainder)
+    return [firstWord] + _maxmatch(dictionary, remainder)
 
 
-def maxphon(lkp, token):
+def _maxphon(lkp, token):
     ks = list(lkp.keys())
     ks.sort(key=lambda x: len(x), reverse=True)
-    segs = maxmatch(ks, token.lower())
+    segs = _maxmatch(ks, token.lower())
     op = ""
     for seg in segs:
         if seg in lkp:
@@ -77,7 +79,7 @@ def maxphon(lkp, token):
     return op
 
 
-def jpn(token):
+def _jpn(token):
     """Convert jpn token to phonemes."""
     from cjktools import scripts
     from cjktools.resources import kanjidic
@@ -113,7 +115,7 @@ def jpn(token):
         else:
             op += seg
 
-    res = maxphon(lkp, op)
+    res = _maxphon(lkp, op)
     if res == "":
         return "?"
     return res
@@ -153,37 +155,37 @@ def phonemise(token, lang):
         lang = iso_3to2[lang]
         return lookup_tables[lang].transliterate(token)
     if lang in ["ab", "abk"]:
-        return maxphon(lookup_tables["ab"], token)
+        return _maxphon(lookup_tables["ab"], token)
     if lang in ["as", "asm"]:
-        return maxphon(lookup_tables["as"], token)
+        return _maxphon(lookup_tables["as"], token)
     if lang in ["br", "bre"]:
-        return maxphon(lookup_tables["br"], token)
+        return _maxphon(lookup_tables["br"], token)
     if lang in ["cv", "chv"]:
-        return maxphon(lookup_tables["cv"], token)
+        return _maxphon(lookup_tables["cv"], token)
     if lang in ["cy", "cym"]:
-        return maxphon(lookup_tables["cy"], token)
+        return _maxphon(lookup_tables["cy"], token)
     if lang in ["dv"]:
-        return maxphon(lookup_tables["dv"], token)
+        return _maxphon(lookup_tables["dv"], token)
     if lang in ["el", "ell"]:
-        return maxphon(lookup_tables["el"], token)
+        return _maxphon(lookup_tables["el"], token)
     if lang in ["fi", "fin"]:
-        return maxphon(lookup_tables["fi"], token)
+        return _maxphon(lookup_tables["fi"], token)
     if lang in ["ja", "jpn"]:
-        return jpn(token)
+        return _jpn(token)
     if lang in ["mn", "mon"]:
-        return maxphon(lookup_tables["mn"], token)
+        return _maxphon(lookup_tables["mn"], token)
     if lang in ["or", "ori"]:
-        return maxphon(lookup_tables["or"], token)
+        return _maxphon(lookup_tables["or"], token)
     if lang in ["quc"]:
-        return maxphon(lookup_tables["quc"], token)
+        return _maxphon(lookup_tables["quc"], token)
     if lang in ["tr", "tur"]:
-        return maxphon(lookup_tables["tr"], token)
+        return _maxphon(lookup_tables["tr"], token)
     if lang in ["tt", "tat"]:
-        return maxphon(lookup_tables["tt"], token)
+        return _maxphon(lookup_tables["tt"], token)
     if lang in ["sah"]:
-        return maxphon(lookup_tables["sah"], token)
+        return _maxphon(lookup_tables["sah"], token)
     if lang in ["ur", "urd"]:
-        return maxphon(lookup_tables["ur"], token)
+        return _maxphon(lookup_tables["ur"], token)
     if lang.startswith("zh-"):
         return lookup_tables[lang].transliterate(token)
 
@@ -191,6 +193,7 @@ def phonemise(token, lang):
 
 
 def init():
+    """Init all the phonemisers."""
     languages = [
         p.name
         for p in pathlib.Path(
