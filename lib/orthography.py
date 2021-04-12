@@ -16,8 +16,9 @@ def _quc():
 
 
 def _tur():
+    """Accept uppercase I without a dot for dotted uppercase İ."""
     accept = {
-        "İ": ["I"],
+        "İ": ["I"],  # U+0130 LATIN CAPITAL LETTER I WITH DOT ABOVE / U+0049 LATIN CAPITAL LETTER I
     }
     return accept
 
