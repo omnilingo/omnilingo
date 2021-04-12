@@ -1,8 +1,8 @@
 """Functions for doing grapheme to phoneme for supported languages.
 
-The default functions first do LRLM segmentation of the orthography and
-then lookup the segments in a lookup table. Any symbols which do not
-appear are discarded.
+The default functions first do left-to-right longest-match (LRLM)
+segmentation of the orthography and then lookup the segments in a lookup
+table. Any symbols which do not appear are discarded.
 """
 
 import pathlib
