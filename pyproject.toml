@@ -780,31 +780,36 @@ classifiers = [
   "Typing :: Typed",
 ]
 packages = [
+  { include = "omnilingo" },
 ]
 
 [tool.poetry.dependencies]
+click = "^7.1.2"
+flask = "^1.1.2"
 python = "^3.7"
+requests = "^2.25.1"
+xdg = "^5.0.1"
 
 [tool.poetry.dev-dependencies]
+cjktools = "^1.7.0"
 coveralls = "^2.1.1"
-pip = "^20.2.4"
-pre-commit = "^2.7.1"
-pytest = "^6.1.1"
-pytest-cov = "^2.10.0"
-vulture = "^2.0"
-flask = "^1.1.2"
 jieba = "^0.42.1"
 mutagen = "^1.45.1"
-thai-segmenter = "^0.4.1"
+pip = "^20.2.4"
+pre-commit = "^2.7.1"
 pybktree = "^1.1"
-cjktools = "^1.7.0"
+pytest = "^6.1.1"
+pytest-cov = "^2.10.0"
+thai-segmenter = "^0.4.1"
+vulture = "^2.0"
 
 [tool.poetry.scripts]
+omnilingo = "omnilingo.main:main"
 
 [tool.pytest.ini_options]
-addopts = "--doctest-modules --cov=zfs --cov-report=term-missing"
+addopts = "--doctest-modules --cov=omnilingo --cov-report=term-missing"
 testpaths = [
-  "zfs_test",
+  "omnilingo_test",
 ]
 
 [tool.skjold]
