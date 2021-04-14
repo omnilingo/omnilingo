@@ -33,7 +33,7 @@ def main(ctx: click.Context, cache_path: Path) -> None:
 @click.pass_obj
 def serve(cache_path: Path, port: int, host: str) -> None:
     """Start Web Server."""
-    languages = [p.name for p in Path("cache/").glob("*")]
+    languages = [p.name for p in Path("cache/").glob("*") if ".voc" not in p.name]
     click.echo(f"[languages] {languages}")
     _cache.update(path=cache_path)
     server.APPLICATION.run(port=port, host=host)
