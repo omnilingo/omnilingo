@@ -30,7 +30,7 @@ tests = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six
 tests_no_zope = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
 optional = false
@@ -46,7 +46,7 @@ python-versions = ">=3.6.1"
 version = "3.2.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Universal encoding detector for Python 2 and 3"
 name = "chardet"
 optional = false
@@ -65,7 +65,7 @@ version = "1.7.0"
 six = "*"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Composable command line interface toolkit"
 name = "click"
 optional = false
@@ -163,7 +163,7 @@ version = "2.2.2"
 license = ["editdistance-s"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -372,7 +372,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 version = "5.4.1"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python HTTP for Humans."
 name = "requests"
 optional = false
@@ -427,7 +427,7 @@ python-versions = "*"
 version = "3.7.4.3"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
 optional = false
@@ -485,6 +485,14 @@ dev = ["pytest", "pytest-timeout", "coverage", "tox", "sphinx", "pallets-sphinx-
 watchdog = ["watchdog"]
 
 [[package]]
+category = "main"
+description = "Variables defined by the XDG Base Directory Specification"
+name = "xdg"
+optional = false
+python-versions = ">=3.6,<4.0"
+version = "5.0.1"
+
+[[package]]
 category = "dev"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 marker = "python_version < \"3.8\""
@@ -498,7 +506,7 @@ docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [metadata]
-content-hash = "54b9f78e4f92e59f988b726c091fe354799e00c5bd6efbbfca796b0cf0dee110"
+content-hash = "6151a06b7165509211e6bdcbec25727f1d92b4a52617f231a1f2d1001fbc849f"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -790,6 +798,10 @@ vulture = [
 werkzeug = [
     {file = "Werkzeug-1.0.1-py2.py3-none-any.whl", hash = "sha256:2de2a5db0baeae7b2d2664949077c2ac63fbd16d98da0ff71837f7d1dea3fd43"},
     {file = "Werkzeug-1.0.1.tar.gz", hash = "sha256:6c80b1e5ad3665290ea39320b91e1be1e0d5f60652b964a3070216de83d2e47c"},
+]
+xdg = [
+    {file = "xdg-5.0.1-py3-none-any.whl", hash = "sha256:9ddd6649bee9148f952305603a08474e3ef37c909eb19dfcb9737d54ebcc407e"},
+    {file = "xdg-5.0.1.tar.gz", hash = "sha256:97a27058caa61b4ce04e05471643caa6bc8c563d2638f92c0516ac50208146d8"},
 ]
 zipp = [
     {file = "zipp-3.4.1-py3-none-any.whl", hash = "sha256:51cb66cc54621609dd593d1787f286ee42a5c0adbb4b29abea5a63edc3e03098"},

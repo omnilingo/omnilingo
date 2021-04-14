@@ -81,9 +81,11 @@ To bootstrap the project for Finnish, `git clone` the repository, then run the f
 commands:
 
 ```bash
+pip install poetry
 pip install -r requirements.txt
 make
-./main.py
+poetry install
+poetry run omnilingo serve
 ```
 
 The project should be accessible through http://localhost:5001/index.html

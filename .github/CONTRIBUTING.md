@@ -1,6 +1,12 @@
 # Development Environment Setup
 
-## Using direnv and nix
+## Using poetry
+
+1. [Install poetry](https://python-poetry.org/docs/#installation)
+1. `poetry install`
+1. `poetry shell`
+
+## Optional: Using direnv and nix
 
 If you're using nix and direnv we have the configuration ready to go minus the
 .envrc file you need to kick the process off (you can use another if you prefer
