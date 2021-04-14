@@ -1,6 +1,6 @@
 """Server for OmniLingo."""
 
-from flask import Flask, send_from_directory
+from flask import Flask, send_file, send_from_directory
 
 APPLICATION = Flask("omnilingo", static_url_path="/client")
 APPLICATION.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # For the index
@@ -9,13 +9,13 @@ APPLICATION.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # For the index
 @APPLICATION.route("/index.html")
 def front():
     """Entrypoint for API."""
-    return send_from_directory("client", "index.html")
+    return send_file("client/index.html")
 
 
 @APPLICATION.route("/favicon.ico")
 def favicon():
     """Favicon for web brwosers."""
-    return send_from_directory("client", "favicon.ico")
+    return send_file("client/favicon.ico")
 
 
 @APPLICATION.route("/<path:path>")
