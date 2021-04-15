@@ -9,25 +9,25 @@ APPLICATION.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # For the index
 @APPLICATION.route("/index.html")
 def front():
     """Entrypoint for API."""
-    return send_file("client/index.html")
+    return send_file("../client/index.html")
 
 
 @APPLICATION.route("/favicon.ico")
 def favicon():
     """Favicon for web brwosers."""
-    return send_file("client/favicon.ico")
+    return send_file("../client/favicon.ico")
 
 
 @APPLICATION.route("/<path:path>")
 def client(path):
     """Serve Javascript Client."""
-    return send_from_directory("client", path)
+    return send_from_directory("../client", path)
 
 
 @APPLICATION.route("/indexes")
 def indexes():
     """Serve language indexes."""
-    return open("static/indexes").read()
+    return open("../static/indexes").read()
 
 
 #    return send_from_directory("static", "indexes") # FIXME: Stop it caching
@@ -36,10 +36,10 @@ def indexes():
 @APPLICATION.route("/index/<path:path>")
 def index(path):
     """Index of static files."""
-    return send_from_directory("static/index/", path)
+    return send_from_directory("../static/index/", path)
 
 
 @APPLICATION.route("/static/<path:path>")
 def serve_static(path):
     """Serve static assets."""
-    return send_from_directory("static", path)
+    return send_from_directory("../static", path)
