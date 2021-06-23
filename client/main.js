@@ -66,9 +66,10 @@ const getLanguageMeta = async (language) => {
 
 const getIndexes = async () => {
 	// Pulls down the list of indexes (e.g. languages)
-	console.log("getIndexes()");
+	console.log("getIndexes() !");
 
-	const indexesPromise = fetch(STATIC_URL + "/indexes");
+	const indexesPromise = fetch(CLIENT_URL + "/indexes.json");
+
 	const indexes = await Promise.all([indexesPromise]);
 	const indexesData = indexes.map(response => response.json());
 	const allData = await Promise.all(indexesData);
@@ -124,6 +125,8 @@ const runLanguage = async (language, acceptingChars) => {
 const main = async () => {
 
 	var indexes = await getIndexes();
+
+        console.log("  [indexes] ");
 
 	var defaultLanguage = await decideDefaultLanguage(indexes);
 
