@@ -6,7 +6,8 @@ class OmniLingo {
 		this.batchSize = 5;
 		this.graph = new Graph(this.batchSize);
 //		this.state = new State();
-		this.enabledTasks = ["blank", "scramble", "choice", "search"];
+		//this.enabledTasks = ["blank", "scramble", "choice", "search"];
+		this.enabledTasks = ["blank"];
 		this.globalScore = 0;
 		this.deactivatedQuestions = new Set();
 	}
@@ -58,7 +59,8 @@ class OmniLingo {
 	fetchIndex = async () => {
 		console.log('fetchIndex() ' + this.language);
 
-		const indexPromise = fetch(this.staticUrl + this.cid);
+		//const indexPromise = fetch(this.staticUrl + this.cid, {headers: {"Access-Control-Allow-Origin": "*"}});
+		const indexPromise = fetch(this.staticUrl + this.cid, {credentials: "omit" });
 		const index = await Promise.all([indexPromise]);
 		const indexData = index.map(response => response.json());
 		const allData = await Promise.all(indexData);
@@ -66,7 +68,7 @@ class OmniLingo {
 		console.log('allData:');
 		console.log(allData);
 
-		this.index = allData[0]["index"];
+		this.index = allData[0];
 	}
 
 	updateRemaining() {

@@ -129,6 +129,7 @@ const main = async () => {
         console.log("  [indexes] ");
         console.log(indexes);
 
+
 	var defaultLanguage = await decideDefaultLanguage(indexes);
 
 	console.log("  [defaultLanguage] " + defaultLanguage);
@@ -143,9 +144,9 @@ const main = async () => {
 
 	//console.log('  [acceptingChars]');
 	//console.log(acceptingChars);
+	console.log(indexes["fi"]);
 
-
-	runLanguage(defaultLanguage, indexes[defaultLanguage], {}); //acceptingChars);
+	runLanguage(defaultLanguage, indexes[defaultLanguage]["cid"], {}); //acceptingChars);
 }
 
 window.onload = main;

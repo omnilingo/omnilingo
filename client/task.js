@@ -24,12 +24,14 @@ class Task {
 
 	setupAudio() {
 
-		this.currentAudio = hashToPath(this.question.audioHash) + '/audio.mp3';
+		//this.currentAudio = hashToPath(this.question.audioHash) + '/audio.mp3';
 		var player = document.getElementById('player');
 		var source = document.getElementById('audioSource');
 
 		source.type = 'audio/mp3';
-		source.src = STATIC_URL + this.question.language + '/clip/' + this.currentAudio ;
+		source.src = IPFS_PROXY + this.question.audioCid;
+
+		console.log("[audio_src] " + source.src);
 
 		//player.setAttribute('onPlay', 'onStartTimer()');
 		player.load();
@@ -71,8 +73,10 @@ class Task {
 
 	fetchData = async () => {
 		//console.log('[Task] fetchData()');
-		this.tokensPath = hashToPath(this.question.textHash) + '/info';
-		const tokensPromise = fetch(STATIC_URL + this.question.language + '/text/' + this.tokensPath);
+		//this.tokensPath = hashToPath(this.question.textHash) + '/info';
+		//const tokensPromise = fetch(STATIC_URL + this.question.language + '/text/' + this.tokensPath);
+		console.log("[tokens_src] " + IPFS_PROXY + this.question.textCid);
+		const tokensPromise = fetch(IPFS_PROXY + this.question.textCid, {credentials: "omit"});
 		const meta = await Promise.all([tokensPromise]);
 		const metaData = meta.map(response => response.text());
 		const allData = await Promise.all(metaData);
@@ -91,7 +95,7 @@ class Task {
 			this.chars.push(this.metadata[i][2]);
 		}
 
-		await this.fetchDistractors();
+		//await this.fetchDistractors();
 
 		this.validateTasks();
 	}

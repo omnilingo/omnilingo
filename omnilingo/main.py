@@ -25,7 +25,7 @@ def main(ctx: click.Context, cache_path: Path) -> None:
 @click.option(
     "--port",
     type=click.IntRange(0, 65535),
-    default=5001,
+    default=5002,
     help="Port for web server to listen on.",
     envvar="FLASK_PORT",
 )

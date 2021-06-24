@@ -786,6 +786,7 @@ packages = [
 [tool.poetry.dependencies]
 click = "^7.1.2"
 flask = "^1.1.2"
+flask-cors = "^3.0.10"
 python = "^3.7"
 requests = "^2.25.1"
 xdg = "^5.0.1"
