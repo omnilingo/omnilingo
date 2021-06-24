@@ -88,6 +88,7 @@ class Task {
 		console.log(metadata);
 
 		this.tokens = metadata["tokens"];
+		this.tags = metadata["tags"];
 
 		console.log(this.tokens);
 /*
