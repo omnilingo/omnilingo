@@ -75,14 +75,22 @@ class Task {
 		//console.log('[Task] fetchData()');
 		//this.tokensPath = hashToPath(this.question.textHash) + '/info';
 		//const tokensPromise = fetch(STATIC_URL + this.question.language + '/text/' + this.tokensPath);
-		console.log("[tokens_src] " + IPFS_PROXY + this.question.textCid);
-		const tokensPromise = fetch(IPFS_PROXY + this.question.textCid, {credentials: "omit"});
+		console.log("[tokens_src] " + IPFS_PROXY + this.question.metaCid);
+		const tokensPromise = fetch(IPFS_PROXY + this.question.metaCid, {credentials: "omit"});
 		const meta = await Promise.all([tokensPromise]);
 		const metaData = meta.map(response => response.text());
 		const allData = await Promise.all(metaData);
 
+		console.log(allData);
+
 		var metadata = JSON.parse(allData[0]);
 
+		console.log(metadata);
+
+		this.tokens = metadata["tokens"];
+
+		console.log(this.tokens);
+/*
 		this.metadata = metadata["tokens"];
 
 		this.tokens = [];
@@ -95,6 +103,7 @@ class Task {
 			this.chars.push(this.metadata[i][2]);
 		}
 
+*/
 		//await this.fetchDistractors();
 
 		this.validateTasks();

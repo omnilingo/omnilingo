@@ -84,9 +84,9 @@ class BlankTask extends Task {
 
 		var wordTokenIds = [];
 		for(var i = 0; i < this.tokens.length; i++) {
-			if(this.tags[i] != "PUNCT") {
+			//if(this.tags[i] != "PUNCT") {
 				wordTokenIds.push(i);
-			}
+			//}
 		}
 		var gapLocation = getRandomInt(0, wordTokenIds.length -1);
 

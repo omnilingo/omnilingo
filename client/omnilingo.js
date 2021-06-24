@@ -192,7 +192,8 @@ class OmniLingo {
 		var currentTaskType = currentQuestion.getRandomRemainingTask();
 
 		// FIXME: Do this nicer
-		var randInt = getRandomInt(0, 3);
+		//var randInt = getRandomInt(0, 3);
+		var randInt = 3;
 		if(randInt == 0) {
 			this.currentTask = new ScrambleTask(currentQuestion);
 		} else if(randInt == 1) {

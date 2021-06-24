@@ -11,6 +11,7 @@ class Question {
 		this.nodeId = nodeId;
 		this.textCid = content["sentence_cid"];
 		this.audioCid = content["clip_cid"];
+		this.metaCid = content["meta_cid"];
 		this.audioLength = Number(content["length"]);
 		this.audioSpeed = Number(content["chars_sec"]);
 		this.remainingTasks = enabledTasks;
