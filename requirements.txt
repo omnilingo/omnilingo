@@ -3,6 +3,7 @@ cjktools-data
 commonvoice-utils
 epitran
 flask
+flask-cors
 jieba
 mutagen
 nagisa

@@ -1,8 +1,10 @@
 """Server for OmniLingo."""
 
 from flask import Flask, send_file, send_from_directory
+from flask_cors import CORS
 
 APPLICATION = Flask("omnilingo", static_url_path="/client")
+CORS(APPLICATION)
 APPLICATION.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # For the index
 
 
