@@ -26,9 +26,8 @@ class OmniLingo {
 		return normStr;
 	}
 
-	setup(url, language, cid) {
+	setup = async (language, cid) => {
 		console.log('setup()');
-		this.staticUrl = url;
 		this.language = language;
 		this.cid = cid;
 		this.updateLevel();
@@ -56,13 +55,13 @@ class OmniLingo {
 		console.log(this.equivalentChars);
 	}
 
+
 	fetchIndex = async () => {
 		console.log('fetchIndex() ' + this.language);
 
-		//const indexPromise = fetch(this.staticUrl + this.cid, {headers: {"Access-Control-Allow-Origin": "*"}});
-		const indexPromise = fetch(this.staticUrl + this.cid, {credentials: "omit" });
+		const indexPromise = fetchIpfsS(this.cid);
 		const index = await Promise.all([indexPromise]);
-		const indexData = index.map(response => response.json());
+		const indexData = index.map(JSON.parse);
 		const allData = await Promise.all(indexData);
 
 		console.log('allData:');

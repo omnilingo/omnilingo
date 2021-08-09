@@ -10,7 +10,7 @@ class Task {
 	}
 
 	init = async() => {
-		this.setupAudio();
+		await this.setupAudio();
 		await this.fetchData();
 	}
 
@@ -22,14 +22,15 @@ class Task {
 		return this.running;
 	}
 
-	setupAudio() {
+	setupAudio = async () => {
 
 		//this.currentAudio = hashToPath(this.question.audioHash) + '/audio.mp3';
 		var player = document.getElementById('player');
 		var source = document.getElementById('audioSource');
+		var bytes = await fetchIpfsB(this.question.audioCid);
 
 		source.type = 'audio/mp3';
-		source.src = IPFS_PROXY + this.question.audioCid;
+		source.src = URL.createObjectURL(new Blob([bytes]), {type: 'audio/mp3'});
 
 		console.log("[audio_src] " + source.src);
 
@@ -75,11 +76,9 @@ class Task {
 		//console.log('[Task] fetchData()');
 		//this.tokensPath = hashToPath(this.question.textHash) + '/info';
 		//const tokensPromise = fetch(STATIC_URL + this.question.language + '/text/' + this.tokensPath);
-		console.log("[tokens_src] " + IPFS_PROXY + this.question.metaCid);
-		const tokensPromise = fetch(IPFS_PROXY + this.question.metaCid, {credentials: "omit"});
-		const meta = await Promise.all([tokensPromise]);
-		const metaData = meta.map(response => response.text());
-		const allData = await Promise.all(metaData);
+		console.log("[tokens_src] " + this.question.metaCid);
+		const tokensPromise = fetchIpfsS(this.question.metaCid);
+		const allData = await Promise.all([tokensPromise]);
 
 		console.log(allData);
 
