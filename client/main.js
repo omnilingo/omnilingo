@@ -5,7 +5,7 @@ const decideDefaultLanguage = async (indexes) => {
 	 */
 	console.log("decideDefaultLanguage()");
 
-	var enabledLanguages = Object.keys(indexes);
+	const enabledLanguages = Object.keys(indexes);
 	// Is there only one?
 	if (enabledLanguages.length == 1) {
 		var currentLanguage = enabledLanguages[0];
@@ -43,12 +43,15 @@ const decideDefaultLanguage = async (indexes) => {
 	}
 
 	// Choose the first non-English one
-	for(var language in enabledLanguages) {
+	for(var i in enabledLanguages) {
+		language = enabledLanguages[i];
 		if(language != "en") {
 			localStorage.setItem("currentLanguage", language);
 			return language;
 		}
 	}
+	localStorage.setItem("currentLanguage", enabledLanguages[0]);
+	return enabledLanguages[0];
 }
 
 const getLanguageMeta = async (language) => {
