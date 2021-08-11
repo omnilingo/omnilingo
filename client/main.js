@@ -2,20 +2,22 @@ const IPFS = require('ipfs')
 
 
 fetchIpfsB = async (cid) => {
-  const chunks = []
-  for await (const chunk of document.ipfs.cat(cid)) {
-      chunks.push(chunk)
-  }
+	const chunks = []
+	for await (const chunk of document.ipfs.cat(cid)) {
+		chunks.push(chunk)
+	}
 
-  const s = new Uint8Array(chunks.reduce( (acc, cur) => { acc.push(...cur); return acc }, []));
-  console.log("fetched: " + cid);
-  return s;
+	const s = new Uint8Array(chunks.reduce( (acc, cur) => { acc.push(...cur); return acc }, []));
+	console.log("fetched: " + cid);
+	return s;
 }
+
 fetchIpfsS = async (cid) => {
-  const s = new TextDecoder('utf8').decode(await fetchIpfsB(cid));
-  console.log("fetched: " + s);
-  return s;
+	const s = new TextDecoder('utf8').decode(await fetchIpfsB(cid));
+	console.log("fetched: " + s);
+	return s;
 }
+
 const decideDefaultLanguage = async (indexes) => {
 	/**
 	 *	Takes the returned list of language indexes
@@ -89,7 +91,7 @@ const getIndexes = async () => {
 	// Pulls down the list of indexes (e.g. languages)
 	console.log("getIndexes() !");
 
-	const indexesPromise = fetchIpfsS("QmYAKjr98ii2ZJkZ1iGjFS9C2oL2cQbJ2rnC28NvAmVGpo");
+	const indexesPromise = fetchIpfsS(GLOBAL_INDEX);
 
 	const indexes = await Promise.all([indexesPromise]);
 	const indexesData = indexes.map(JSON.parse);
