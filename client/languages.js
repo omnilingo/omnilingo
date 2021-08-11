@@ -1,6 +1,4 @@
-"""Mapping from ISO codes to language names."""
-
-language_names = {
+var languageNames = {
     "ab": "Аԥсуа",
     "ace": "Bahsa Acèh",
     "am": "አማርኛ",

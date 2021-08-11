@@ -106,7 +106,7 @@ const populateLanguageSelector = async (indexes, defaultLanguage) => {
 	for(var language in indexes) {
 			enabled += language + " ";
 			var languageElem = document.createElement("option");
-			var languageText = document.createTextNode(indexes[language]["display"]); // Display name
+			var languageText = document.createTextNode(languageNames[language]); // Display name
 			if(defaultLanguage == language) {
 				languageElem.setAttribute("selected","");
 			}
