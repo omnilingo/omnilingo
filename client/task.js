@@ -53,6 +53,7 @@ class Task {
 		this.question.setCompletedTask("choice");
 	}
 
+/*
 	fetchDistractors = async () => {
 		this.tokensPath = hashToPath(this.question.textHash) + '/dist';
 		const tokensPromise = fetch(STATIC_URL + this.question.language + '/text/' + this.tokensPath);
@@ -71,6 +72,7 @@ class Task {
 		}
 
 	}
+*/
 
 	fetchData = async () => {
 		//console.log('[Task] fetchData()');
