@@ -20,6 +20,50 @@
 <script type="text/javascript" src="./tasks/search.js"></script>
 <script type="text/javascript" src="./callbacks.js"></script>
 <script type="text/javascript" src="./omnilingo.js"></script>
+	<script type="text/javascript">
+		function toggleSettings(save=false) {
+			button = document.getElementById('toggleSettings');
+			settings = document.getElementById('settings');
+			content = document.getElementById('content');
+			if(!button.disabled) {
+				settings.style.display = 'block';
+				content.style.display = 'none';
+				button.disabled = true;
+				updateCIDs();
+			}
+			else {
+				settings.style.display = 'none';
+				content.style.display = 'block';
+				button.disabled = false;
+				if (save) {
+					if(saveCIDs()) {
+						main();
+					}
+				}
+			}
+		}
+		function updateCIDs() {
+			text = document.getElementById('root-cids');
+			text.cols = 64;
+			text.value = document.root_cids.join("\n");
+		}
+		function saveCIDs() {
+			text = document.getElementById('root-cids');
+			cids = text.value.split("\n");
+			if (cids == GLOBAL_INDEXES) {
+				return false;
+			}
+			for (cid in cids) {
+				if(!fetchIpfsB(cid)) {
+					console.log("invalid ipfs cid " + cid);
+					return false;
+				}
+			}
+			localStorage.setItem("root-cids", text.value);
+			GLOBAL_INDEXES = cids;
+			return true;
+		}
+	</script>
 </head>
 
 <body>
@@ -27,8 +71,13 @@
   <div class="header" id="header">
     <span style="float:left"><a href="https://omnilingo.github.io"><img src="https://omnilingo.xyz/logo.png" height="35px"/></a></span>
     <span style="float:right; text-align:right"><select name="languages" id="languages" onChange="onChangeLanguage(this)"></select></span>
+    <span style="float:right; text-align:right"><button onclick="toggleSettings();" id="toggleSettings"><i class="fas fa-cog"></i></button></span>
   </div>
   <!-- Content -->
+  <div class="content" id="settings" style="display: none">
+	  IPFS:<br /><textarea id="root-cids"></textarea><br />
+	  <button onclick="toggleSettings(true);"><i class="fas fa-save"></i></button><button onclick="toggleSettings();"><i class="fas fa-window-close"></i></button>
+  </div>
   <div class="content" id="content">
 <!--    <div>
       <div style="float:right">
@@ -87,7 +136,6 @@
   </div>
   <div class="footer">
 <div class="footerLeft">
-<i class="fas fa-cog fa-2x"></i>
 
 </div>
 <div class="footerRight"><!-- Put the settings cog here -->
