@@ -129,9 +129,10 @@ const populateLanguageSelector = async (indexes, defaultLanguage) => {
 	var enabled = "";
 	languages = []
 	for(var language in indexes) {
+			var metaData = await getLanguageMeta(indexes[language]["meta"]);
 			enabled += language + " ";
 			var languageElem = document.createElement("option");
-			var languageText = document.createTextNode(language); // Display name
+			var languageText = document.createTextNode(metaData["display"]); // Display name
 			if(defaultLanguage == language) {
 				languageElem.setAttribute("selected","");
 			}
@@ -188,6 +189,7 @@ const main = async () => {
 
 	populateLanguageSelector(indexes, defaultLanguage);
 
+	// redundant call, we call it in populateLanguageSelector
 	var metaData = await getLanguageMeta(indexes[defaultLanguage]["meta"]);
 
 	window.onkeydown = globalKeyDown;
