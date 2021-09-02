@@ -26,10 +26,10 @@ class OmniLingo {
 		return normStr;
 	}
 
-	setup = async (language, cid) => {
+	setup = async (language, cids) => {
 		console.log('setup()');
 		this.language = language;
-		this.cid = cid;
+		this.cids = cids;
 		this.updateLevel();
 	}
 
@@ -59,15 +59,14 @@ class OmniLingo {
 	fetchIndex = async () => {
 		console.log('fetchIndex() ' + this.language);
 
-		const indexPromise = fetchIpfsS(this.cid);
-		const index = await Promise.all([indexPromise]);
+		const indexPromise = this.cids.map(fetchIpfsS);
+		const index = await Promise.all(indexPromise);
 		const indexData = index.map(JSON.parse);
 		const allData = await Promise.all(indexData);
 
 		console.log('allData:');
 		console.log(allData);
-
-		this.index = allData[0];
+		this.index = allData.reduce((ac, x) => ac.concat(x)).sort(y => y["chars_sec"]);
 	}
 
 	updateRemaining() {

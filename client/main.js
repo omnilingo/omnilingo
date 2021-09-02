@@ -85,13 +85,13 @@ const decideDefaultLanguage = async (indexes) => {
 	return enabledLanguages[0];
 }
 
-const getLanguageMeta = async (language) => {
+const getLanguageMeta = async (cid) => {
 
 	console.log("getLanguageMeta()");
 
-	const metaPromise = fetch(STATIC_URL + "/" + language + "/meta");
+	const metaPromise = fetchIpfsS(cid);
 	const meta = await Promise.all([metaPromise]);
-	const metaData = meta.map(response => response.json());
+	const metaData = meta.map(JSON.parse);
 	const allData = await Promise.all(metaData);
 
 	return allData[0];
@@ -102,13 +102,24 @@ const getIndexes = async () => {
 	// Pulls down the list of indexes (e.g. languages)
 	console.log("getIndexes() !");
 
-	const indexesPromise = fetchIpfsS(GLOBAL_INDEX);
+	const indexesPromise = document.root_cids.map(fetchIpfsS);
 
-	const indexes = await Promise.all([indexesPromise]);
+	const indexes = await Promise.all(indexesPromise);
 	const indexesData = indexes.map(JSON.parse);
 	const allData = await Promise.all(indexesData);
+	var mergedData = allData.reduce( function(z, x) {
+		for(var lang in x) {
+			if (z[lang]) {
+				z[lang] = z[lang].concat(x[lang]);
+			}
+			else {
+				z[lang] = x[lang];
+			}
+		}
+		return z;
+	});
 
-	return allData[0];
+	return mergedData;
 }
 
 const populateLanguageSelector = async (indexes, defaultLanguage) => {
@@ -116,25 +127,27 @@ const populateLanguageSelector = async (indexes, defaultLanguage) => {
 	languageSelector = document.getElementById("languages");
 
 	var enabled = "";
+	languages = []
 	for(var language in indexes) {
 			enabled += language + " ";
 			var languageElem = document.createElement("option");
-			var languageText = document.createTextNode(languageNames[language]); // Display name
+			var languageText = document.createTextNode(language); // Display name
 			if(defaultLanguage == language) {
 				languageElem.setAttribute("selected","");
 			}
 			languageElem.setAttribute("value", language);
 			languageElem.appendChild(languageText);
-			languageSelector.appendChild(languageElem);
+			languages.push(languageElem);
 	}
+	languageSelector.replaceChildren(...languages);
 	console.log("  [languages] "  + enabled);
 }
 
-const runLanguage = async (language, cid, acceptingChars) => {
+const runLanguage = async (language, cids, acceptingChars) => {
 
 	document.omnilingo = new OmniLingo();
 
-	await document.omnilingo.setup(language, cid);
+	await document.omnilingo.setup(language, cids);
 
 	document.omnilingo.cleanup();
 
@@ -157,7 +170,10 @@ const runLanguage = async (language, cid, acceptingChars) => {
 }
 
 const main = async () => {
-	document.ipfs = await IPFS.create();
+	if(!document.ipfs) {
+		document.ipfs = await IPFS.create();
+	}
+	document.root_cids = localStorage.getItem("root-cids").split("\n") || GLOBAL_INDEXES;
 
 
 	var indexes = await getIndexes();
@@ -172,17 +188,17 @@ const main = async () => {
 
 	populateLanguageSelector(indexes, defaultLanguage);
 
-	//var metaData = await getLanguageMeta(defaultLanguage);
+	var metaData = await getLanguageMeta(indexes[defaultLanguage]["meta"]);
 
 	window.onkeydown = globalKeyDown;
 
-	//var acceptingChars = metaData["accept"];
+	var acceptingChars = metaData["alternatives"];
 
 	//console.log('  [acceptingChars]');
 	//console.log(acceptingChars);
 	console.log(indexes["fi"]);
 
-	runLanguage(defaultLanguage, indexes[defaultLanguage][0], {}); //acceptingChars);
+	runLanguage(defaultLanguage, indexes[defaultLanguage]["cids"], acceptingChars || {});
 }
 
 window.onload = main;
