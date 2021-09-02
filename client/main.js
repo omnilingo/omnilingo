@@ -173,7 +173,7 @@ const main = async () => {
 	if(!document.ipfs) {
 		document.ipfs = await IPFS.create();
 	}
-	document.root_cids = localStorage.getItem("root-cids").split("\n") || GLOBAL_INDEXES;
+	document.root_cids = localStorage.getItem("root-cids") ? localStorage.getItem("root-cids").split("\n") : GLOBAL_INDEXES;
 
 
 	var indexes = await getIndexes();
