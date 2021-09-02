@@ -2,6 +2,17 @@ const IPFS = require('ipfs')
 
 
 fetchIpfsB = async (cid) => {
+	if (cid.startsWith("k5")) {
+		cid_s = await fetch('https://gateway.ipfs.io/api/v0/name/resolve?arg=' + cid);
+		cid_json = await cid_s.json();
+		cid = cid_json["Path"];
+		if(cid.startsWith("/ipfs/")) {
+			cid = cid.substring("/ipfs/".length);
+		}
+		else {
+			console.log("resolved unsupported ipfs path " + cid);
+		}
+	}
 	const chunks = []
 	for await (const chunk of document.ipfs.cat(cid)) {
 		chunks.push(chunk)
