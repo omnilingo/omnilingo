@@ -8,6 +8,7 @@ const onChangeLanguage = async (elem) => {
 	console.log('onChangeLanguage() ' + elem.value);
 	var newLanguage = elem.value ;
 	localStorage.setItem('currentLanguage', newLanguage);
+        // FMT: Not sure if it worth getting all indexes again here
 	var index = await getIndexes().then(x => x[newLanguage]);
 	var metaData = getLanguageMeta(index["meta"]);
 	var acceptingChars = metaData["alternatives"];
