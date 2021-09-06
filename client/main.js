@@ -118,7 +118,12 @@ const getIndexes = async () => {
 		}
 		return z;
 	});
-
+        // Count the number of langs we have (for debugging, remove later)
+        var count = 0;
+	for(var lang in mergedData) {
+            count++;
+        }
+        console.log(' [indexes] ' + count);
 	return mergedData;
 }
 
