@@ -1,1 +1,1 @@
-GLOBAL_INDEXES = ["k51qzi5uqu5dkk8uzu2dfw8yts53fwnavajs3ofdvtcr16syhcf0hqhag8o1aa"];
+GLOBAL_INDEXES = ["k51qzi5uqu5di32djpqj7vvjkbqy9cuswzh10av74yaccryvnj77c5zkdi678r"];
