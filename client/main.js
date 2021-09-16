@@ -13,14 +13,19 @@ fetchIpfsB = async (cid) => {
 			console.log("resolved unsupported ipfs path " + cid);
 		}
 	}
-	const chunks = []
+	var chunks = [];
+	var len = 0;
 	for await (const chunk of document.ipfs.cat(cid)) {
-		chunks.push(chunk)
+	  chunks.push(chunk);
+	  len += chunk.length;
 	}
-
-	const s = new Uint8Array(chunks.reduce( (acc, cur) => { acc.push(...cur); return acc }, []));
-	console.log("fetched: " + cid);
-	return s;
+	var data = new Uint8Array(new ArrayBuffer(len));
+	var i = 0;
+	for (chunk of chunks) {
+		data.set(chunk, i);
+		i += chunk.length;
+	}
+	return data;
 }
 
 fetchIpfsS = async (cid) => {
