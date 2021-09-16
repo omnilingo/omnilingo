@@ -183,6 +183,7 @@ const main = async () => {
 
 
 	var indexes = await getIndexes();
+	document.indexes = indexes;
 
         console.log("  [indexes] ");
         console.log(indexes);
