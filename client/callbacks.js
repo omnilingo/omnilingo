@@ -8,9 +8,10 @@ const onChangeLanguage = async (elem) => {
 	console.log('onChangeLanguage() ' + elem.value);
 	var newLanguage = elem.value ;
 	localStorage.setItem('currentLanguage', newLanguage);
-	var metaData = await getLanguageMeta(newLanguage);
-	var acceptingChars = metaData["accept"];
-	runLanguage(newLanguage, acceptingChars);
+	var index = document.indexes[newLanguage];
+	var metaData = getLanguageMeta(index["meta"]);
+	var acceptingChars = metaData["alternatives"];
+	runLanguage(newLanguage, index["cids"], acceptingChars);
 }
 
 function onSkipButton() {

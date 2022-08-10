@@ -2,6 +2,8 @@ class BlankTask extends Task {
 
 	constructor(question) {
 		super(question);
+
+		console.log("[BlankTask] " + question.textCid);
 	}
 
 	cleanup() {

@@ -1,2 +1,1 @@
-const STATIC_URL = "http://localhost:5001/static/";
-const CLIENT_URL = "http://localhost:5001";
+GLOBAL_INDEXES = ["k51qzi5uqu5di32djpqj7vvjkbqy9cuswzh10av74yaccryvnj77c5zkdi678r"];

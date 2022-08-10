@@ -10,7 +10,7 @@ class Task {
 	}
 
 	init = async() => {
-		this.setupAudio();
+		await this.setupAudio();
 		await this.fetchData();
 	}
 
@@ -22,14 +22,17 @@ class Task {
 		return this.running;
 	}
 
-	setupAudio() {
+	setupAudio = async () => {
 
-		this.currentAudio = hashToPath(this.question.audioHash) + '/audio.mp3';
+		//this.currentAudio = hashToPath(this.question.audioHash) + '/audio.mp3';
 		var player = document.getElementById('player');
 		var source = document.getElementById('audioSource');
+		var bytes = await fetchIpfsB(this.question.audioCid);
 
 		source.type = 'audio/mp3';
-		source.src = STATIC_URL + this.question.language + '/clip/' + this.currentAudio ;
+		source.src = URL.createObjectURL(new Blob([bytes]), {type: 'audio/mp3'});
+
+		console.log("[audio_src] " + source.src);
 
 		//player.setAttribute('onPlay', 'onStartTimer()');
 		player.load();
@@ -50,6 +53,7 @@ class Task {
 		this.question.setCompletedTask("choice");
 	}
 
+/*
 	fetchDistractors = async () => {
 		this.tokensPath = hashToPath(this.question.textHash) + '/dist';
 		const tokensPromise = fetch(STATIC_URL + this.question.language + '/text/' + this.tokensPath);
@@ -68,30 +72,29 @@ class Task {
 		}
 
 	}
+*/
 
 	fetchData = async () => {
 		//console.log('[Task] fetchData()');
-		this.tokensPath = hashToPath(this.question.textHash) + '/info';
-		const tokensPromise = fetch(STATIC_URL + this.question.language + '/text/' + this.tokensPath);
-		const meta = await Promise.all([tokensPromise]);
-		const metaData = meta.map(response => response.text());
-		const allData = await Promise.all(metaData);
+		//this.tokensPath = hashToPath(this.question.textHash) + '/info';
+		//const tokensPromise = fetch(STATIC_URL + this.question.language + '/text/' + this.tokensPath);
+		console.log("[tokens_src] " + this.question.metaCid);
+		const tokensPromise = fetchIpfsS(this.question.metaCid);
+		const allData = await Promise.all([tokensPromise]);
+
+		console.log(allData);
 
 		var metadata = JSON.parse(allData[0]);
 
-		this.metadata = metadata["tokens"];
+		console.log(metadata);
 
-		this.tokens = [];
-		this.tags = [];
-		this.chars = [];
+		this.tokens = metadata["tokens"];
+		this.tags = metadata["tags"];
 
-		for(var i in this.metadata) {
-			this.tokens.push(this.metadata[i][0]);
-			this.tags.push(this.metadata[i][1]);
-			this.chars.push(this.metadata[i][2]);
-		}
-
-		await this.fetchDistractors();
+		console.log(this.tokens);
+		console.log(this.tags);
+		//	this.chars.push(this.metadata[i][2]);
+		//await this.fetchDistractors();
 
 		this.validateTasks();
 	}

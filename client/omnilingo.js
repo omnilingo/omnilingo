@@ -6,7 +6,8 @@ class OmniLingo {
 		this.batchSize = 5;
 		this.graph = new Graph(this.batchSize);
 //		this.state = new State();
-		this.enabledTasks = ["blank", "scramble", "choice", "search"];
+		//this.enabledTasks = ["blank", "scramble", "choice", "search"];
+		this.enabledTasks = ["blank"];
 		this.globalScore = 0;
 		this.deactivatedQuestions = new Set();
 	}
@@ -25,10 +26,10 @@ class OmniLingo {
 		return normStr;
 	}
 
-	setup(url, language) {
+	setup = async (language, cids) => {
 		console.log('setup()');
-		this.staticUrl = url;
 		this.language = language;
+		this.cids = cids;
 		this.updateLevel();
 	}
 
@@ -54,18 +55,18 @@ class OmniLingo {
 		console.log(this.equivalentChars);
 	}
 
+
 	fetchIndex = async () => {
 		console.log('fetchIndex() ' + this.language);
 
-		const indexPromise = fetch(this.staticUrl + '/index/' + this.language);
-		const index = await Promise.all([indexPromise]);
-		const indexData = index.map(response => response.json());
+		const indexPromise = this.cids.map(fetchIpfsS);
+		const index = await Promise.all(indexPromise);
+		const indexData = index.map(JSON.parse);
 		const allData = await Promise.all(indexData);
 
 		console.log('allData:');
 		console.log(allData);
-
-		this.index = allData[0]["index"];
+		this.index = allData.reduce((ac, x) => ac.concat(x)).sort(y => y["chars_sec"]);
 	}
 
 	updateRemaining() {
@@ -189,7 +190,8 @@ class OmniLingo {
 		var currentTaskType = currentQuestion.getRandomRemainingTask();
 
 		// FIXME: Do this nicer
-		var randInt = getRandomInt(0, 3);
+		//var randInt = getRandomInt(0, 3);
+		var randInt = 3;
 		if(randInt == 0) {
 			this.currentTask = new ScrambleTask(currentQuestion);
 		} else if(randInt == 1) {

@@ -88,7 +88,7 @@ pip install poetry
 pip install -r requirements.txt
 make
 poetry install
-poetry run omnilingo serve
+poetry run omnilingo serve --port 5002
 ```
 
 The project should be accessible through http://localhost:5001/index.html

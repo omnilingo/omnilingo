@@ -9,7 +9,7 @@ language_names = {
     "ast": "Asturianu",
     "as": "অসমীয়া",
     "az": "Azərbaycanca",
-    "azz": " Nahuatlahtolli",
+    "azz": "Nahuatlahtolli",
     "bas": "Basaa",
     "ba": "Башҡортса",
     "be": "Беларуская",
