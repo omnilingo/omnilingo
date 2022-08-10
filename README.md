@@ -80,18 +80,7 @@ in the meantime, you can check out the [format guidelines](docs/FORMAT.md).
 
 # Deployment
 
-To bootstrap the project for Finnish, `git clone` the repository, then run the following
-commands:
-
-```bash
-pip install poetry
-pip install -r requirements.txt
-make
-poetry install
-poetry run omnilingo serve --port 5002
-```
-
-The project should be accessible through http://localhost:5001/index.html
+For deployment information check out our blogpost at the [IPFS blog](https://blog.ipfs.io/2021-12-17-omnilingo/).
 
 To add more languages, download a dataset from [Common Voice](https://commonvoice.mozilla.org/datasets) and
 put it in `cv-corpus-6.1-2020-12-11/`.
@@ -111,4 +100,5 @@ python3-flask - micro web framework based on Werkzeug and Jinja2 - Python 3.x
 
 # Acknowledgements
 
-Logo by [Fabi Yamada](https://society6.com/yamadamx)! Licensed under CC-BY.
+* Logo by [Fabi Yamada](https://society6.com/yamadamx)! Licensed under CC-BY.
+* Funding generously provided by Protocol Labs.
