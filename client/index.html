@@ -1,4 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
+<!-- vim: noexpandtab sw=8 ts=8
+-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -20,27 +22,39 @@
 <script type="text/javascript" src="./tasks/search.js"></script>
 <script type="text/javascript" src="./callbacks.js"></script>
 <script type="text/javascript" src="./omnilingo.js"></script>
+<script src="js/recorder.js"></script>
+
 	<script type="text/javascript">
 		function toggleSettings(save=false) {
-			button = document.getElementById('toggleSettings');
-			settings = document.getElementById('settings');
-			content = document.getElementById('content');
-			if(!button.disabled) {
-				settings.style.display = 'block';
-				content.style.display = 'none';
-				button.disabled = true;
-				updateCIDs();
+			if(toggle("settings", save)) {
+				if(save && saveCIDs())
+					main();
 			}
 			else {
-				settings.style.display = 'none';
-				content.style.display = 'block';
-				button.disabled = false;
-				if (save) {
-					if(saveCIDs()) {
-						main();
-					}
-				}
+				updateCIDs();
 			}
+		}
+		function toggleContribute() {
+			if(!toggle("contribute", false)) {
+				onLoadRecorder();
+			}
+		}
+		function titlecase(s) {
+			return s[0].toUpperCase() + s.substr(1);
+		}
+		function toggle(kind, save=false) {
+			contents = document.getElementsByClassName('content');
+			buttons = document.getElementsByClassName('toggle');
+			button = document.getElementById('toggle' + titlecase(kind));
+			disabling = !button.disabled;
+			for(var i = 0; i < contents.length; i++) {
+				content = contents[i];
+				content.style.display = (content.id == (disabling ? kind : "content")) ? 'block' : 'none';
+			}
+			for(var i = 0; i < buttons.length; i++) {
+				buttons[i].disabled = disabling;
+			}
+			return !disabling;
 		}
 		function updateCIDs() {
 			text = document.getElementById('root-cids');
@@ -71,26 +85,33 @@
   <div class="header" id="header">
     <span style="float:left"><a href="https://omnilingo.github.io"><img src="./assets/logo.png" height="35px"/></a></span>
     <span style="float:right; text-align:right"><select name="languages" id="languages" onChange="onChangeLanguage(this)"></select></span>
-    <span style="float:right; text-align:right"><button onclick="toggleSettings();" id="toggleSettings"><i class="fas fa-cog"></i></button></span>
+    <span style="float:right; text-align:right"><button class="toggle" onclick="toggleContribute();" id="toggleContribute"><i class="fas fa-microphone"></i></button></span>
+    <span style="float:right; text-align:right"><button class="toggle" onclick="toggleSettings();" id="toggleSettings"><i class="fas fa-cog"></i></button></span>
   </div>
   <!-- Content -->
   <div class="content" id="settings" style="display: none">
 	  IPFS:<br /><textarea id="root-cids"></textarea><br />
 	  <button onclick="toggleSettings(true);"><i class="fas fa-save"></i></button><button onclick="toggleSettings();"><i class="fas fa-window-close"></i></button>
   </div>
-  <div class="content" id="content">
-<!--    <div>
-      <div style="float:right">
-        <label class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableSearch" name="enableSearch" checked><span>Search</span></label>
-        <label class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableScrams" name="enableScrams" checked><span>Scramble</span></label>
-        <label class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableBlanks" name="enableBlanks" checked><span>Blanks</span></label>
-        <label class="cb"><input onClick="updateTask(this)" type="checkbox" id="enableChoice" name="enableChoice" checked><span>Choice</span></label>
+  <div class="content" id="contribute" style="display: none">
+      <div>
+        <audio id="recorder" controls="controls" style="display: none">
+        </audio>
       </div>
-      <div style="float:left">
-      <select name="levels" id="levels" onChange="changeLevel(this)"></select>
+      <p/>
+      <div style="display: inline-block">
+        <div class="row">
+           <span class="col button" id="recordButton" onClick="onRecordButton()"><i id="recordIcon" class="fas fa-circle"></i></span>
+           <span class="col button" id="saveButton" onClick="onRecordingSaveButton()"><i class="fas fa-download"></i></span>
+           <span class="col button" id="uploadButton" onClick="onRecordingUploadButton()"><i class="fas fa-cloud-upload-alt"></i></span>
+           <!--<input id="nextButton" type="button" onClick="onNextButton()" value="✔"/>-->
+        </div>
       </div>
+    <div style="display: inline-block">
+	    <div class="clues" id="clues"></div>
     </div>
-    <p>&nbsp;</p> -->
+  </div>
+  <div class="content" id="content">
     <div>
       <!--<div style="float:left">-->
       <div>
@@ -101,17 +122,17 @@
       <p/>
       <div style="display: inline-block">
         <div class="row">
-           <span class="col" id="dumpButton" onClick="onDumpButton()"><i class="fas fa-ban"></i></span>&nbsp;
+           <span class="col button" id="dumpButton" onClick="onDumpButton()"><i class="fas fa-ban"></i></span>&nbsp;
            <span class="col" id="timer"><label id="seconds">0</label></span>&nbsp;
            <!--<span class="col" id="skipButton" onClick="onSkipButton()"><i class="fas fa-angle-double-right"></i></span>&nbsp;-->
-           <span class="col" id="nextButton" onClick="onSubmitButton()"><i class="fas fa-angle-right"></i></span>
+           <span class="col button" id="nextButton" onClick="onSubmitButton()"><i class="fas fa-angle-right"></i></span>
            <!--<input id="nextButton" type="button" onClick="onNextButton()" value="✔"/>-->
         </div>
       </div>
     </div>
     <p>&nbsp;</p>
     <div style="display: inline-block">
-      <div class="clues" id="clues">
+	    <div class="clues" id="clues"></div>
     </div>
     <p/>
     <div class="teksti" id="textbox"> </div>

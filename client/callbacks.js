@@ -140,3 +140,94 @@ function onCheckInputSearch(e) {
 	var task = document.omnilingo.getRunningTask();
 	task.checkInput(e);
 }
+
+function onRecordButton(e) {
+	recordIcon = document.getElementById("recordIcon");
+	isRecording = recordIcon.classList.contains("fa-stop");
+	recordIcon.classList.toggle("fa-stop");
+	recordIcon.classList.toggle("fa-circle");
+	
+	if (!isRecording) {
+		if (!document.audioRecorder) {
+			return;
+		}
+		document.audioRecorder && document.audioRecorder.record();
+	}
+	else {
+		if(!document.audioRecorder) {
+			return;
+		}
+		document.audioRecorder.stop();
+	}
+
+}
+
+
+function handlerStartUserMedia(stream) {
+	console.log('handlerStartUserMedia');
+	console.log('sampleRate:'+ document.audioContext.sampleRate);
+	// MEDIA STREAM SOURCE -> ZERO GAIN >
+	document._realAudioInput = document.audioContext.createMediaStreamSource(stream);
+	document.audioRecorder = new Recorder(document._realAudioInput, blob => {
+		var recorder = document.getElementById("recorder");
+		recorder.blob = blob;
+		recorder.src = URL.createObjectURL(blob);
+		recorder.style.display = "block";
+	});
+}
+
+function handlerErrorUserMedia(e) {
+	console.log('No live audio input: ' + e);
+}
+
+
+function onLoadRecorder() {
+	if(document.recorderLoaded)
+		return;
+
+	window.AudioContext = (
+		window.AudioContext ||
+		window.webkitAudioContext ||
+		window.mozAudioContext
+	);
+	navigator.getUserMedia = ( 
+		navigator.getUserMedia ||
+		navigator.webkitGetUserMedia ||
+		navigator.mozGetUserMedia ||
+		navigator.msGetUserMedia
+	);
+	
+	window.URL = window.URL || window.webkitURL;
+	document.audioContext = new AudioContext;
+
+	if (typeof navigator.mediaDevices.getUserMedia === 'undefined') {
+		navigator.getUserMedia({
+			video:false,
+			audio: true
+		}, handlerStartUserMedia, handlerErrorUserMedia);
+	} else {
+		navigator.mediaDevices.getUserMedia({
+			audio: true
+		}).then(handlerStartUserMedia).catch(handlerErrorUserMedia);
+	}
+	document.recorderLoaded = true;
+}
+
+function onRecordingSaveButton() {
+	var link = document.createElement("a");
+	link.href = document.getElementById("recorder").src;
+	link.download = "omnilingo-recording.mp3";
+	link.click();
+}
+
+async function onRecordingUploadButton() {
+	const file = await document.ipfs.add({content: document.getElementById("recorder").blob});
+	console.log("posted to ipfs: " + file.cid);
+	//	var xhr = new XMLHttpRequest();
+	//	xhr.addEventListener("load", async function() {
+	//		const file = await document.ipfs.add({content: this.response});
+	//		console.log("posted to ipfs: " + file.cid);
+	//	});
+	//	xhr.open("GET", document.getElementById("recorder").src);
+	//	xhr.send();
+}
