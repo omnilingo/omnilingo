@@ -1,11 +1,9 @@
-const IPFS = require('ipfs')
-
-
 fetchIpfsB = async (cid) => {
 	if (cid.startsWith("k5")) {
-		cid_s = await fetch('https://gateway.ipfs.io/api/v0/name/resolve?arg=' + cid);
-		cid_json = await cid_s.json();
-		cid = cid_json["Path"];
+		for await (const cid_s of document.ipfs.name.resolve("/ipns/" + cid)) {
+			cid = cid_s;
+			break;
+		}
 		if(cid.startsWith("/ipfs/")) {
 			cid = cid.substring("/ipfs/".length);
 		}
@@ -182,7 +180,7 @@ const runLanguage = async (language, cids, acceptingChars) => {
 
 const main = async () => {
 	if(!document.ipfs) {
-		document.ipfs = await IPFS.create();
+		document.ipfs = window.KuboRpcClient.create()
 	}
 	document.root_cids = localStorage.getItem("root-cids") ? localStorage.getItem("root-cids").split("\n") : GLOBAL_INDEXES;
 
