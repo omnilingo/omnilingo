@@ -14,13 +14,49 @@
 <script type="text/javascript" src="./question.js"></script>
 <script type="text/javascript" src="./graph.js"></script>
 <script type="text/javascript" src="./task.js"></script>
+<script type="text/javascript" src="./tasks/pronunciation.js"></script>
 <script type="text/javascript" src="./tasks/blank.js"></script>
 <script type="text/javascript" src="./tasks/scramble.js"></script>
 <script type="text/javascript" src="./tasks/choice.js"></script>
 <script type="text/javascript" src="./tasks/search.js"></script>
 <script type="text/javascript" src="./callbacks.js"></script>
 <script type="text/javascript" src="./omnilingo.js"></script>
+<script type="text/javascript" src="./stt/stt_wasm.js"></script>
 	<script type="text/javascript">
+		function toggleListening() {
+			buttonListening = document.getElementById('toggleListening');
+			buttonPronunciation = document.getElementById('togglePronunciation');
+			settings = document.getElementById('pronunciation');
+			content = document.getElementById('content');
+			if(!buttonListening.disabled) {
+				pronunciation.style.display = 'none';
+				content.style.display = 'block';
+			}
+			else {
+				pronunciation.style.display = 'block';
+				content.style.display = 'none';
+			}
+
+		}
+		function togglePronunciation() {
+			buttonListening = document.getElementById('toggleListening');
+			buttonPronunciation = document.getElementById('togglePronunciation');
+			settings = document.getElementById('pronunciation');
+			content = document.getElementById('content');
+			if(!buttonPronunciation.disabled) {
+				pronunciation.style.display = 'block';
+				content.style.display = 'none';
+				console.log('togglePronunciation()');
+				pron = new PronunciationTask();
+				pron.loadModel();
+				pron.runTask();
+			}
+			else {
+				pronunciation.style.display = 'none';
+				content.style.display = 'block';
+			}
+
+		}
 		function toggleSettings(save=false) {
 			button = document.getElementById('toggleSettings');
 			settings = document.getElementById('settings');
@@ -72,11 +108,21 @@
     <span style="float:left"><a href="https://omnilingo.github.io"><img src="./assets/logo.png" height="35px"/></a></span>
     <span style="float:right; text-align:right"><select name="languages" id="languages" onChange="onChangeLanguage(this)"></select></span>
     <span style="float:right; text-align:right"><button onclick="toggleSettings();" id="toggleSettings"><i class="fas fa-cog"></i></button></span>
+    <span style="float:right; text-align:right"><button onclick="togglePronunciation();" id="togglePronunciation"><i class="fas fa-microphone"></i></button></span>
+    <span style="float:right; text-align:right"><button onclick="toggleListening();" id="toggleListening"><i class="fas fa-headphones"></i></button></span>
   </div>
   <!-- Content -->
   <div class="content" id="settings" style="display: none">
 	  IPFS:<br /><textarea id="root-cids"></textarea><br />
 	  <button onclick="toggleSettings(true);"><i class="fas fa-save"></i></button><button onclick="toggleSettings();"><i class="fas fa-window-close"></i></button>
+  </div>
+  <div class="content" id="pronunciation" style="display: none">
+	  <div>
+		  <span id="teksti">AAA</span>
+	  </div>
+	  <div>
+		  <span id="resultat">BBB</span>
+	  </div>
   </div>
   <div class="content" id="content">
 <!--    <div>
