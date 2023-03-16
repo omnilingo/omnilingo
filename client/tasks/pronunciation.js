@@ -230,7 +230,9 @@ class PronunciationTask {
 
 	runTask() {
 //			this.processAudio();
-var res =		this.getMinimumPenalty("o ar fresco dos anúncios do conselho já estava circulando pelo mundo", "o afresca do sanuns cias tocos serio e aistara circorando a para muniã",  1,  1);
+	var orig = "o ar fresco dos anúncios do conselho já estava circulando pelo mundo" ;
+		var asr = "o afresca do sanuns cias tocos serio e aistara circorando a para muniã";
+var res =		this.getMinimumPenalty(orig, asr, 1, 1);
 			console.log(res);
 		var text = "";
 		var buffer = "";
@@ -253,6 +255,8 @@ var res =		this.getMinimumPenalty("o ar fresco dos anúncios do conselho já est
 		}
 	const result= document.getElementById("resultat");
 		result.innerHTML = text;
+	const source = document.getElementById("pronSource");
+		source.innerHTML = orig;
 
 	}
 
