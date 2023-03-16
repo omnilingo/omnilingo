@@ -3,14 +3,16 @@ class PronunciationTask {
 	constructor() {
 		// pt:
 		// this.textCid = "QmchCkUf7Zt7BWpJJQrPCKtdTnVMNuDCLUJnkEvYDGNqi7";
-		//this.modelCid = "QmX2yjYrmLfeSLnJHdfkVmUf6DMHwi5c391y34yM2oPD26";
-		//this.audioCid = "QmbvVrpimM3ja9Fgr8mt9KEkpiYZZrTAfDhAb4uc8M9Z79"; // mp3
+		this.modelCid = "QmX2yjYrmLfeSLnJHdfkVmUf6DMHwi5c391y34yM2oPD26";
+		this.audioCid = "QmbvVrpimM3ja9Fgr8mt9KEkpiYZZrTAfDhAb4uc8M9Z79"; // mp3
+		this.audioCid = "QmRVsDK629Tr6DY29u4xQPUgCuYQwfVH4B7u67sCGrczEN"; // mp3
 		// en:
 		// this.textCid = "";
-		 this.modelCid = "QmXauHFrYZJDCVTkMaVhNdGUeJ1PKSNgpFDGkBNAXGwaZA";
-		this.audioCid = "QmdGEr6cTLRhttCmnLd8L1e9nQ35FgNmp5QRxjuuKDbS6b"; // wav
+		// this.modelCid = "QmXauHFrYZJDCVTkMaVhNdGUeJ1PKSNgpFDGkBNAXGwaZA";
+		//this.audioCid = "QmdGEr6cTLRhttCmnLd8L1e9nQ35FgNmp5QRxjuuKDbS6b"; // wav
 		//this.audioCid = "QmQMdZNGsLtxC6q9WCkhdiBpTqtctrmhY6HSwiL824mCpi"; // mp3
 		console.log("[PronunciationTask] " );
+
 	        STT().then(module => {
 	            this.stt = module;
 	
@@ -179,6 +181,10 @@ class PronunciationTask {
                 this.activeModel = new this.stt.Model(new Uint8Array(bytes));
                 const modelSampleRate = this.activeModel.getSampleRate();
                 console.log("[model] Model sample rate: " + modelSampleRate);
+		  this.audioContext = new AudioContext({
+                    // Use the model's sample rate so that the decoder will resample for us.
+                    sampleRate: modelSampleRate
+                });
 
 		this.processAudio();
 
@@ -186,13 +192,29 @@ class PronunciationTask {
 
         processAudio = async () => {
             console.log(`Loading audio file`, this.audioCid);
-		var bytesB = await fetchIpfsB(this.audioCid);
-		console.log(bytesB)
-		var bytes = this.converFloat32ToInt16(bytesB);
+		var bytes = await fetchIpfsB(this.audioCid);
+		console.log('bytes')
 		console.log(bytes)
+//		var bytes = this.converFloat32ToInt16(bytesB);
+//		console.log('bytes:')
+//		console.log(bytes)
 		console.log('[audio] Length: ' + bytes.length)
+		var decodedAudio = await this.audioContext.decodeAudioData(bytes.buffer);
+		console.log('decodedAudio:')
+		console.log(decodedAudio)
+		                    const processedAudio = this.converFloat32ToInt16(decodedAudio.getChannelData(0));
+		console.log('processedAudio:')
+		console.log(processedAudio)
+
+                    // Convert the `processedAudio` to something that can be passed
+                    // across the WASM boundaries.
                     const toPass = new this.stt.VectorShort();
-                    bytes.forEach(e => toPass.push_back(e));
+                    processedAudio.forEach(e => toPass.push_back(e));
+
+//                    const toPass = new this.stt.VectorShort();
+  //                  bytes.forEach(e => toPass.push_back(e));
+		console.log('toPass')
+		console.log(toPass)
 
                     const now = Date.now();
 		     console.log('Running model: ' + now);
@@ -208,7 +230,7 @@ class PronunciationTask {
 
 	runTask() {
 //			this.processAudio();
-var res =		this.getMinimumPenalty("this is a test", "thiz i za test",  1,  1);
+var res =		this.getMinimumPenalty("o ar fresco dos anúncios do conselho já estava circulando pelo mundo", "o afresca do sanuns cias tocos serio e aistara circorando a para muniã",  1,  1);
 			console.log(res);
 		var text = "";
 		for(var i = 0; i < res.length; i++) {
