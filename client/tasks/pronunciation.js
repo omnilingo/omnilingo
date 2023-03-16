@@ -233,18 +233,36 @@ class PronunciationTask {
 var res =		this.getMinimumPenalty("o ar fresco dos anúncios do conselho já estava circulando pelo mundo", "o afresca do sanuns cias tocos serio e aistara circorando a para muniã",  1,  1);
 			console.log(res);
 		var text = "";
+		var buffer = "";
+		var lenMismatch = 0;
 		for(var i = 0; i < res.length; i++) {
 			if (res[i][1] == 0) {
-			text += '<span style="color: red">' + res[i][0] + '</span>';
+				lenMismatch += 1;
+				buffer += res[i][0];
 			} else {
-			text += '<span style="color: black">' + res[i][0] + '</span>';
-
+				if(buffer.length > 0) {
+					text += '<span style="color: ' + this.chooseColour(lenMismatch) + '">' + buffer + '</span>';
+					buffer = "";
+				}
+				text += '<span style="color: black">' + res[i][0] + '</span>';
+				lenMismatch = 0;
 			}
+		}
+		if(buffer.length > 0) {
+			text += '<span style="color: ' + this.chooseColour(lenMismatch) + '">' + buffer + '</span>';
 		}
 	const result= document.getElementById("resultat");
 		result.innerHTML = text;
 
 	}
 
+	chooseColour(n) {
 
+		if(n == 1) {
+			return "#990000";
+		}else if(n == 2) {
+			return "#cc0000";
+		}
+		return "#ff0000";
+	}
 }
