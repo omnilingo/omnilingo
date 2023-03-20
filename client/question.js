@@ -9,7 +9,7 @@ class Question {
 		this.language = language;
 		this.globalIndexPos = indexPos;
 		this.nodeId = nodeId;
-		this.textCid = content["sentence_cid"];
+		this.sentenceCid = content["sentence_cid"];
 		this.audioCid = content["clip_cid"];
 		this.metaCid = content["meta_cid"];
 		this.audioLength = Number(content["length"]);
@@ -49,6 +49,10 @@ class Question {
 	getRemainingTasks()
 	{
 		return this.remainingTasks;
+	}
+	async init() {
+		this.sentence = JSON.parse(await fetchIpfsS(this.sentenceCid));
+		this.meta = JSON.parse(await fetchIpfsS(this.metaCid));
 	}
 
 }
