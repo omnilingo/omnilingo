@@ -218,16 +218,28 @@ function onRecordingSaveButton() {
 	link.href = document.getElementById("recorder").src;
 	link.download = "omnilingo-recording.mp3";
 	link.click();
+
+	document.getElementById("recorder").style.display = "none";
+	document.omnilingo.nextTask();
 }
 
 async function onRecordingUploadButton() {
-	const file = await document.ipfs.add({content: document.getElementById("recorder").blob});
-	console.log("posted to ipfs: " + file.cid);
-	//	var xhr = new XMLHttpRequest();
-	//	xhr.addEventListener("load", async function() {
-	//		const file = await document.ipfs.add({content: this.response});
-	//		console.log("posted to ipfs: " + file.cid);
-	//	});
-	//	xhr.open("GET", document.getElementById("recorder").src);
-	//	xhr.send();
+	const recorder = document.getElementById("recorder");
+	const clip = await document.ipfs.add({content: recorder.blob});
+
+	console.log("posted to ipfs: " + clip.cid);
+
+	const task = document.omnilingo.getRunningTask();
+	const sample = await document.ipfs.add({content: JSON.stringify({
+		"chars_sec": task.question.sentence["content"].length / recorder.duration,
+		"clip_cid": clip.cid.toString(),
+		"length": recorder.duration,
+		"meta_cid": task.question.metaCid,
+		"sentence_cid": task.question.sentenceCid
+	})});
+
+	console.log("posted sample to ipfs: " + sample.cid);
+
+	document.getElementById("recorder").style.display = "none";
+	document.omnilingo.nextTask();
 }

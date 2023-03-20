@@ -146,10 +146,9 @@ class OmniLingo {
 	}
 
 	cleanup() {
-		var cbox = document.getElementById('clues');
-		cbox.innerHTML = "";
-		var tbox = document.getElementById('textbox');
-		tbox.innerHTML = "";
+		["clues", "textbox", "text"].forEach(e => {
+			document.getElementById(e).innerHTML = "";
+		});
 	}
 
 	submitTask() {
