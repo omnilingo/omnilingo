@@ -172,7 +172,7 @@ function handlerStartUserMedia(stream) {
 		var recorder = document.getElementById("recorder");
 		recorder.blob = blob;
 		recorder.src = URL.createObjectURL(blob);
-		recorder.style.display = "block";
+		recorder.style.display = "inline-block";
 	});
 }
 
