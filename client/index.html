@@ -17,6 +17,7 @@
 <script type="text/javascript" src="./graph.js"></script>
 <script type="text/javascript" src="./activity.js"></script>
 <script type="text/javascript" src="./task.js"></script>
+<script type="text/javascript" src="./tasks/pronunciation.js"></script>
 <script type="text/javascript" src="./tasks/blank.js"></script>
 <script type="text/javascript" src="./tasks/scramble.js"></script>
 <script type="text/javascript" src="./tasks/choice.js"></script>
@@ -24,8 +25,43 @@
 <script type="text/javascript" src="./callbacks.js"></script>
 <script type="text/javascript" src="./omnilingo.js"></script>
 <script src="js/recorder.js"></script>
+<script type="text/javascript" src="./stt/stt_wasm.js"></script>
 
 	<script type="text/javascript">
+		function toggleListening() {
+			buttonListening = document.getElementById('toggleListening');
+			buttonPronunciation = document.getElementById('togglePronunciation');
+			settings = document.getElementById('pronunciation');
+			content = document.getElementById('content');
+			if(!buttonListening.disabled) {
+				pronunciation.style.display = 'none';
+				content.style.display = 'block';
+			}
+			else {
+				pronunciation.style.display = 'block';
+				content.style.display = 'none';
+			}
+
+		}
+		function togglePronunciation() {
+			buttonListening = document.getElementById('toggleListening');
+			buttonPronunciation = document.getElementById('togglePronunciation');
+			settings = document.getElementById('pronunciation');
+			content = document.getElementById('content');
+			if(!buttonPronunciation.disabled) {
+				pronunciation.style.display = 'block';
+				content.style.display = 'none';
+				console.log('togglePronunciation()');
+				pron = new PronunciationTask();
+				pron.loadModel();
+				pron.runTask();
+			}
+			else {
+				pronunciation.style.display = 'none';
+				content.style.display = 'block';
+			}
+
+		}
 		function toggleSettings(save=false) {
 			if(toggle("settings", save)) {
 				if(save && saveCIDs())
@@ -88,6 +124,8 @@
     <span style="float:right; text-align:right"><select name="languages" id="languages" onChange="onChangeLanguage(this)"></select></span>
     <span style="float:right; text-align:right"><button class="toggle" onclick="toggleContribute();" id="toggleContribute"><i class="fas fa-microphone"></i></button></span>
     <span style="float:right; text-align:right"><button class="toggle" onclick="toggleSettings();" id="toggleSettings"><i class="fas fa-cog"></i></button></span>
+    <span style="float:right; text-align:right"><button class="toggle" onclick="togglePronunciation();" id="togglePronunciation"><i class="fas fa-microphone"></i></button></span>
+    <span style="float:right; text-align:right"><button class="toggle" onclick="toggleListening();" id="toggleListening"><i class="fas fa-headphones"></i></button></span>
   </div>
   <!-- Content -->
   <div class="content" id="settings" style="display: none">
@@ -112,6 +150,14 @@
     <div style="display: inline-block">
 	    <div class="clues" id="text"></div>
     </div>
+  </div>
+  <div class="content" id="pronunciation" style="display: none">
+	  <div>
+		  <span class="teksti" id="pronSource"></span>
+	  </div>
+	  <div>
+		  <span class="teksti" id="resultat"></span>
+	  </div>
   </div>
   <div class="content" id="content">
     <div>
