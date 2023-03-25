@@ -28,7 +28,7 @@ fetchIpfsB = async (cid) => {
 
 fetchIpfsS = async (cid) => {
 	const s = new TextDecoder('utf8').decode(await fetchIpfsB(cid));
-	console.log("fetched: " + s);
+//	console.log("fetched: " + s);
 	return s;
 }
 
@@ -86,6 +86,18 @@ const decideDefaultLanguage = async (indexes) => {
 	}
 	localStorage.setItem("currentLanguage", enabledLanguages[0]);
 	return enabledLanguages[0];
+}
+
+const getLanguageModels = async (cid) => {
+
+	console.log("getLanguageModels() " + cid);
+
+	const modelPromise = fetchIpfsS(cid);
+	const model = await Promise.all([modelPromise]);
+	const modelData = model.map(JSON.parse);
+	const allData = await Promise.all(modelData);
+
+	return allData[0];
 }
 
 const getLanguageMeta = async (cid) => {
@@ -152,11 +164,11 @@ const populateLanguageSelector = async (indexes, defaultLanguage) => {
 	console.log("  [languages] "  + enabled);
 }
 
-const runLanguage = async (language, cids, acceptingChars) => {
+const runLanguage = async (language, cids, acceptingChars, models) => {
 
 	document.omnilingo = new OmniLingo();
 
-	await document.omnilingo.setup(language, cids);
+	await document.omnilingo.setup(language, cids, models);
 
 	document.omnilingo.cleanup();
 
@@ -198,8 +210,22 @@ const main = async () => {
 
 	populateLanguageSelector(indexes, defaultLanguage);
 
+
+
 	// redundant call, we call it in populateLanguageSelector
 	var metaData = await getLanguageMeta(indexes[defaultLanguage]["meta"]);
+
+	var buttonPronunciation = document.getElementById('togglePronunciation');
+	var models = {};
+	if("models" in metaData) {
+		models = await getLanguageModels(metaData["models"][0]);
+		console.log('MODELS:');
+		console.log(models);
+		buttonPronunciation.disabled = false;
+	} else {
+		buttonPronunciation.disabled = true;
+	}
+
 
 	window.onkeydown = globalKeyDown;
 
@@ -207,9 +233,9 @@ const main = async () => {
 
 	//console.log('  [acceptingChars]');
 	//console.log(acceptingChars);
-	console.log(indexes["fi"]);
+	//console.log(indexes["fi"]);
 
-	runLanguage(defaultLanguage, indexes[defaultLanguage]["cids"], acceptingChars || {});
+	runLanguage(defaultLanguage, indexes[defaultLanguage]["cids"], acceptingChars || {}, models);
 }
 
 window.onload = main;
