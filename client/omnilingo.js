@@ -26,10 +26,11 @@ class OmniLingo {
 		return normStr;
 	}
 
-	setup = async (language, cids) => {
+	setup = async (language, cids, models) => {
 		console.log('setup()');
 		this.language = language;
 		this.cids = cids;
+		this.models = models ;
 		this.updateLevel();
 	}
 

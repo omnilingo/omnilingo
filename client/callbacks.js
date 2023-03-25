@@ -9,9 +9,21 @@ const onChangeLanguage = async (elem) => {
 	var newLanguage = elem.value ;
 	localStorage.setItem('currentLanguage', newLanguage);
 	var index = document.indexes[newLanguage];
-	var metaData = getLanguageMeta(index["meta"]);
+	var metaData = await getLanguageMeta(index["meta"]);
+	var models = {};
+	var buttonPronunciation = document.getElementById('togglePronunciation');
+	if("models" in metaData) {
+		models = await getLanguageModels(metaData["models"][0]);
+		console.log('MODELS:');
+		console.log(models);
+		buttonPronunciation.disabled = false;
+	} else {
+		buttonPronunciation.disabled = true;
+	}
+	
 	var acceptingChars = metaData["alternatives"];
-	runLanguage(newLanguage, index["cids"], acceptingChars);
+
+	runLanguage(newLanguage, index["cids"], acceptingChars, models);
 }
 
 function onSkipButton() {
