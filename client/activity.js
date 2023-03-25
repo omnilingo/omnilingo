@@ -10,7 +10,9 @@ class Activity {
 
 	initActivity = async() => {
 		await this.question.init();
-		document.getElementById("text").innerText = this.question.sentence["content"];
+		var text = document.getElementById("text");
+		if(text)
+			text.innerText = this.question.sentence["content"];
 		await this.setupAudio();
 	}
 
@@ -28,6 +30,9 @@ class Activity {
 
 	setupAudio = async () => {
 		var player = document.getElementById('player');
+		if(!player)
+			return;
+
 		var source = document.getElementById('audioSource');
 		var bytes = await fetchIpfsB(this.question.audioCid);
 

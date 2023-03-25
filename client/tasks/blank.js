@@ -101,7 +101,8 @@ class BlankTask extends Task {
 		var gap = this.chooseGap();
 
 		var tbox = document.getElementById("textbox");
-		tbox.innerHTML = this.buildTbox(gap);
+		if(tbox)
+			tbox.innerHTML = this.buildTbox(gap);
 
 		this.setRunning(true);
 	}
