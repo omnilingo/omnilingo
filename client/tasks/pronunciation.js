@@ -1,4 +1,10 @@
-class PronunciationTask {
+class PronunciationTask extends Task {
+
+	constructor(question) {
+		super(question);
+
+		console.log("[PronunciationTask] " + question.textCid);
+	}
 
 	constructor() {
 		// pt:
@@ -25,6 +31,11 @@ class PronunciationTask {
 	        });
 
 	}
+
+	cleanup() {
+		console.log('[PronunciationTask] cleanup()');
+	}
+
 
 		//JavaScript equivalent
 	// function to find out

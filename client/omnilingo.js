@@ -10,6 +10,7 @@ class OmniLingo {
 		this.enabledTasks = ["blank"];
 		this.globalScore = 0;
 		this.deactivatedQuestions = new Set();
+		this.mode = "listen" // "speak"
 	}
 
 	normaliseInput(s) {
@@ -31,6 +32,7 @@ class OmniLingo {
 		this.language = language;
 		this.cids = cids;
 		this.models = models ;
+		// Set up STT here? 
 		this.updateLevel();
 	}
 
