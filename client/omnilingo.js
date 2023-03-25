@@ -72,34 +72,44 @@ class OmniLingo {
 	updateRemaining() {
 		var completed = this.batchSize - (this.currentWalk.length + 1);
 		var remainingSpan = document.querySelectorAll('[id="remaining"]')[0];
-		remainingSpan.innerHTML = (this.currentWalk.length + 1) + "/" + this.batchSize;
+		if(remainingSpan)
+			remainingSpan.innerHTML = (this.currentWalk.length + 1) + "/" + this.batchSize;
 		var feedbackDiv = document.querySelectorAll('[id="feedback"]')[0];
-		feedbackDiv.innerHTML = '<div style="width: ' + (completed * 25) + '%" class="feedbackFill">&nbsp;</div>';
+		if(feedbackDiv)
+			feedbackDiv.innerHTML = '<div style="width: ' + (completed * 25) + '%" class="feedbackFill">&nbsp;</div>';
 	}
 
 	updateScore() {
 		var scoreSpan = document.querySelectorAll('[id="score"]')[0];
-		scoreSpan.innerHTML = this.globalScore.toFixed(2);
+		if(scoreSpan) {
+			scoreSpan.innerHTML = this.globalScore.toFixed(2);
+		}
 	}
 
 
 	removeLevelHighlight() {
 		var levelSpan = document.querySelectorAll('[id="level"]')[0];
-		levelSpan.removeAttribute('data-highlighted');
-		levelSpan.removeAttribute('style');
+		if(levelSpan) {
+			levelSpan.removeAttribute('data-highlighted');
+			levelSpan.removeAttribute('style');
+		}
 	}
 
 
 	setLevelHighlight() {
 		var levelSpan = document.querySelectorAll('[id="level"]')[0];
-		levelSpan.setAttribute('style', 'border: 2px solid green; border-radius: 5px; background-color: #abcdab;');
-		levelSpan.setAttribute('data-highlighted', 'true');
+		if(levelSpan) {
+			levelSpan.setAttribute('style', 'border: 2px solid green; border-radius: 5px; background-color: #abcdab;');
+			levelSpan.setAttribute('data-highlighted', 'true');
+		}
 	}
 
 	updateLevel() {
 		var levelSpan = document.querySelectorAll('[id="level"]')[0];
-		levelSpan.innerHTML = this.level;
-		this.setLevelHighlight();
+		if(levelSpan) {
+			levelSpan.innerHTML = this.level;
+			this.setLevelHighlight();
+		}
 	}
 
 	getLevel() {
@@ -147,7 +157,9 @@ class OmniLingo {
 
 	cleanup() {
 		["clues", "textbox", "text"].forEach(e => {
-			document.getElementById(e).innerHTML = "";
+			var x = document.getElementById(e);
+			if(x)
+				x.innerHTML = "";
 		});
 	}
 
@@ -171,8 +183,10 @@ class OmniLingo {
 		console.log(this.currentWalk)
 		console.log('--------------');
 
-	 	stopTimer();
-	 	resetTimer();
+		if(document.getElementById("seconds")) {
+			stopTimer();
+			resetTimer();
+		}
 
 		if(this.currentTask && !this.currentTask.complete) {
 			console.log('  [incomplete] ' + this.currentTask.question.nodeId);

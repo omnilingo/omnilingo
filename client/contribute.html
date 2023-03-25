@@ -25,42 +25,13 @@
 <script type="text/javascript" src="./callbacks.js"></script>
 <script type="text/javascript" src="./omnilingo.js"></script>
 <script src="js/recorder.js"></script>
-<script type="text/javascript" src="./stt/stt_wasm.js"></script>
 
 	<script type="text/javascript">
-		function toggleListening() {
-			buttonListening = document.getElementById('toggleListening');
-			buttonPronunciation = document.getElementById('togglePronunciation');
-			settings = document.getElementById('pronunciation');
-			content = document.getElementById('content');
-			if(!buttonListening.disabled) {
-				pronunciation.style.display = 'none';
-				content.style.display = 'block';
+		onLoadRecorder();
+		function toggleContribute() {
+			if(!toggle("contribute", false)) {
+				onLoadRecorder();
 			}
-			else {
-				pronunciation.style.display = 'block';
-				content.style.display = 'none';
-			}
-
-		}
-		function togglePronunciation() {
-			buttonListening = document.getElementById('toggleListening');
-			buttonPronunciation = document.getElementById('togglePronunciation');
-			settings = document.getElementById('pronunciation');
-			content = document.getElementById('content');
-			if(!buttonPronunciation.disabled) {
-				pronunciation.style.display = 'block';
-				content.style.display = 'none';
-				console.log('togglePronunciation()');
-				pron = new PronunciationTask();
-				pron.loadModel();
-				pron.runTask();
-			}
-			else {
-				pronunciation.style.display = 'none';
-				content.style.display = 'block';
-			}
-
 		}
 		function toggleSettings(save=false) {
 			if(toggle("settings", save)) {
@@ -81,7 +52,7 @@
 			disabling = !button.disabled;
 			for(var i = 0; i < contents.length; i++) {
 				content = contents[i];
-				content.style.display = (content.id == (disabling ? kind : "content")) ? 'block' : 'none';
+				content.style.display = (content.id == (disabling ? kind : "contribute")) ? 'block' : 'none';
 			}
 			for(var i = 0; i < buttons.length; i++) {
 				buttons[i].disabled = disabling;
@@ -118,65 +89,30 @@
     <span style="float:left"><a href="https://omnilingo.github.io"><img src="./assets/logo.png" height="35px"/></a></span>
     <span style="float:right; text-align:right"><select name="languages" id="languages" onChange="onChangeLanguage(this)"></select></span>
     <span style="float:right; text-align:right"><button class="toggle" onclick="toggleSettings();" id="toggleSettings"><i class="fas fa-cog"></i></button></span>
-    <span style="float:right; text-align:right"><button class="toggle" onclick="togglePronunciation();" id="togglePronunciation"><i class="fas fa-microphone"></i></button></span>
-    <span style="float:right; text-align:right"><button class="toggle" onclick="toggleListening();" id="toggleListening"><i class="fas fa-headphones"></i></button></span>
   </div>
   <!-- Content -->
   <div class="content" id="settings" style="display: none">
 	  IPFS:<br /><textarea id="root-cids"></textarea><br />
 	  <button onclick="toggleSettings(true);"><i class="fas fa-save"></i></button><button onclick="toggleSettings();"><i class="fas fa-window-close"></i></button>
   </div>
-  <div class="content" id="pronunciation" style="display: none">
-	  <div>
-		  <span class="teksti" id="pronSource"></span>
-	  </div>
-	  <div>
-		  <span class="teksti" id="resultat"></span>
-	  </div>
-  </div>
-  <div class="content" id="content">
-    <div>
-      <!--<div style="float:left">-->
+  <div class="content" id="contribute">
       <div>
-        <audio id="player" controls="controls" onended="onPlayerFinish()">
-          <source id="audioSource" />
+        <audio id="recorder" controls="controls" style="display: none">
         </audio>
       </div>
       <p/>
       <div style="display: inline-block">
         <div class="row">
-           <span class="col button" id="dumpButton" onClick="onDumpButton()"><i class="fas fa-ban"></i></span>&nbsp;
-           <span class="col" id="timer"><label id="seconds">0</label></span>&nbsp;
-           <!--<span class="col" id="skipButton" onClick="onSkipButton()"><i class="fas fa-angle-double-right"></i></span>&nbsp;-->
-           <span class="col button" id="nextButton" onClick="onSubmitButton()"><i class="fas fa-angle-right"></i></span>
+           <span class="col button" id="recordButton" onClick="onRecordButton()"><i id="recordIcon" class="fas fa-circle"></i></span>
+           <span class="col button" id="saveButton" onClick="onRecordingSaveButton()"><i class="fas fa-download"></i></span>
+           <span class="col button" id="uploadButton" onClick="onRecordingUploadButton()"><i class="fas fa-cloud-upload-alt"></i></span>
            <!--<input id="nextButton" type="button" onClick="onNextButton()" value="✔"/>-->
         </div>
       </div>
-    </div>
     <p>&nbsp;</p>
     <div style="display: inline-block">
-	    <div class="clues" id="clues"></div>
+	    <div class="clues" id="text"></div>
     </div>
-    <p/>
-    <div class="teksti" id="textbox"> </div>
-    <br/>
-    <p>&nbsp;</p>
-    <div>
-<!--      <div class="modaldiv" onClick="openModal(this)">
-        <span id="help" class="open-modal" data-open="modal1" onClick="openModal(this)">?</span>
-      </div>-->
-      <div class="feedback" id="feedback"> </div>
-    </div>
-    <div>
-      <div style="float: left" id="levelDiv">S: <span id="score">0</span> | L: <span id="level">0</span> </div>
-      <div style="float: right" id="remainingDiv">R: <span id="remaining"></span> </div>
-<!--
-      <div style="float:right; padding: 1px; margin: 1px">
-        <span class="thumb" id="thumbsDown">👎️</span>
-        <span class="thumb" id="thumbsUp">👍️</span>
-      </div>-->
-    </div>
-  </div>
   </div>
   <div class="footer">
 <div class="footerLeft">
