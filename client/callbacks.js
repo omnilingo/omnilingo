@@ -17,6 +17,8 @@ const onChangeLanguage = async (elem) => {
 		console.log('MODELS:');
 		console.log(models);
 		buttonPronunciation.disabled = false;
+                document.omnilingo.setAcousticModelCid(models["model"]);
+                document.omnilingo.loadAcousticModel();
 	} else {
 		buttonPronunciation.disabled = true;
 	}
@@ -57,6 +59,15 @@ function onSubmitButton() {
 	// If the task is incomplete or incorrect,
 	// then treat it as a skip
 
+	document.omnilingo.submitTask();
+
+}
+
+function onSpeakNextButton() {
+	console.log('onSpeakNextButton()');
+
+	var currentTask = document.omnilingo.getRunningTask();
+	currentTask.cleanup();
 	document.omnilingo.submitTask();
 
 }
@@ -154,6 +165,7 @@ function onCheckInputSearch(e) {
 }
 
 function onRecordButton(e) {
+	console.log('onRecordButton()');
 	recordIcon = document.getElementById("recordIcon");
 	isRecording = recordIcon.classList.contains("fa-stop");
 	recordIcon.classList.toggle("fa-stop");
@@ -194,6 +206,7 @@ function handlerErrorUserMedia(e) {
 
 
 function onLoadRecorder() {
+	console.log('onLoadRecorder()');
 	if(document.recorderLoaded)
 		return;
 
@@ -235,6 +248,30 @@ function onRecordingSaveButton() {
 	document.omnilingo.nextTask();
 }
 
+async function onSpeakSubmitButton() {
+	console.log('onRecordingSubmitButton()');
+	const recorder = document.getElementById("recorder");
+	const clip = await document.ipfs.add({content: recorder.blob});
+
+	console.log("posted clip to ipfs: " + clip.cid);
+
+	const task = document.omnilingo.getRunningTask();
+	const sample = await document.ipfs.add({content: JSON.stringify({
+		"chars_sec": task.question.sentence["content"].length / recorder.duration,
+		"clip_cid": clip.cid.toString(),
+		"length": recorder.duration,
+		"meta_cid": task.question.metaCid,
+		"sentence_cid": task.question.sentenceCid
+	})});
+
+	console.log("posted sample (metadata) to ipfs: " + sample.cid);
+
+//	document.getElementById("recorder").style.display = "none";
+	var currentTask = document.omnilingo.getRunningTask();
+	currentTask.evaluate(new String(clip.cid));
+}
+
+
 async function onRecordingUploadButton() {
 	const recorder = document.getElementById("recorder");
 	const clip = await document.ipfs.add({content: recorder.blob});
@@ -255,3 +292,4 @@ async function onRecordingUploadButton() {
 	document.getElementById("recorder").style.display = "none";
 	document.omnilingo.nextTask();
 }
+

@@ -11,6 +11,8 @@ class OmniLingo {
 		this.globalScore = 0;
 		this.deactivatedQuestions = new Set();
 		this.mode = "listen" // "speak"
+		this.acousticModelCid = "";
+		this.acousticModel = "";
 	}
 
 	normaliseInput(s) {
@@ -33,6 +35,17 @@ class OmniLingo {
 		this.cids = cids;
 		this.models = models ;
 		// Set up STT here? 
+                STT().then(module => {
+                    this.stt = module;
+
+                    // Now that we know the WASM module is ready, enable
+                    // the file picker for the model.
+                    //const input = document.getElementById("modelpicker");
+                    //input.addEventListener("change", (e) => loadModel(e.target.files), false);
+                    //input.disabled = false;
+
+                });
+
 		this.updateLevel();
 	}
 
@@ -57,6 +70,35 @@ class OmniLingo {
 		}
 		console.log(this.equivalentChars);
 	}
+
+	setListenMode() {
+		console.log('setListenMode()');
+		this.mode = "listen";
+	}
+
+	setSpeakMode() {
+		console.log('setSpeakMode()');
+		this.mode = "speak";
+		onLoadRecorder();
+	}
+
+	setAcousticModelCid(modelCid) { 
+		console.log("setAcousticModel()");
+		this.acousticModelCid = modelCid;
+	}
+
+        loadAcousticModel  = async () =>  {
+		console.log(`Loading acoustic model`, this.acousticModelCid);
+		var bytes = await fetchIpfsB(this.acousticModelCid);
+		console.log('[acousticModel] Length: ' + bytes.length)
+		this.acousticModel = new this.stt.Model(new Uint8Array(bytes));
+		const modelSampleRate = this.acousticModel.getSampleRate();
+		console.log("[acousticModel] Sample rate: " + modelSampleRate);
+		this.audioContext = new AudioContext({
+			// Use the model's sample rate so that the decoder will resample for us.
+			sampleRate: modelSampleRate
+                });
+        };
 
 
 	fetchIndex = async () => {
@@ -203,20 +245,28 @@ class OmniLingo {
 			this.endBatch();
 		}
 		var currentQuestion = this.graph.getNode(currentQuestionId);
-		var currentTaskType = currentQuestion.getRandomRemainingTask();
+		
+		console.log('currentQuestion:');
+		console.log(currentQuestion);
+
+		//var currentTaskType = currentQuestion.getRandomRemainingTask();
 
 		// FIXME: Do this nicer
 		//var randInt = getRandomInt(0, 3);
 		var randInt = 3;
-		if(randInt == 0) {
-			this.currentTask = new ScrambleTask(currentQuestion);
-		} else if(randInt == 1) {
-			this.currentTask = new ChoiceTask(currentQuestion);
-		} else if(randInt == 2) {
-			this.currentTask = new SearchTask(currentQuestion);
+		if(this.mode == "speak") {
+			this.currentTask = new PronunciationTask(currentQuestion);
 		} else {
-			this.currentTask = new BlankTask(currentQuestion);
-		}
+			if(randInt == 0) {
+				this.currentTask = new ScrambleTask(currentQuestion);
+			} else if(randInt == 1) {
+				this.currentTask = new ChoiceTask(currentQuestion);
+			} else if(randInt == 2) {
+				this.currentTask = new SearchTask(currentQuestion);
+			} else {
+				this.currentTask = new BlankTask(currentQuestion);
+			}
+		} 
 		this.currentTask.run();
 	}
 

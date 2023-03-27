@@ -65,6 +65,7 @@ class Task extends Activity {
 
 		console.log(metadata);
 
+		this.sentenceText = this.question.sentence["content"];
 		this.tokens = this.question.meta["tokens"];
 		this.tags = this.question.meta["tags"];
 

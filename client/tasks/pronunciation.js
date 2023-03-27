@@ -3,37 +3,33 @@ class PronunciationTask extends Task {
 	constructor(question) {
 		super(question);
 
-		console.log("[PronunciationTask] " + question.textCid);
-	}
-
-	constructor() {
+		console.log("[PronunciationTask] " + question.sentenceCid);
+		console.log(' Transcript: ' + this.sentenceText);
+		//
 		// pt:
-		// this.textCid = "QmchCkUf7Zt7BWpJJQrPCKtdTnVMNuDCLUJnkEvYDGNqi7";
-		this.modelCid = "QmX2yjYrmLfeSLnJHdfkVmUf6DMHwi5c391y34yM2oPD26";
-		this.audioCid = "QmbvVrpimM3ja9Fgr8mt9KEkpiYZZrTAfDhAb4uc8M9Z79"; // mp3
-		this.audioCid = "QmRVsDK629Tr6DY29u4xQPUgCuYQwfVH4B7u67sCGrczEN"; // mp3
+		// this.sentenceCid = "QmchCkUf7Zt7BWpJJQrPCKtdTnVMNuDCLUJnkEvYDGNqi7";
+		//this.audioCid = "QmbvVrpimM3ja9Fgr8mt9KEkpiYZZrTAfDhAb4uc8M9Z79"; // mp3
+		//this.audioCid = "QmRVsDK629Tr6DY29u4xQPUgCuYQwfVH4B7u67sCGrczEN"; // mp3
 		// en:
-		// this.textCid = "";
+		// this.sentenceCid = "";
 		// this.modelCid = "QmXauHFrYZJDCVTkMaVhNdGUeJ1PKSNgpFDGkBNAXGwaZA";
 		//this.audioCid = "QmdGEr6cTLRhttCmnLd8L1e9nQ35FgNmp5QRxjuuKDbS6b"; // wav
 		//this.audioCid = "QmQMdZNGsLtxC6q9WCkhdiBpTqtctrmhY6HSwiL824mCpi"; // mp3
-		console.log("[PronunciationTask] " );
 
-	        STT().then(module => {
-	            this.stt = module;
-	
-	            // Now that we know the WASM module is ready, enable
-	            // the file picker for the model.
-	            //const input = document.getElementById("modelpicker");
-	            //input.addEventListener("change", (e) => loadModel(e.target.files), false);
-	            //input.disabled = false;
+	}
 
-	        });
-
+	initTask = async() => {
+		await this.initActivity();
+		await this.fetchData();
+	}
+	init = async() => {
+		await this.initTask();
 	}
 
 	cleanup() {
 		console.log('[PronunciationTask] cleanup()');
+		const result = document.getElementById("resultat");
+		result.innerHTML = "";
 	}
 
 
@@ -149,7 +145,7 @@ class PronunciationTask extends Task {
 	    }
 	
 	    // Printing the final answer
-	    console.log("Minimum Penalty in " + "aligning the genes = " + dp[m][n]);
+	    console.log("Minimum Penalty = " + dp[m][n]);
 	    console.log("The alignment is:");
 	    var xtemp="";
 	    for (i = id; i <= l; i++)
@@ -185,59 +181,80 @@ class PronunciationTask extends Task {
             return Int16Array.from(buffer, x => x * 32767);
         }
 
-        loadModel  = async () =>  {
-            console.log(`Loading model`, this.modelCid);
-		var bytes = await fetchIpfsB(this.modelCid);
-		console.log('[model] Length: ' + bytes.length)
-                this.activeModel = new this.stt.Model(new Uint8Array(bytes));
-                const modelSampleRate = this.activeModel.getSampleRate();
-                console.log("[model] Model sample rate: " + modelSampleRate);
-		  this.audioContext = new AudioContext({
-                    // Use the model's sample rate so that the decoder will resample for us.
-                    sampleRate: modelSampleRate
-                });
+	evaluate = async (audioCid) => {
+		console.log('[PronunciationTask] evaluate() ' + audioCid);
+		console.log(' Transcript: ' + this.sentenceText);
+		var acousticModelOutput = await this.processAudio(audioCid);
+		var res = this.getMinimumPenalty(this.sentenceText.toLowerCase(), acousticModelOutput, 1, 1);
+		console.log(res);
+		var text = "";
+		var buffer = "";
+		var lenMismatch = 0;
+		for(var i = 0; i < res.length; i++) {
+			if (res[i][1] == 0) {
+				lenMismatch += 1;
+				buffer += res[i][0];
+			} else {
+				if(buffer.length > 0) {
+					text += '<span style="color: ' + this.chooseColour(lenMismatch) + '">' + buffer + '</span>';
+					buffer = "";
+				}
+				text += '<span style="color: black">' + res[i][0] + '</span>';
+				lenMismatch = 0;
+			}
+		}
+		if(buffer.length > 0) {
+			text += '<span style="color: ' + this.chooseColour(lenMismatch) + '">' + buffer + '</span>';
+		}
+		const result = document.getElementById("resultat");
+		result.innerHTML = text;
+	}
 
-		this.processAudio();
-
-        };
-
-        processAudio = async () => {
-            console.log(`Loading audio file`, this.audioCid);
-		var bytes = await fetchIpfsB(this.audioCid);
-		console.log('bytes')
+        processAudio = async (audioCid) => {
+		console.log('[PronunciationTask] processAudio() ' + audioCid);
+		var bytes = await fetchIpfsB(audioCid);
 		console.log(bytes)
-//		var bytes = this.converFloat32ToInt16(bytesB);
-//		console.log('bytes:')
-//		console.log(bytes)
 		console.log('[audio] Length: ' + bytes.length)
-		var decodedAudio = await this.audioContext.decodeAudioData(bytes.buffer);
-		console.log('decodedAudio:')
-		console.log(decodedAudio)
-		                    const processedAudio = this.converFloat32ToInt16(decodedAudio.getChannelData(0));
-		console.log('processedAudio:')
-		console.log(processedAudio)
+		var decodedAudio = await document.omnilingo.audioContext.decodeAudioData(bytes.buffer);
+		const processedAudio = this.converFloat32ToInt16(decodedAudio.getChannelData(0));
+		// Convert the `processedAudio` to something that can be passed
+		// across the WASM boundaries.
+		const toPass = new document.omnilingo.stt.VectorShort();
+		processedAudio.forEach(e => toPass.push_back(e));
 
-                    // Convert the `processedAudio` to something that can be passed
-                    // across the WASM boundaries.
-                    const toPass = new this.stt.VectorShort();
-                    processedAudio.forEach(e => toPass.push_back(e));
+		const now = Date.now();
+		console.log('Running model: ' + now);
 
-//                    const toPass = new this.stt.VectorShort();
-  //                  bytes.forEach(e => toPass.push_back(e));
-		console.log('toPass')
-		console.log(toPass)
+		const result = document.omnilingo.acousticModel.speechToText(toPass) ;
 
-                    const now = Date.now();
-		     console.log('Running model: ' + now);
-                    //const result = this.activeModel.speechToTextWithMetadata(toPass, 5);
-                    const result = this.activeModel.speechToText(toPass) ;
-                    const elapsedSeconds = (Date.now() - now)/1000;
+		const elapsedSeconds = (Date.now() - now)/1000;
+		console.log("Transcription: ")
+		console.log(result);
+		console.log("Elapsed seconds: " + elapsedSeconds);
 
-                    console.log("Transcription: ")
-			console.log(result);
-                    console.log("Elapsed seconds: " + elapsedSeconds);
+		return result;
 
         };
+
+	buildTbox() {
+		var tb = "<span>";
+		for(var i = 0; i < this.tokens.length; i++) {
+			tb += this.tokens[i] + " ";
+		}
+		return tb +  "</span>";
+	}
+
+	run = async() => {
+		//console.log("[BlankTask] run()");
+
+		await this.init();
+
+		var tbox = document.getElementById("pronSource");
+		if(tbox)
+			tbox.innerHTML = this.buildTbox();
+
+		this.setRunning(true);
+	}
 
 	runTask() {
 //			this.processAudio();
@@ -271,6 +288,7 @@ var res =		this.getMinimumPenalty(orig, asr, 1, 1);
 
 	}
 
+
 	chooseColour(n) {
 
 		if(n == 1) {
@@ -280,4 +298,5 @@ var res =		this.getMinimumPenalty(orig, asr, 1, 1);
 		}
 		return "#ff0000";
 	}
+
 }

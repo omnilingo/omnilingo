@@ -36,10 +36,12 @@
 			if(!buttonListening.disabled) {
 				pronunciation.style.display = 'none';
 				content.style.display = 'block';
+				document.omnilingo.setSpeakMode();
 			}
 			else {
 				pronunciation.style.display = 'block';
 				content.style.display = 'none';
+				document.omnilingo.setListenMode();
 			}
 
 		}
@@ -52,11 +54,11 @@
 				pronunciation.style.display = 'block';
 				content.style.display = 'none';
 				console.log('togglePronunciation()');
-				pron = new PronunciationTask();
-				pron.loadModel();
-				pron.runTask();
+				document.omnilingo.setSpeakMode();
+				document.omnilingo.run();
 			}
 			else {
+				document.omnilingo.setListenMode();
 				pronunciation.style.display = 'none';
 				content.style.display = 'block';
 			}
@@ -137,9 +139,21 @@
     </div>
   </div>
   <div class="content" id="pronunciation" style="display: none">
+      <div>
+        <audio id="player" controls="controls" onended="onPlayerFinish()">
+          <source id="audioSource" />
+        </audio>
+      </div>
 	  <div>
 		  <span class="teksti" id="pronSource"></span>
 	  </div>
+      <div style="display: inline-block">
+        <div class="row">
+           <span class="col button" id="recordButton" onClick="onRecordButton()"><i id="recordIcon" class="fas fa-circle"></i></span>
+           <span class="col button" id="submitButton" onClick="onSpeakSubmitButton()"><i class="fas fa-comment"></i></span>
+           <span class="col button" id="nextButton" onClick="onSpeakNextButton()"><i class="fas fa-angle-right"></i></span>
+        </div>
+      </div> 
 	  <div>
 		  <span class="teksti" id="resultat"></span>
 	  </div>

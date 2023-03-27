@@ -185,6 +185,12 @@ const runLanguage = async (language, cids, acceptingChars, models) => {
 
 	await document.omnilingo.fetchIndex();
 
+	if(models["model"]) {
+	        document.omnilingo.setAcousticModelCid(models["model"]);
+        	document.omnilingo.loadAcousticModel();
+	}
+
+
 	// Get the current level
 
 	document.omnilingo.run();

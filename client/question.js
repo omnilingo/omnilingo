@@ -18,7 +18,7 @@ class Question {
 		this.taskWeights = {};
 		this.taskSequence = {};
 
-		console.log(this.audioCid + " / " + this.textCid);
+		console.log(this.audioCid + " / " + this.sentenceCid);
 	}
 
 	getGlobalIndexPos() {
