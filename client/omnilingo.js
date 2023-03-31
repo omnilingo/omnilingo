@@ -10,6 +10,9 @@ class OmniLingo {
 		this.enabledTasks = ["blank"];
 		this.globalScore = 0;
 		this.deactivatedQuestions = new Set();
+		this.mode = "listen" // "speak"
+		this.acousticModelCid = "";
+		this.acousticModel = "";
 	}
 
 	normaliseInput(s) {
@@ -26,10 +29,23 @@ class OmniLingo {
 		return normStr;
 	}
 
-	setup = async (language, cids) => {
+	setup = async (language, cids, models) => {
 		console.log('setup()');
 		this.language = language;
 		this.cids = cids;
+		this.models = models ;
+		// Set up STT here? 
+                STT().then(module => {
+                    this.stt = module;
+
+                    // Now that we know the WASM module is ready, enable
+                    // the file picker for the model.
+                    //const input = document.getElementById("modelpicker");
+                    //input.addEventListener("change", (e) => loadModel(e.target.files), false);
+                    //input.disabled = false;
+
+                });
+
 		this.updateLevel();
 	}
 
@@ -55,6 +71,35 @@ class OmniLingo {
 		console.log(this.equivalentChars);
 	}
 
+	setListenMode() {
+		console.log('setListenMode()');
+		this.mode = "listen";
+	}
+
+	setSpeakMode() {
+		console.log('setSpeakMode()');
+		this.mode = "speak";
+		onLoadRecorder();
+	}
+
+	setAcousticModelCid(modelCid) { 
+		console.log("setAcousticModel()");
+		this.acousticModelCid = modelCid;
+	}
+
+        loadAcousticModel  = async () =>  {
+		console.log(`Loading acoustic model`, this.acousticModelCid);
+		var bytes = await fetchIpfsB(this.acousticModelCid);
+		console.log('[acousticModel] Length: ' + bytes.length)
+		this.acousticModel = new this.stt.Model(new Uint8Array(bytes));
+		const modelSampleRate = this.acousticModel.getSampleRate();
+		console.log("[acousticModel] Sample rate: " + modelSampleRate);
+		this.audioContext = new AudioContext({
+			// Use the model's sample rate so that the decoder will resample for us.
+			sampleRate: modelSampleRate
+                });
+        };
+
 
 	fetchIndex = async () => {
 		console.log('fetchIndex() ' + this.language);
@@ -72,34 +117,44 @@ class OmniLingo {
 	updateRemaining() {
 		var completed = this.batchSize - (this.currentWalk.length + 1);
 		var remainingSpan = document.querySelectorAll('[id="remaining"]')[0];
-		remainingSpan.innerHTML = (this.currentWalk.length + 1) + "/" + this.batchSize;
+		if(remainingSpan)
+			remainingSpan.innerHTML = (this.currentWalk.length + 1) + "/" + this.batchSize;
 		var feedbackDiv = document.querySelectorAll('[id="feedback"]')[0];
-		feedbackDiv.innerHTML = '<div style="width: ' + (completed * 25) + '%" class="feedbackFill">&nbsp;</div>';
+		if(feedbackDiv)
+			feedbackDiv.innerHTML = '<div style="width: ' + (completed * 25) + '%" class="feedbackFill">&nbsp;</div>';
 	}
 
 	updateScore() {
 		var scoreSpan = document.querySelectorAll('[id="score"]')[0];
-		scoreSpan.innerHTML = this.globalScore.toFixed(2);
+		if(scoreSpan) {
+			scoreSpan.innerHTML = this.globalScore.toFixed(2);
+		}
 	}
 
 
 	removeLevelHighlight() {
 		var levelSpan = document.querySelectorAll('[id="level"]')[0];
-		levelSpan.removeAttribute('data-highlighted');
-		levelSpan.removeAttribute('style');
+		if(levelSpan) {
+			levelSpan.removeAttribute('data-highlighted');
+			levelSpan.removeAttribute('style');
+		}
 	}
 
 
 	setLevelHighlight() {
 		var levelSpan = document.querySelectorAll('[id="level"]')[0];
-		levelSpan.setAttribute('style', 'border: 2px solid green; border-radius: 5px; background-color: #abcdab;');
-		levelSpan.setAttribute('data-highlighted', 'true');
+		if(levelSpan) {
+			levelSpan.setAttribute('style', 'border: 2px solid green; border-radius: 5px; background-color: #abcdab;');
+			levelSpan.setAttribute('data-highlighted', 'true');
+		}
 	}
 
 	updateLevel() {
 		var levelSpan = document.querySelectorAll('[id="level"]')[0];
-		levelSpan.innerHTML = this.level;
-		this.setLevelHighlight();
+		if(levelSpan) {
+			levelSpan.innerHTML = this.level;
+			this.setLevelHighlight();
+		}
 	}
 
 	getLevel() {
@@ -146,10 +201,11 @@ class OmniLingo {
 	}
 
 	cleanup() {
-		var cbox = document.getElementById('clues');
-		cbox.innerHTML = "";
-		var tbox = document.getElementById('textbox');
-		tbox.innerHTML = "";
+		["clues", "textbox", "text"].forEach(e => {
+			var x = document.getElementById(e);
+			if(x)
+				x.innerHTML = "";
+		});
 	}
 
 	submitTask() {
@@ -172,8 +228,10 @@ class OmniLingo {
 		console.log(this.currentWalk)
 		console.log('--------------');
 
-	 	stopTimer();
-	 	resetTimer();
+		if(document.getElementById("seconds")) {
+			stopTimer();
+			resetTimer();
+		}
 
 		if(this.currentTask && !this.currentTask.complete) {
 			console.log('  [incomplete] ' + this.currentTask.question.nodeId);
@@ -187,20 +245,28 @@ class OmniLingo {
 			this.endBatch();
 		}
 		var currentQuestion = this.graph.getNode(currentQuestionId);
-		var currentTaskType = currentQuestion.getRandomRemainingTask();
+		
+		console.log('currentQuestion:');
+		console.log(currentQuestion);
+
+		//var currentTaskType = currentQuestion.getRandomRemainingTask();
 
 		// FIXME: Do this nicer
 		//var randInt = getRandomInt(0, 3);
 		var randInt = 3;
-		if(randInt == 0) {
-			this.currentTask = new ScrambleTask(currentQuestion);
-		} else if(randInt == 1) {
-			this.currentTask = new ChoiceTask(currentQuestion);
-		} else if(randInt == 2) {
-			this.currentTask = new SearchTask(currentQuestion);
+		if(this.mode == "speak") {
+			this.currentTask = new PronunciationTask(currentQuestion);
 		} else {
-			this.currentTask = new BlankTask(currentQuestion);
-		}
+			if(randInt == 0) {
+				this.currentTask = new ScrambleTask(currentQuestion);
+			} else if(randInt == 1) {
+				this.currentTask = new ChoiceTask(currentQuestion);
+			} else if(randInt == 2) {
+				this.currentTask = new SearchTask(currentQuestion);
+			} else {
+				this.currentTask = new BlankTask(currentQuestion);
+			}
+		} 
 		this.currentTask.run();
 	}
 

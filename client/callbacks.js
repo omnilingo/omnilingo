@@ -9,9 +9,23 @@ const onChangeLanguage = async (elem) => {
 	var newLanguage = elem.value ;
 	localStorage.setItem('currentLanguage', newLanguage);
 	var index = document.indexes[newLanguage];
-	var metaData = getLanguageMeta(index["meta"]);
+	var metaData = await getLanguageMeta(index["meta"]);
+	var models = {};
+	var buttonPronunciation = document.getElementById('togglePronunciation');
+	if("models" in metaData) {
+		models = await getLanguageModels(metaData["models"][0]);
+		console.log('MODELS:');
+		console.log(models);
+		buttonPronunciation.disabled = false;
+                document.omnilingo.setAcousticModelCid(models["model"]);
+                document.omnilingo.loadAcousticModel();
+	} else {
+		buttonPronunciation.disabled = true;
+	}
+	
 	var acceptingChars = metaData["alternatives"];
-	runLanguage(newLanguage, index["cids"], acceptingChars);
+
+	runLanguage(newLanguage, index["cids"], acceptingChars, models);
 }
 
 function onSkipButton() {
@@ -45,6 +59,15 @@ function onSubmitButton() {
 	// If the task is incomplete or incorrect,
 	// then treat it as a skip
 
+	document.omnilingo.submitTask();
+
+}
+
+function onSpeakNextButton() {
+	console.log('onSpeakNextButton()');
+
+	var currentTask = document.omnilingo.getRunningTask();
+	currentTask.cleanup();
 	document.omnilingo.submitTask();
 
 }
@@ -140,3 +163,133 @@ function onCheckInputSearch(e) {
 	var task = document.omnilingo.getRunningTask();
 	task.checkInput(e);
 }
+
+function onRecordButton(e) {
+	console.log('onRecordButton()');
+	recordIcon = document.getElementById("recordIcon");
+	isRecording = recordIcon.classList.contains("fa-stop");
+	recordIcon.classList.toggle("fa-stop");
+	recordIcon.classList.toggle("fa-circle");
+	
+	if (!isRecording) {
+		if (!document.audioRecorder) {
+			return;
+		}
+		document.audioRecorder && document.audioRecorder.record();
+	}
+	else {
+		if(!document.audioRecorder) {
+			return;
+		}
+		document.audioRecorder.stop();
+	}
+
+}
+
+
+function handlerStartUserMedia(stream) {
+	console.log('handlerStartUserMedia');
+	console.log('sampleRate:'+ document.audioContext.sampleRate);
+	// MEDIA STREAM SOURCE -> ZERO GAIN >
+	document._realAudioInput = document.audioContext.createMediaStreamSource(stream);
+	document.audioRecorder = new Recorder(document._realAudioInput, blob => {
+		var recorder = document.getElementById("recorder");
+		recorder.blob = blob;
+		recorder.src = URL.createObjectURL(blob);
+		recorder.style.display = "inline-block";
+	});
+}
+
+function handlerErrorUserMedia(e) {
+	console.log('No live audio input: ' + e);
+}
+
+
+function onLoadRecorder() {
+	console.log('onLoadRecorder()');
+	if(document.recorderLoaded)
+		return;
+
+	window.AudioContext = (
+		window.AudioContext ||
+		window.webkitAudioContext ||
+		window.mozAudioContext
+	);
+	navigator.getUserMedia = ( 
+		navigator.getUserMedia ||
+		navigator.webkitGetUserMedia ||
+		navigator.mozGetUserMedia ||
+		navigator.msGetUserMedia
+	);
+	
+	window.URL = window.URL || window.webkitURL;
+	document.audioContext = new AudioContext;
+
+	if (typeof navigator.mediaDevices.getUserMedia === 'undefined') {
+		navigator.getUserMedia({
+			video:false,
+			audio: true
+		}, handlerStartUserMedia, handlerErrorUserMedia);
+	} else {
+		navigator.mediaDevices.getUserMedia({
+			audio: true
+		}).then(handlerStartUserMedia).catch(handlerErrorUserMedia);
+	}
+	document.recorderLoaded = true;
+}
+
+function onRecordingSaveButton() {
+	var link = document.createElement("a");
+	link.href = document.getElementById("recorder").src;
+	link.download = "omnilingo-recording.mp3";
+	link.click();
+
+	document.getElementById("recorder").style.display = "none";
+	document.omnilingo.nextTask();
+}
+
+async function onSpeakSubmitButton() {
+	console.log('onRecordingSubmitButton()');
+	const recorder = document.getElementById("recorder");
+	const clip = await document.ipfs.add({content: recorder.blob});
+
+	console.log("posted clip to ipfs: " + clip.cid);
+
+	const task = document.omnilingo.getRunningTask();
+	const sample = await document.ipfs.add({content: JSON.stringify({
+		"chars_sec": task.question.sentence["content"].length / recorder.duration,
+		"clip_cid": clip.cid.toString(),
+		"length": recorder.duration,
+		"meta_cid": task.question.metaCid,
+		"sentence_cid": task.question.sentenceCid
+	})});
+
+	console.log("posted sample (metadata) to ipfs: " + sample.cid);
+
+//	document.getElementById("recorder").style.display = "none";
+	var currentTask = document.omnilingo.getRunningTask();
+	currentTask.evaluate(new String(clip.cid));
+}
+
+
+async function onRecordingUploadButton() {
+	const recorder = document.getElementById("recorder");
+	const clip = await document.ipfs.add({content: recorder.blob});
+
+	console.log("posted to ipfs: " + clip.cid);
+
+	const task = document.omnilingo.getRunningTask();
+	const sample = await document.ipfs.add({content: JSON.stringify({
+		"chars_sec": task.question.sentence["content"].length / recorder.duration,
+		"clip_cid": clip.cid.toString(),
+		"length": recorder.duration,
+		"meta_cid": task.question.metaCid,
+		"sentence_cid": task.question.sentenceCid
+	})});
+
+	console.log("posted sample to ipfs: " + sample.cid);
+
+	document.getElementById("recorder").style.display = "none";
+	document.omnilingo.nextTask();
+}
+

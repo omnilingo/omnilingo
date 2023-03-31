@@ -31,7 +31,7 @@ display: table-cell;
 vertical-align:middle;
 }
 
-#dumpButton{
+.button {
 	border: 1.5px solid black;
   border-radius: 5px;
 vertical-align:middle;
@@ -40,28 +40,6 @@ vertical-align:middle;
 	padding: 10px;
 	width: 30px;
 	height: 30px;
-}
-
-#nextButton{
-	border: 1.5px solid black;
-  border-radius: 5px;
-	font-size: 200%;
-vertical-align:middle;
-	padding: 10px;
-	background-color: #cdcdcd;
-	width: 30px;
-	height: 30px;
-}
-
-
-#skipButton{
-	border: 1.5px solid black;
-  border-radius: 5px;
-	background-color: #cdcdcd;
-	font-size: 150%;
-	padding: 10px;
-	width: 20px;
-	height: 20px;
 }
 
 
@@ -166,6 +144,7 @@ box-shadow: 10px 5px 5px #dcdcdc;
 .teksti {
 	font-size: 150%;
 }
+
 
 .correct {
 	color: green;
