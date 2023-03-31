@@ -116,3 +116,56 @@ $ ./ipfs cat QmeZwKogGakkX3NmerBbQwGtAVgQFSH25vJeRj6rh9iyvA
 {"nn-NO":{"cids":["Qmc4FVwVkeHPpeV127nDymfZRSNbDWkX9t7WxsBGYjBubg"],"meta":"QmZYwPKT26jJSQKm2HMGakA2GU1wd5HX6nNiHHaX6UMHCS"}}
 ```
 
+
+## Setup an HTTP server 
+
+
+Next up you need to set up an HTTP server. We recommend `nginx`:
+
+```
+$ sudo apt-get install nginx
+```
+
+Make the server serve the directory that you have downloaded `omnilingo/client`.
+
+You also need to set up nginx to proxy the IPFS API requests.
+
+
+```
+server {
+...
+
+	root /home/fran/source/omnilingo/client;
+
+...
+
+	location /api/v0 {
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_pass http://ipfs;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection $connection_upgrade;
+		proxy_set_header Host $host;
+	}
+	location / {
+		root /home/omnilingo/omnilingo/client;
+		add_header 'Cross-Origin-Embedder-Policy' 'require-corp';
+		add_header 'Cross-Origin-Opener-Policy' 'same-origin';
+		index index.html;
+	}
+}
+
+upstream ipfs {
+	server 127.0.0.1:5001;
+}
+```
+
+## Configure OmniLingo client
+
+
+Open up http://localhost/ and click on the cog icon at the top right-hand side.
+
+Paste in the index CID you made: `QmeZwKogGakkX3NmerBbQwGtAVgQFSH25vJeRj6rh9iyvA`.
+
+
+
