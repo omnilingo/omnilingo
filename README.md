@@ -100,5 +100,7 @@ python3-flask - micro web framework based on Werkzeug and Jinja2 - Python 3.x
 
 ## Acknowledgements
 
-- Logo by [Fabi Yamada](https://society6.com/yamadamx)! Licensed under CC-BY.
-- Funding generously provided by Protocol Labs.
+* Logo by [Fabi Yamada](https://society6.com/yamadamx)! Licensed under CC-BY.
+* Funding generously provided by Protocol Labs.
+* Recording and mp3 encoding code based on https://github.com/welll/record-encode-audio-from-browser (MIT license)
+* libmp3lame port to javascript by Andreas Krennmair <ak@synflood.at>; libmp3lame is under LGPL

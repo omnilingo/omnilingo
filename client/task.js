@@ -1,41 +1,18 @@
-class Task {
+class Task extends Activity {
 
 	constructor(question) {
 		console.log('Task()');
+		super(question);
 
-		this.question = question;
-		this.complete = false;
 		this.answer = "";
-		this.running = false;
 	}
 
-	init = async() => {
-		await this.setupAudio();
+	initTask = async() => {
+		await this.initActivity();
 		await this.fetchData();
 	}
-
-	setRunning(b) {
-		this.running = b;
-	}
-
-	isRunning() {
-		return this.running;
-	}
-
-	setupAudio = async () => {
-
-		//this.currentAudio = hashToPath(this.question.audioHash) + '/audio.mp3';
-		var player = document.getElementById('player');
-		var source = document.getElementById('audioSource');
-		var bytes = await fetchIpfsB(this.question.audioCid);
-
-		source.type = 'audio/mp3';
-		source.src = URL.createObjectURL(new Blob([bytes]), {type: 'audio/mp3'});
-
-		console.log("[audio_src] " + source.src);
-
-		//player.setAttribute('onPlay', 'onStartTimer()');
-		player.load();
+	init = async() => {
+		await this.initTask();
 	}
 
 	validateTasks() {
@@ -88,8 +65,9 @@ class Task {
 
 		console.log(metadata);
 
-		this.tokens = metadata["tokens"];
-		this.tags = metadata["tags"];
+		this.sentenceText = this.question.sentence["content"];
+		this.tokens = this.question.meta["tokens"];
+		this.tags = this.question.meta["tags"];
 
 		console.log(this.tokens);
 		console.log(this.tags);
