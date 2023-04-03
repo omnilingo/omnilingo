@@ -27,6 +27,38 @@ kubo/install.sh
 kubo/ipfs
 ```
 
+You will need to edit the IPFS config file to add some headers:
+
+```
+  "Gateway": {
+    "HTTPHeaders": {
+      "Access-Control-Allow-Headers": [
+        "X-Requested-With",
+        "Range",
+        "User-Agent"
+      ],
+      "Access-Control-Allow-Methods": [
+        "GET"
+      ],
+      "Access-Control-Allow-Origin": [
+        "*"
+      ]
+    },
+    "RootRedirect": "",
+    "Writable": false,
+    "PathPrefixes": [],
+    "APICommands": [],
+    "NoFetch": true,
+    "NoDNSLink": false,
+    "PublicGateways": null
+  },
+  "API": {
+    "HTTPHeaders": {
+      "Access-Control-Allow-Origin": ["*"]
+    }
+  },
+```
+
 ```
 $ cd kubo
 $ ./ipfs daemon
