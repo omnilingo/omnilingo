@@ -81,6 +81,12 @@ Now clone the OmniLingo IPFS repo:
 git clone https://github.com/omnilingo/omnilingo-ipfs
 ```
 
+Then cd into that directory:
+
+```
+$ cd omnilingo-ipfs
+```
+
 ## Get a Common Voice dataset
 
 Then get a Common Voice dataset for a language, from https://commonvoice.mozilla.org/datasets
