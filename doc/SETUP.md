@@ -83,7 +83,7 @@ git clone https://github.com/omnilingo/omnilingo-ipfs
 
 ## Get a Common Voice dataset
 
-Then get a Common Voice dataset for a language, from https://commonvoice.mozilla.org//datasets
+Then get a Common Voice dataset for a language, from https://commonvoice.mozilla.org/datasets
 
 
 ```
