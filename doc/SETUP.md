@@ -87,6 +87,12 @@ Then cd into that directory:
 $ cd omnilingo-ipfs
 ```
 
+And install the dependencies:
+
+```
+$ pip3 install -r requirements.txt
+```
+
 ## Get a Common Voice dataset
 
 Then get a Common Voice dataset for a language, from https://commonvoice.mozilla.org/datasets
