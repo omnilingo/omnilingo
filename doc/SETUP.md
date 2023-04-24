@@ -61,6 +61,15 @@ You will need to edit the IPFS config file to add some headers:
 
 ```
 $ cd kubo
+```
+
+Init your IPFS store:
+```
+$ ./ipfs init
+```
+
+Then run the daemon:
+```
 $ ./ipfs daemon
 ```
 
