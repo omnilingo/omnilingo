@@ -190,13 +190,16 @@ class OmniLingo {
 			this.cleanup();
 			this.currentWalk.push(this.currentTask.question.nodeId);
 		}
-		var currentQuestionId = this.currentWalk.shift();
-		this.updateRemaining();
-		if(this.currentWalk.length < 1) {
-			console.log('  [currentWalk] ' + this.currentWalk.length);
-			this.endBatch();
-		}
-		var currentQuestion = this.graph.getNode(currentQuestionId);
+		var currentQuestion = null;
+		do {
+			var currentQuestionId = this.currentWalk.shift();
+			this.updateRemaining();
+			if(this.currentWalk.length < 1) {
+				console.log('  [currentWalk] ' + this.currentWalk.length);
+				this.endBatch();
+			}
+			var currentQuestion = this.graph.getNode(currentQuestionId);
+		} while (!currentQuestion.sentenceCid)
 		var currentTaskType = currentQuestion.getRandomRemainingTask();
 
 		// FIXME: Do this nicer
