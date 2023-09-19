@@ -225,21 +225,88 @@ function onRecordingSaveButton() {
 
 async function onRecordingUploadButton() {
 	const recorder = document.getElementById("recorder");
-	const clip = await document.ipfs.add({content: recorder.blob});
-
-	console.log("posted to ipfs: " + clip.cid);
+	const clip = await document.ipfs.add({content: JSON.stringify(await encrypt(recorder.blob))});
 
 	const task = document.omnilingo.getRunningTask();
-	const sample = await document.ipfs.add({content: JSON.stringify({
+	const k5 = await getK5();
+	const key = await getAES();
+	const keyfpr = await fingerprintKey(key);
+	const lang = task.question.language;
+	var root_collection = await fetchIpfsJ(k5.id);
+	var key_index = { };
+
+	if (root_collection[keyfpr])
+		key_index = await fetchIpfsJ(root_collection[keyfpr]);
+	if (!key_index[lang])
+		key_index[lang] = {"cids": new Array()};
+
+	var clips = null;
+	if(key_index[lang]["cids"].length > 0) {
+		clips = await fetchIpfsJ(key_index[lang]["cids"][0], key);
+	}
+	else {
+		clips = new Array();
+	}
+
+	clips.push({
 		"chars_sec": task.question.sentence["content"].length / recorder.duration,
 		"clip_cid": clip.cid.toString(),
 		"length": recorder.duration,
 		"meta_cid": task.question.metaCid,
 		"sentence_cid": task.question.sentenceCid
-	})});
+	});
+	const clips_res = await postIpfsJ(await encrypt(JSON.stringify(clips)));
 
-	console.log("posted sample to ipfs: " + sample.cid);
+	key_index[lang]["cids"][0] = clips_res.path;
+	console.log("posting index: " + JSON.stringify(key_index));
+	const key_index_res = await postIpfsJ(key_index);
+	root_collection[keyfpr] = key_index_res.path;
+	const result = await postIpnsJ(k5.id, root_collection);
+	console.log(result);
 
 	document.getElementById("recorder").style.display = "none";
 	document.omnilingo.nextTask();
+}
+
+async function onLoadKeys() {
+	if (!localStorage.getItem("k5"))
+		localStorage.setItem("k5", (await getK5()).id);
+	var keylist = document.getElementById("keys");
+	const k5 = localStorage.getItem("k5");
+	const mykey = keylist.value || (await fingerprintKey(await getAES()));
+	console.log("my key: " + mykey);
+	const keys = await getKeys();
+	document.getElementById("k5").innerText = k5;
+	keylist.innerHTML = "";
+	for(const k in keys) {
+		console.log("found key for selectbox " + k);
+		var o = document.createElement("option");
+		o.innerText = phraseFingerprint(k).split(" ").slice(0, 4).join(" ");
+		o.value = k;
+		if(mykey == k)
+			o.selected = "selected";
+		keylist.appendChild(o);
+	}
+	keyinfo.innerText = ["fingerprint: " + mykey,
+		"\npgpwords:",
+		phraseFingerprint(mykey).split(" ").slice(0, 10).join(" "),
+		phraseFingerprint(mykey).split(" ").slice(10).join(" ")
+	].join("\n");
+}
+
+async function generateKey() {
+	console.log("dropping key" + localStorage.getItem("current_key"));
+	localStorage.removeItem("current_key");
+	await getAES();
+	console.log("generated key" + localStorage.getItem("current_key"));
+	await onLoadKeys();
+}
+
+async function deleteKey() {
+	const k5 = await getK5();
+	var root = await fetchIpfsJ(k5.id);
+	delete root["keys"][document.getElementById("keys").value];
+	document.getElementById("keys").value = null;
+	await postIpnsJ(k5.id, root);
+	await onLoadKeys();
 }

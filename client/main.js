@@ -32,6 +32,25 @@ fetchIpfsS = async (cid) => {
 	return s;
 }
 
+postIpfsJ = async (j) => {
+	const res = await document.ipfs.add({content: JSON.stringify(j)});
+	return res;
+}
+
+postIpnsJ = async (k5, j) => {
+	const ipfs_res = await postIpfsJ(j);
+	const res = await document.ipfs.name.publish(ipfs_res.cid, {"key": k5});
+	var found = false;
+	while (!found) {
+		for await (const cid of document.ipfs.name.resolve("/ipns/" + k5)) {
+			console.log("comparing " + cid + " and " + "/ipfs/" + ipfs_res.cid);
+			if (cid == "/ipfs/" + ipfs_res.cid)
+				found = true;
+		}
+	}
+	return res;
+}
+
 const decideDefaultLanguage = async (indexes) => {
 	/**
 	 *	Takes the returned list of language indexes
@@ -223,6 +242,8 @@ const main = async () => {
 	console.log(indexes["fi"]);
 
 	runLanguage(defaultLanguage, indexes[defaultLanguage]["cids"], acceptingChars || {});
+	if(document.getElementById("contribute"))
+		await onLoadKeys();
 }
 
 window.onload = main;

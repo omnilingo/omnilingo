@@ -295,3 +295,10 @@ border: 2px solid black;
   visibility: visible;
   opacity: 0.5;
 }
+
+#keyinfo {
+	text-align: left;
+	display: inline-block;
+	float: center;
+	clear: both;
+}

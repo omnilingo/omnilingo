@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="./css/index.css" />
   <link href="./css/all.css" rel="stylesheet">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+<script type="text/javascript" src="./privacy.js"></script>
 <script type="text/javascript" src="./languages.js"></script>
 <script type="text/javascript" src="./kubo-rpc-client.js"></script>
 <script type="text/javascript" src="./config.js"></script>
@@ -92,7 +93,10 @@
   </div>
   <!-- Content -->
   <div class="content" id="settings" style="display: none">
-	  IPFS:<br /><textarea id="root-cids"></textarea><br />
+	  IPFS:<br /><textarea id="root-cids"></textarea><br /><br />
+	  Contribution ID:<br /><pre id="k5" style="display: inline"></pre><br /><br />
+	  Keys:<select id="keys" onchange="onLoadKeys()"></select><button onclick="generateKey()">+</button><button onclick="deleteKey()">-</button><br/>
+	  <pre id="keyinfo"></pre><br/>
 	  <button onclick="toggleSettings(true);"><i class="fas fa-save"></i></button><button onclick="toggleSettings();"><i class="fas fa-window-close"></i></button>
   </div>
   <div class="content" id="contribute">
