@@ -63,7 +63,8 @@ class OmniLingo {
 
 		console.log('allData:');
 		console.log(allData);
-		this.index = allData.reduce((ac, x) => ac.concat(x)).sort(y => y["chars_sec"]);
+		// HACK: sometimes our data is just a string? parse it into json if so
+		this.index = allData.map((x) => typeof x === "string" ? JSON.parse(x) : x).reduce((ac, x) => ac.concat(x)).sort(y => y["chars_sec"]);
 	}
 
 	updateRemaining() {

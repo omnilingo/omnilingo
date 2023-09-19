@@ -23,13 +23,41 @@ fetchIpfsB = async (cid) => {
 		data.set(chunk, i);
 		i += chunk.length;
 	}
+	try {
+		const j = JSON.parse(new TextDecoder('utf8').decode(data));
+		if(j.encdata && document.keys && document.keys[j.keyfpr]) {
+			const key = await decodeKey(document.keys[j.keyfpr]);
+			return await decrypt(j, key, false);
+		}
+	}
+	catch {
+	}
 	return data;
 }
 
 fetchIpfsS = async (cid) => {
-	const s = new TextDecoder('utf8').decode(await fetchIpfsB(cid));
-	console.log("fetched: " + s);
-	return s;
+	try {
+		const s = new TextDecoder('utf8').decode(await fetchIpfsB(cid));
+		console.log("fetched: " + s);
+		return s;
+	}
+	catch {
+		return null;
+	}
+}
+
+fetchIpfsJ = async (cid, key = null) => {
+	const s = await fetchIpfsS(cid);
+	if (s === null)
+		return s;
+	const j = JSON.parse(s);
+	if(j.encdata) {
+		if(!key && document.keys && document.keys[j.keyfpr])
+			key = await decodeKey(document.keys[j.keyfpr]);
+		return JSON.parse(await decrypt(j, key));
+	}
+	else
+		return j;
 }
 
 postIpfsJ = async (j) => {
@@ -121,6 +149,17 @@ const getLanguageMeta = async (cid) => {
 
 const fetchRoot = async (cid) => {
 	const x = await fetchIpfsJ(cid);
+	if(x["keys"]) {
+		xs = new Array();
+		if(!document.keys)
+			document.keys = x["keys"];
+		else
+			Object.assign(document.keys, x["keys"]);
+		for(var k in x["keys"]) {
+			xs.push(fetchIpfsJ(x[k]));
+		}
+		return await Promise.all(xs);
+	}
 	return [x];
 };
 
@@ -246,4 +285,4 @@ const main = async () => {
 		await onLoadKeys();
 }
 
-window.onload = main;
+window.addEventListener("load", main);
