@@ -100,27 +100,40 @@ const getLanguageMeta = async (cid) => {
 	return allData[0];
 }
 
+const fetchRoot = async (cid) => {
+	const x = await fetchIpfsJ(cid);
+	return [x];
+};
+
+function mergeIndex(x, y) {
+	var z = {};
+	Object.assign(z, x);
+	for(const l in y) {
+		if (!z[l]) {
+			z[l] = y[l];
+		}
+		else {
+			z[l]["cids"] = z[l]["cids"].concat(y[l]["cids"])
+			if(!z[l]["meta"])
+				z[l]["meta"] = y[l]["meta"];
+		}
+	}
+	return z;
+}
+
 
 const getIndexes = async () => {
 	// Pulls down the list of indexes (e.g. languages)
 	console.log("getIndexes() !");
 
-	const indexesPromise = document.root_cids.map(fetchIpfsS);
-
-	const indexes = await Promise.all(indexesPromise);
-	const indexesData = indexes.map(JSON.parse);
-	const allData = await Promise.all(indexesData);
-	var mergedData = allData.reduce( function(z, x) {
-		for(var lang in x) {
-			if (z[lang]) {
-				z[lang] = z[lang].concat(x[lang]);
-			}
-			else {
-				z[lang] = x[lang];
-			}
+	const indexesPromise = document.root_cids.map(fetchRoot);
+	const allData = await Promise.all(indexesPromise);
+	var mergedData = allData.reduce( function(z, xs) {
+		for(var x of xs) {
+			z = mergeIndex(z, x);
 		}
 		return z;
-	});
+	}, {});
         // Count the number of langs we have (for debugging, remove later)
         var count = 0;
 	for(var lang in mergedData) {
