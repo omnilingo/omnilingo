@@ -59,10 +59,7 @@ class OmniLingo {
 	fetchIndex = async () => {
 		console.log('fetchIndex() ' + this.language);
 
-		const indexPromise = this.cids.map(fetchIpfsS);
-		const index = await Promise.all(indexPromise);
-		const indexData = index.map(JSON.parse);
-		const allData = await Promise.all(indexData);
+		const allData = await Promise.all(this.cids.map(fetchIpfsJ));
 
 		console.log('allData:');
 		console.log(allData);
