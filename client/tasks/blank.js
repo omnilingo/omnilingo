@@ -3,7 +3,7 @@ class BlankTask extends Task {
 	constructor(question) {
 		super(question);
 
-		console.log("[BlankTask] " + question.textCid);
+		console.log("[BlankTask] " + question.sentenceCid);
 	}
 
 	cleanup() {
@@ -101,7 +101,8 @@ class BlankTask extends Task {
 		var gap = this.chooseGap();
 
 		var tbox = document.getElementById("textbox");
-		tbox.innerHTML = this.buildTbox(gap);
+		if(tbox)
+			tbox.innerHTML = this.buildTbox(gap);
 
 		this.setRunning(true);
 	}
