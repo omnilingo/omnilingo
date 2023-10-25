@@ -3,6 +3,7 @@ class Task {
 	constructor(question) {
 		console.log('Task()');
 
+		this.chars = [];
 		this.question = question;
 		this.complete = false;
 		this.answer = "";
@@ -91,9 +92,19 @@ class Task {
 		this.tokens = metadata["tokens"];
 		this.tags = metadata["tags"];
 
+		this.chars = {}
+		for(var i = 0; i < this.tokens.length; i++) {
+			this.chars[i] = [];
+			for(var j = 0; j < this.tokens[i].length; j++) {
+				this.chars[i].push(this.tokens[i][j]);
+			}
+		}
+
 		console.log(this.tokens);
 		console.log(this.tags);
-		//	this.chars.push(this.metadata[i][2]);
+		console.log(this.chars);
+		//console.log(metadata);
+		//this.chars.push(this.metadata[i][2]);
 		//await this.fetchDistractors();
 
 		this.validateTasks();

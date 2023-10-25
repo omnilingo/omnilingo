@@ -101,7 +101,7 @@ class ScrambleTask extends Task {
 	}
 
 	buildTiles(gap) {
-
+                console.log(set1)
 		var set1 = new Set(this.chars[gap]);
 		var arr1 = Array.from(set1);
 		arr1 = shuffleArray(arr1);
@@ -142,7 +142,7 @@ class ScrambleTask extends Task {
 	 *	We need to choose a gap that is not punctuation, so first
 	 *	find all possible non-punctuation tokens and then choose one.
 	 */
-		//console.log("[ScrambleTask] chooseGap()");
+		console.log("[ScrambleTask] chooseGap()");
 
 		var wordTokenIds = [];
 		for(var i = 0; i < this.tokens.length; i++) {
@@ -156,7 +156,7 @@ class ScrambleTask extends Task {
 	}
 
 	run = async() => {
-		//console.log("[ScrambleTask] run()");
+		console.log("[ScrambleTask] run()");
 
 		await this.init();
 

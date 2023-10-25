@@ -7,7 +7,7 @@ class OmniLingo {
 		this.graph = new Graph(this.batchSize);
 //		this.state = new State();
 		//this.enabledTasks = ["blank", "scramble", "choice", "search"];
-		this.enabledTasks = ["blank"];
+		this.enabledTasks = ["blank", "scramble"];
 		this.globalScore = 0;
 		this.deactivatedQuestions = new Set();
 	}
@@ -190,14 +190,14 @@ class OmniLingo {
 		var currentTaskType = currentQuestion.getRandomRemainingTask();
 
 		// FIXME: Do this nicer
-		//var randInt = getRandomInt(0, 3);
-		var randInt = 3;
+		var randInt = getRandomInt(0, 1);
+		//var randInt = 3;
 		if(randInt == 0) {
 			this.currentTask = new ScrambleTask(currentQuestion);
-		} else if(randInt == 1) {
+/*		} else if(randInt == 1) {
 			this.currentTask = new ChoiceTask(currentQuestion);
 		} else if(randInt == 2) {
-			this.currentTask = new SearchTask(currentQuestion);
+			this.currentTask = new SearchTask(currentQuestion);*/
 		} else {
 			this.currentTask = new BlankTask(currentQuestion);
 		}
