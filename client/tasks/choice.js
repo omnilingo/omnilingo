@@ -128,7 +128,8 @@ class ChoiceTask extends Task {
 		var gap = this.chooseGap();
 
 		var tbox = document.getElementById("textbox");
-		tbox.innerHTML = this.buildChoiceTbox(gap);
+		tbox.innerHTML = '';
+    tbox.appendChild(this.buildChoiceTbox(gap));
 
 		this.setRunning(true);
 	}

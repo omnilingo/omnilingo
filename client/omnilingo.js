@@ -118,16 +118,22 @@ class OmniLingo {
 		var completed = this.batchSize - (this.currentWalk.length + 1);
 		var remainingSpan = document.querySelectorAll('[id="remaining"]')[0];
 		if(remainingSpan)
-			remainingSpan.innerHTML = (this.currentWalk.length + 1) + "/" + this.batchSize;
+			remainingSpan.textContent = (this.currentWalk.length + 1) + "/" + this.batchSize;
 		var feedbackDiv = document.querySelectorAll('[id="feedback"]')[0];
-		if(feedbackDiv)
-			feedbackDiv.innerHTML = '<div style="width: ' + (completed * 25) + '%" class="feedbackFill">&nbsp;</div>';
+		if(feedbackDiv) {
+      let feedbackFill = document.createElement('div');
+      feedbackFill.classList.append('feedbackFill');
+      feedbackFill.style.width = `${completed * 25}%`;
+      feedbackFill.textContent = '&nbsp;';
+      feedbackDiv.innerHTML = '';
+      feedbackDiv.appendChild(feedbackFill);
+    }
 	}
 
 	updateScore() {
 		var scoreSpan = document.querySelectorAll('[id="score"]')[0];
 		if(scoreSpan) {
-			scoreSpan.innerHTML = this.globalScore.toFixed(2);
+			scoreSpan.textContent = this.globalScore.toFixed(2);
 		}
 	}
 
@@ -152,7 +158,7 @@ class OmniLingo {
 	updateLevel() {
 		var levelSpan = document.querySelectorAll('[id="level"]')[0];
 		if(levelSpan) {
-			levelSpan.innerHTML = this.level;
+			levelSpan.textContent = this.level;
 			this.setLevelHighlight();
 		}
 	}
@@ -211,7 +217,7 @@ class OmniLingo {
 	submitTask() {
 		console.log('submitTask()');
 		if(this.currentTask) {
-			var newTime = document.getElementById("seconds").innerHTML;
+			var newTime = document.getElementById("seconds").textContent;
 			console.log('  [newTime] ' + newTime);
 			// FIXME: this is bad design
 			this.graph.setWeight(this.currentTask.question.nodeId, Number(newTime));

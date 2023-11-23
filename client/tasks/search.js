@@ -116,7 +116,8 @@ class SearchTask extends Task {
 		var gaps = this.chooseGaps();
 
 		var cbox = document.getElementById('clues');
-		cbox.innerHTML = this.buildClues(gaps) + '<br/><br/>';
+		cbox.innerHTML = '';
+    cbox.append(this.buildClues(gaps), document.createElement('br'), document.createElement('br'));
 
 		this.setRunning(true);
 	}

@@ -207,7 +207,7 @@ class PronunciationTask extends Task {
 			text += '<span style="color: ' + this.chooseColour(lenMismatch) + '">' + buffer + '</span>';
 		}
 		const result = document.getElementById("resultat");
-		result.innerHTML = text;
+		result.textContent = text;
 	}
 
         processAudio = async (audioCid) => {
@@ -250,8 +250,10 @@ class PronunciationTask extends Task {
 		await this.init();
 
 		var tbox = document.getElementById("pronSource");
-		if(tbox)
-			tbox.innerHTML = this.buildTbox();
+		if(tbox) {
+			tbox.innerHTML = '';
+      tbox.appendChild(this.buildTbox());
+    }
 
 		this.setRunning(true);
 	}
@@ -282,9 +284,9 @@ var res =		this.getMinimumPenalty(orig, asr, 1, 1);
 			text += '<span style="color: ' + this.chooseColour(lenMismatch) + '">' + buffer + '</span>';
 		}
 	const result= document.getElementById("resultat");
-		result.innerHTML = text;
+		result.textContent = text;
 	const source = document.getElementById("pronSource");
-		source.innerHTML = orig;
+		source.textContent = orig;
 
 	}
 

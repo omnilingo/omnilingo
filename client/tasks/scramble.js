@@ -63,12 +63,12 @@ class ScrambleTask extends Task {
 		wbox.setAttribute('data-target', targetToken);
 		wbox.setAttribute("style", "border-radius: 5px; border: 2px solid green; padding: 5px;");
 		wbox.setAttribute("class", "correct");
-		wbox.innerHTML = targetToken;
+    wbox.textContent = targetToken;
 	}
 
 	correctClick(dz, trg_val) {
 		console.log('[ScrambleTask] correctClick()');
-		dz.innerHTML = trg_val;
+		dz.textContent = trg_val;
 		dz.setAttribute('class', 'correct targetBox');
 		var tbox = document.getElementById('textbox');
 
@@ -163,10 +163,12 @@ class ScrambleTask extends Task {
 		var gap = this.chooseGap();
 
 		var cbox = document.getElementById('clues');
-		cbox.innerHTML = this.buildTiles(gap) + '<br/><br/>';
+		cbox.innerHTML = '';
+    cbox.append(this.buildTiles(gap), document.createElement('br'), document.createElement('br'));
 
 		var tbox = document.getElementById("textbox");
-		tbox.innerHTML = this.buildTargets(gap);
+		tbox.innerHTML = '';
+    tbox.appendChild(this.buildTargets(gap));
 
 		this.setRunning(true);
 	}

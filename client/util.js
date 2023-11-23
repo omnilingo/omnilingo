@@ -29,7 +29,7 @@ function startTimer() {
 	if(task.isRunning()) {
 		var sec = 0;
 		var res = setInterval( function(){
-			document.getElementById("seconds").innerHTML = ++sec;
+			document.getElementById("seconds").textContent = ++sec;
 		}, 1000);
 		localStorage.setItem('refreshIntervalId', res);
 		console.log('  [interval] → ' + res);
@@ -38,7 +38,7 @@ function startTimer() {
 
 function resetTimer() {
 	console.log('resetTimer()');
-	document.getElementById("seconds").innerHTML = "0";
+	document.getElementById("seconds").textContent = "0";
 }
 
 function shuffleArray(array)
